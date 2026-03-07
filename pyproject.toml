@@ -67,7 +67,7 @@ all = [
 ]
 
 [project.scripts]
-hermes = "arachne_cli.main:main"
+arachne = "arachne_cli.main:main"
 arachne = "run_agent:main"
 
 [tool.setuptools]

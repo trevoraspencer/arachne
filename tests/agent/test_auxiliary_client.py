@@ -46,9 +46,9 @@ def codex_auth_dir(tmp_path, monkeypatch):
 
 class TestReadCodexAccessToken:
     def test_valid_auth_store(self, tmp_path, monkeypatch):
-        hermes_home = tmp_path / "hermes"
-        hermes_home.mkdir(parents=True, exist_ok=True)
-        (hermes_home / "auth.json").write_text(json.dumps({
+        arachne_home = tmp_path / "arachne"
+        arachne_home.mkdir(parents=True, exist_ok=True)
+        (arachne_home / "auth.json").write_text(json.dumps({
             "version": 1,
             "providers": {
                 "openai-codex": {
@@ -56,22 +56,22 @@ class TestReadCodexAccessToken:
                 },
             },
         }))
-        monkeypatch.setenv("ARACHNE_HOME", str(hermes_home))
+        monkeypatch.setenv("ARACHNE_HOME", str(arachne_home))
         result = _read_codex_access_token()
         assert result == "tok-123"
 
     def test_missing_returns_none(self, tmp_path, monkeypatch):
-        hermes_home = tmp_path / "hermes"
-        hermes_home.mkdir(parents=True, exist_ok=True)
-        (hermes_home / "auth.json").write_text(json.dumps({"version": 1, "providers": {}}))
-        monkeypatch.setenv("ARACHNE_HOME", str(hermes_home))
+        arachne_home = tmp_path / "arachne"
+        arachne_home.mkdir(parents=True, exist_ok=True)
+        (arachne_home / "auth.json").write_text(json.dumps({"version": 1, "providers": {}}))
+        monkeypatch.setenv("ARACHNE_HOME", str(arachne_home))
         result = _read_codex_access_token()
         assert result is None
 
     def test_empty_token_returns_none(self, tmp_path, monkeypatch):
-        hermes_home = tmp_path / "hermes"
-        hermes_home.mkdir(parents=True, exist_ok=True)
-        (hermes_home / "auth.json").write_text(json.dumps({
+        arachne_home = tmp_path / "arachne"
+        arachne_home.mkdir(parents=True, exist_ok=True)
+        (arachne_home / "auth.json").write_text(json.dumps({
             "version": 1,
             "providers": {
                 "openai-codex": {
@@ -79,7 +79,7 @@ class TestReadCodexAccessToken:
                 },
             },
         }))
-        monkeypatch.setenv("ARACHNE_HOME", str(hermes_home))
+        monkeypatch.setenv("ARACHNE_HOME", str(arachne_home))
         result = _read_codex_access_token()
         assert result is None
 

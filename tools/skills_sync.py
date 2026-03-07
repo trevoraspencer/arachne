@@ -31,7 +31,7 @@ from typing import Dict, List, Tuple
 logger = logging.getLogger(__name__)
 
 
-ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
 SKILLS_DIR = ARACHNE_HOME / "skills"
 MANIFEST_FILE = SKILLS_DIR / ".bundled_manifest"
 

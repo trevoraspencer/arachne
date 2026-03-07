@@ -324,19 +324,19 @@ class TestHasAnyProviderConfigured:
     def test_glm_key_counts(self, monkeypatch, tmp_path):
         from arachne_cli import config as config_module
         monkeypatch.setenv("GLM_API_KEY", "test-key")
-        hermes_home = tmp_path / ".hermes"
-        hermes_home.mkdir()
-        monkeypatch.setattr(config_module, "get_env_path", lambda: hermes_home / ".env")
-        monkeypatch.setattr(config_module, "get_hermes_home", lambda: hermes_home)
+        arachne_home = tmp_path / ".arachne"
+        arachne_home.mkdir()
+        monkeypatch.setattr(config_module, "get_env_path", lambda: arachne_home / ".env")
+        monkeypatch.setattr(config_module, "get_arachne_home", lambda: arachne_home)
         from arachne_cli.main import _has_any_provider_configured
         assert _has_any_provider_configured() is True
 
     def test_minimax_key_counts(self, monkeypatch, tmp_path):
         from arachne_cli import config as config_module
         monkeypatch.setenv("MINIMAX_API_KEY", "test-key")
-        hermes_home = tmp_path / ".hermes"
-        hermes_home.mkdir()
-        monkeypatch.setattr(config_module, "get_env_path", lambda: hermes_home / ".env")
-        monkeypatch.setattr(config_module, "get_hermes_home", lambda: hermes_home)
+        arachne_home = tmp_path / ".arachne"
+        arachne_home.mkdir()
+        monkeypatch.setattr(config_module, "get_env_path", lambda: arachne_home / ".env")
+        monkeypatch.setattr(config_module, "get_arachne_home", lambda: arachne_home)
         from arachne_cli.main import _has_any_provider_configured
         assert _has_any_provider_configured() is True

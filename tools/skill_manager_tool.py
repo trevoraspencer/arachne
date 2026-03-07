@@ -69,7 +69,7 @@ import yaml
 
 
 # All skills live in ~/.arachne/skills/ (single source of truth)
-ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
 SKILLS_DIR = ARACHNE_HOME / "skills"
 
 MAX_NAME_LENGTH = 64

@@ -5,7 +5,7 @@ from contextlib import nullcontext
 from types import SimpleNamespace
 
 from arachne_cli.auth import AuthError
-from arachne_cli import main as hermes_main
+from arachne_cli import main as arachne_main
 
 
 def _install_prompt_toolkit_stubs():
@@ -177,9 +177,9 @@ def test_cmd_model_falls_back_to_auto_on_invalid_provider(monkeypatch, capsys):
         return "openrouter"
 
     monkeypatch.setattr("arachne_cli.auth.resolve_provider", _resolve_provider)
-    monkeypatch.setattr(hermes_main, "_prompt_provider_choice", lambda choices: len(choices) - 1)
+    monkeypatch.setattr(arachne_main, "_prompt_provider_choice", lambda choices: len(choices) - 1)
 
-    hermes_main.cmd_model(SimpleNamespace())
+    arachne_main.cmd_model(SimpleNamespace())
     output = capsys.readouterr().out
 
     assert "Warning:" in output

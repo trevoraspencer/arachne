@@ -1,19 +1,19 @@
 #!/bin/bash
 # ============================================================================
-# Hermes Agent Setup Script
+# Arachne Agent Setup Script
 # ============================================================================
 # Quick setup for developers who cloned the repo manually.
 # Uses uv for fast Python provisioning and package management.
 #
 # Usage:
-#   ./setup-hermes.sh
+#   ./setup-arachne.sh
 #
 # This script:
 # 1. Installs uv if not present
 # 2. Creates a virtual environment with Python 3.11 via uv
 # 3. Installs all dependencies (main package + submodules)
 # 4. Creates .env from template (if not exists)
-# 5. Symlinks the 'hermes' CLI command into ~/.local/bin
+# 5. Symlinks the 'arachne' CLI command into ~/.local/bin
 # 6. Runs the setup wizard (optional)
 # ============================================================================
 
@@ -32,7 +32,7 @@ cd "$SCRIPT_DIR"
 PYTHON_VERSION="3.11"
 
 echo ""
-echo -e "${CYAN}⚕ Hermes Agent Setup${NC}"
+echo -e "${CYAN}⚕ Arachne Agent Setup${NC}"
 echo ""
 
 # ============================================================================
@@ -205,15 +205,15 @@ else
 fi
 
 # ============================================================================
-# PATH setup — symlink hermes into ~/.local/bin
+# PATH setup — symlink arachne into ~/.local/bin
 # ============================================================================
 
-echo -e "${CYAN}→${NC} Setting up hermes command..."
+echo -e "${CYAN}→${NC} Setting up arachne command..."
 
-ARACHNE_BIN="$SCRIPT_DIR/venv/bin/hermes"
+ARACHNE_BIN="$SCRIPT_DIR/venv/bin/arachne"
 mkdir -p "$HOME/.local/bin"
-ln -sf "$ARACHNE_BIN" "$HOME/.local/bin/hermes"
-echo -e "${GREEN}✓${NC} Symlinked hermes → ~/.local/bin/hermes"
+ln -sf "$ARACHNE_BIN" "$HOME/.local/bin/arachne"
+echo -e "${GREEN}✓${NC} Symlinked arachne → ~/.local/bin/arachne"
 
 # Determine the appropriate shell config file
 SHELL_CONFIG=""
@@ -240,7 +240,7 @@ if [ -n "$SHELL_CONFIG" ]; then
     if ! echo "$PATH" | tr ':' '\n' | grep -q "^$HOME/.local/bin$"; then
         if ! grep -q '\.local/bin' "$SHELL_CONFIG" 2>/dev/null; then
             echo "" >> "$SHELL_CONFIG"
-            echo "# Hermes Agent — ensure ~/.local/bin is on PATH" >> "$SHELL_CONFIG"
+            echo "# Arachne Agent — ensure ~/.local/bin is on PATH" >> "$SHELL_CONFIG"
             echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$SHELL_CONFIG"
             echo -e "${GREEN}✓${NC} Added ~/.local/bin to PATH in $SHELL_CONFIG"
         else
@@ -255,7 +255,7 @@ fi
 # Seed bundled skills into ~/.arachne/skills/
 # ============================================================================
 
-ARACHNE_SKILLS_DIR="${ARACHNE_HOME:-$HOME/.hermes}/skills"
+ARACHNE_SKILLS_DIR="${ARACHNE_HOME:-$HOME/.arachne}/skills"
 mkdir -p "$ARACHNE_SKILLS_DIR"
 
 echo ""
@@ -283,16 +283,16 @@ echo "  1. Reload your shell:"
 echo "     source $SHELL_CONFIG"
 echo ""
 echo "  2. Run the setup wizard to configure API keys:"
-echo "     hermes setup"
+echo "     arachne setup"
 echo ""
 echo "  3. Start chatting:"
-echo "     hermes"
+echo "     arachne"
 echo ""
 echo "Other commands:"
-echo "  hermes status        # Check configuration"
-echo "  hermes gateway install # Install gateway service (messaging + cron)"
-echo "  hermes cron list     # View scheduled jobs"
-echo "  hermes doctor        # Diagnose issues"
+echo "  arachne status        # Check configuration"
+echo "  arachne gateway install # Install gateway service (messaging + cron)"
+echo "  arachne cron list     # View scheduled jobs"
+echo "  arachne doctor        # Diagnose issues"
 echo ""
 
 # Ask if they want to run setup wizard now

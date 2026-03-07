@@ -6,30 +6,30 @@ from unittest.mock import patch
 
 from arachne_cli.config import (
     DEFAULT_CONFIG,
-    get_hermes_home,
-    ensure_hermes_home,
+    get_arachne_home,
+    ensure_arachne_home,
     load_config,
     save_config,
 )
 
 
-class TestGetHermesHome:
+class TestGetArachneHome:
     def test_default_path(self):
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("ARACHNE_HOME", None)
-            home = get_hermes_home()
-            assert home == Path.home() / ".hermes"
+            home = get_arachne_home()
+            assert home == Path.home() / ".arachne"
 
     def test_env_override(self):
         with patch.dict(os.environ, {"ARACHNE_HOME": "/custom/path"}):
-            home = get_hermes_home()
+            home = get_arachne_home()
             assert home == Path("/custom/path")
 
 
-class TestEnsureHermesHome:
+class TestEnsureArachneHome:
     def test_creates_subdirs(self, tmp_path):
         with patch.dict(os.environ, {"ARACHNE_HOME": str(tmp_path)}):
-            ensure_hermes_home()
+            ensure_arachne_home()
             assert (tmp_path / "cron").is_dir()
             assert (tmp_path / "sessions").is_dir()
             assert (tmp_path / "logs").is_dir()

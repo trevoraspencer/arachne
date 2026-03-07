@@ -17,7 +17,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-_SESSIONS_DIR = Path.home() / ".hermes" / "sessions"
+_SESSIONS_DIR = Path.home() / ".arachne" / "sessions"
 _SESSIONS_INDEX = _SESSIONS_DIR / "sessions.json"
 
 

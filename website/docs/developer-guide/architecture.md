@@ -1,12 +1,12 @@
 ---
 sidebar_position: 1
 title: "Architecture"
-description: "Hermes Agent internals — project structure, agent loop, key classes, and design patterns"
+description: "Arachne Agent internals — project structure, agent loop, key classes, and design patterns"
 ---
 
 # Architecture
 
-This guide covers the internal architecture of Hermes Agent for developers contributing to the project.
+This guide covers the internal architecture of Arachne Agent for developers contributing to the project.
 
 ## Project Structure
 

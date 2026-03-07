@@ -42,8 +42,8 @@ from pathlib import Path
 # Load .env from ~/.arachne/.env first, then project root as dev fallback
 from dotenv import load_dotenv
 
-_hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
-_user_env = _hermes_home / ".env"
+_arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+_user_env = _arachne_home / ".env"
 _project_env = Path(__file__).parent / '.env'
 if _user_env.exists():
     try:
@@ -61,7 +61,7 @@ else:
     logger.info("No .env file found. Using system environment variables.")
 
 # Point mini-swe-agent at ~/.arachne/ so it shares our config
-os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(_hermes_home))
+os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(_arachne_home))
 os.environ.setdefault("MSWEA_SILENT_STARTUP", "1")
 
 # Import our tool system
@@ -256,7 +256,7 @@ class AIAgent:
         if base_url and "api.anthropic.com" in base_url.strip().lower():
             raise ValueError(
                 "Anthropic's native /v1/messages API is not supported yet (planned for a future release). "
-                "Hermes currently requires OpenAI-compatible /chat/completions endpoints. "
+                "Arachne currently requires OpenAI-compatible /chat/completions endpoints. "
                 "To use Claude models now, route through OpenRouter (OPENROUTER_API_KEY) "
                 "or any OpenAI-compatible proxy that wraps the Anthropic API."
             )
@@ -301,7 +301,7 @@ class AIAgent:
         # Persistent error log -- always writes WARNING+ to ~/.arachne/logs/errors.log
         # so tool failures, API errors, etc. are inspectable after the fact.
         from agent.redact import RedactingFormatter
-        _error_log_dir = Path.home() / ".hermes" / "logs"
+        _error_log_dir = Path.home() / ".arachne" / "logs"
         _error_log_dir.mkdir(parents=True, exist_ok=True)
         _error_log_path = _error_log_dir / "errors.log"
         from logging.handlers import RotatingFileHandler
@@ -386,7 +386,7 @@ class AIAgent:
         if "openrouter" in effective_base.lower():
             client_kwargs["default_headers"] = {
                 "HTTP-Referer": "https://github.com/NousResearch/hermes-agent",
-                "X-OpenRouter-Title": "Hermes Agent",
+                "X-OpenRouter-Title": "Arachne Agent",
                 "X-OpenRouter-Categories": "productivity,cli-agent",
             }
         
@@ -461,8 +461,8 @@ class AIAgent:
             self.session_id = f"{timestamp_str}_{short_uuid}"
         
         # Session logs go into ~/.arachne/sessions/ alongside gateway sessions
-        hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
-        self.logs_dir = hermes_home / "sessions"
+        arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+        self.logs_dir = arachne_home / "sessions"
         self.logs_dir.mkdir(parents=True, exist_ok=True)
         self.session_log_file = self.logs_dir / f"session_{self.session_id}.json"
         
@@ -538,7 +538,7 @@ class AIAgent:
                     if not self._honcho_session_key:
                         self._honcho_session_key = (
                             hcfg.resolve_session_name()
-                            or "hermes-default"
+                            or "arachne-default"
                         )
                     # Ensure session exists in Honcho
                     self._honcho.get_or_create(self._honcho_session_key)
@@ -1407,8 +1407,8 @@ class AIAgent:
             if context_files_prompt:
                 prompt_parts.append(context_files_prompt)
 
-        from hermes_time import now as _hermes_now
-        now = _hermes_now()
+        from arachne_time import now as _arachne_now
+        now = _arachne_now()
         prompt_parts.append(
             f"Conversation started: {now.strftime('%A, %B %d, %Y %I:%M %p')}"
         )

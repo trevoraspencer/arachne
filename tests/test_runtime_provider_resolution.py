@@ -143,7 +143,7 @@ def test_custom_endpoint_prefers_openai_key(monkeypatch):
 def test_custom_endpoint_auto_provider_prefers_openai_key(monkeypatch):
     """Auto provider with non-OpenRouter base_url should prefer OPENAI_API_KEY.
 
-    Same as #560 but via 'hermes model' flow which sets provider to 'auto'.
+    Same as #560 but via 'arachne model' flow which sets provider to 'auto'.
     """
     monkeypatch.setattr(rp, "resolve_provider", lambda *a, **k: "openrouter")
     monkeypatch.setattr(rp, "_get_model_config", lambda: {})

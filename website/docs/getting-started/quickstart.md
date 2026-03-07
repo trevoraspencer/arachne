@@ -1,14 +1,14 @@
 ---
 sidebar_position: 1
 title: "Quickstart"
-description: "Your first conversation with Hermes Agent — from install to chatting in 2 minutes"
+description: "Your first conversation with Arachne Agent — from install to chatting in 2 minutes"
 ---
 
 # Quickstart
 
-This guide walks you through installing Hermes Agent, setting up a provider, and having your first conversation. By the end, you'll know the key features and how to explore further.
+This guide walks you through installing Arachne Agent, setting up a provider, and having your first conversation. By the end, you'll know the key features and how to explore further.
 
-## 1. Install Hermes Agent
+## 1. Install Arachne Agent
 
 Run the one-line installer:
 
@@ -32,26 +32,26 @@ source ~/.bashrc   # or source ~/.zshrc
 The installer runs the setup wizard automatically. If you skipped it, run:
 
 ```bash
-hermes setup
+arachne setup
 ```
 
 This walks you through selecting an inference provider:
 
 | Provider | What it is | How to set up |
 |----------|-----------|---------------|
-| **Nous Portal** | Subscription-based, zero-config | OAuth login via `hermes model` |
-| **OpenAI Codex** | ChatGPT OAuth, uses Codex models | Device code auth via `hermes model` |
+| **Nous Portal** | Subscription-based, zero-config | OAuth login via `arachne model` |
+| **OpenAI Codex** | ChatGPT OAuth, uses Codex models | Device code auth via `arachne model` |
 | **OpenRouter** | 200+ models, pay-per-use | Enter your API key |
 | **Custom Endpoint** | VLLM, SGLang, any OpenAI-compatible API | Set base URL + API key |
 
 :::tip
-You can switch providers at any time with `hermes model` — no code changes, no lock-in.
+You can switch providers at any time with `arachne model` — no code changes, no lock-in.
 :::
 
 ## 3. Start Chatting
 
 ```bash
-hermes
+arachne
 ```
 
 That's it! You'll see a welcome banner with your model, available tools, and skills. Type a message and press Enter.
@@ -94,11 +94,11 @@ If the agent is taking too long, just type a new message and press Enter — it 
 
 ### Resume a session
 
-When you exit, hermes prints a resume command:
+When you exit, arachne prints a resume command:
 
 ```bash
-hermes --continue    # Resume the most recent session
-hermes -c            # Short form
+arachne --continue    # Resume the most recent session
+arachne -c            # Short form
 ```
 
 ## 5. Explore Further
@@ -110,16 +110,16 @@ Here are some things to try next:
 For safety, run the agent in a Docker container or on a remote server:
 
 ```bash
-hermes config set terminal.backend docker    # Docker isolation
-hermes config set terminal.backend ssh       # Remote server
+arachne config set terminal.backend docker    # Docker isolation
+arachne config set terminal.backend ssh       # Remote server
 ```
 
 ### Connect messaging platforms
 
-Chat with Hermes from your phone via Telegram, Discord, Slack, or WhatsApp:
+Chat with Arachne from your phone via Telegram, Discord, Slack, or WhatsApp:
 
 ```bash
-hermes gateway setup    # Interactive platform configuration
+arachne gateway setup    # Interactive platform configuration
 ```
 
 ### Schedule automated tasks
@@ -133,8 +133,8 @@ The agent will set up a cron job that runs automatically via the gateway.
 ### Browse and install skills
 
 ```bash
-hermes skills search kubernetes
-hermes skills install openai/skills/k8s
+arachne skills search kubernetes
+arachne skills install openai/skills/k8s
 ```
 
 Or use the `/skills` slash command inside chat.
@@ -159,14 +159,14 @@ mcp_servers:
 
 | Command | Description |
 |---------|-------------|
-| `hermes` | Start chatting |
-| `hermes setup` | Configure providers and settings |
-| `hermes model` | Switch provider or model |
-| `hermes tools` | Configure which tools are enabled per platform |
-| `hermes doctor` | Diagnose issues |
-| `hermes update` | Update to latest version |
-| `hermes gateway` | Start the messaging gateway |
-| `hermes --continue` | Resume last session |
+| `arachne` | Start chatting |
+| `arachne setup` | Configure providers and settings |
+| `arachne model` | Switch provider or model |
+| `arachne tools` | Configure which tools are enabled per platform |
+| `arachne doctor` | Diagnose issues |
+| `arachne update` | Update to latest version |
+| `arachne gateway` | Start the messaging gateway |
+| `arachne --continue` | Resume last session |
 
 ## Next Steps
 

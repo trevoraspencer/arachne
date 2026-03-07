@@ -2,17 +2,17 @@
 name: claude-code
 description: Delegate coding tasks to Claude Code (Anthropic's CLI agent). Use for building features, refactoring, PR reviews, and iterative coding. Requires the claude CLI installed.
 version: 1.0.0
-author: Hermes Agent
+author: Arachne Agent
 license: MIT
 metadata:
-  hermes:
+  arachne:
     tags: [Coding-Agent, Claude, Anthropic, Code-Review, Refactoring]
     related_skills: [codex, arachne]
 ---
 
 # Claude Code
 
-Delegate coding tasks to [Claude Code](https://docs.anthropic.com/en/docs/claude-code) via the Hermes terminal. Claude Code is Anthropic's autonomous coding agent CLI.
+Delegate coding tasks to [Claude Code](https://docs.anthropic.com/en/docs/claude-code) via the Arachne terminal. Claude Code is Anthropic's autonomous coding agent CLI.
 
 ## Prerequisites
 

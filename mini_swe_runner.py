@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-Mini-SWE-Agent Runner with Hermes Trajectory Format
+Mini-SWE-Agent Runner with Arachne Trajectory Format
 
 This module provides a runner that uses mini-swe-agent's execution environments
-(local, docker, modal) but outputs trajectories in the Hermes-Agent format
+(local, docker, modal) but outputs trajectories in the Arachne-Agent format
 compatible with batch_runner.py and trajectory_compressor.py.
 
 Features:
 - Uses mini-swe-agent's Docker, Modal, or Local environments for command execution
-- Outputs trajectories in Hermes format (from/value pairs with <tool_call>/<tool_response> XML)
+- Outputs trajectories in Arachne format (from/value pairs with <tool_call>/<tool_response> XML)
 - Compatible with the trajectory compression pipeline
 - Supports batch processing from JSONL prompt files
 
@@ -49,7 +49,7 @@ if mini_swe_path.exists():
 
 
 # ============================================================================
-# Terminal Tool Definition (matches Hermes-Agent format)
+# Terminal Tool Definition (matches Arachne-Agent format)
 # ============================================================================
 
 TERMINAL_TOOL_DEFINITION = {
@@ -138,13 +138,13 @@ def create_environment(
 
 
 # ============================================================================
-# Mini-SWE Runner with Hermes Trajectory Format
+# Mini-SWE Runner with Arachne Trajectory Format
 # ============================================================================
 
 class MiniSWERunner:
     """
     Agent runner that uses mini-swe-agent environments but outputs
-    trajectories in Hermes-Agent format.
+    trajectories in Arachne-Agent format.
     """
     
     def __init__(
@@ -203,7 +203,7 @@ class MiniSWERunner:
         if base_url and "api.anthropic.com" in base_url.strip().lower():
             raise ValueError(
                 "Anthropic's native /v1/messages API is not supported yet (planned for a future release). "
-                "Hermes currently requires OpenAI-compatible /chat/completions endpoints. "
+                "Arachne currently requires OpenAI-compatible /chat/completions endpoints. "
                 "To use Claude models now, route through OpenRouter (OPENROUTER_API_KEY) "
                 "or any OpenAI-compatible proxy that wraps the Anthropic API."
             )
@@ -293,14 +293,14 @@ class MiniSWERunner:
             })
         return json.dumps(formatted_tools, ensure_ascii=False)
     
-    def _convert_to_hermes_format(
+    def _convert_to_arachne_format(
         self,
         messages: List[Dict[str, Any]],
         user_query: str,
         completed: bool
     ) -> List[Dict[str, Any]]:
         """
-        Convert internal message format to Hermes trajectory format.
+        Convert internal message format to Arachne trajectory format.
         
         This produces the exact format used by batch_runner.py.
         """
@@ -547,8 +547,8 @@ Complete the user's task step by step."""
             # Cleanup environment
             self._cleanup_env()
         
-        # Convert to Hermes trajectory format
-        trajectory = self._convert_to_hermes_format(messages, task, completed)
+        # Convert to Arachne trajectory format
+        trajectory = self._convert_to_arachne_format(messages, task, completed)
         
         return {
             "conversations": trajectory,
@@ -633,7 +633,7 @@ def main(
     verbose: bool = False,
 ):
     """
-    Run mini-swe-agent tasks with Hermes trajectory format output.
+    Run mini-swe-agent tasks with Arachne trajectory format output.
     
     Args:
         task: Single task to run (use this OR prompts_file)
@@ -659,7 +659,7 @@ def main(
         # Batch from file
         python mini_swe_runner.py --prompts_file tasks.jsonl --output_file results.jsonl
     """
-    print("🚀 Mini-SWE Runner with Hermes Trajectory Format")
+    print("🚀 Mini-SWE Runner with Arachne Trajectory Format")
     print("=" * 60)
     
     # Initialize runner

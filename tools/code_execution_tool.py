@@ -2,7 +2,7 @@
 """
 Code Execution Tool -- Programmatic Tool Calling (PTC)
 
-Lets the LLM write a Python script that calls Hermes tools via RPC,
+Lets the LLM write a Python script that calls Arachne tools via RPC,
 collapsing multi-step tool chains into a single inference turn.
 
 Architecture:
@@ -136,7 +136,7 @@ def generate_arachne_tools_module(enabled_tools: List[str]) -> str:
         export_names.append(func_name)
 
     header = '''\
-"""Auto-generated Hermes tools RPC stubs."""
+"""Auto-generated Arachne tools RPC stubs."""
 import json, os, socket, shlex, time
 
 _sock = None
@@ -349,7 +349,7 @@ def execute_code(
 ) -> str:
     """
     Run a Python script in a sandboxed child process with RPC access
-    to a subset of Hermes tools.
+    to a subset of Arachne tools.
 
     Args:
         code:          Python source code to execute.
@@ -384,8 +384,8 @@ def execute_code(
         sandbox_tools = SANDBOX_ALLOWED_TOOLS
 
     # --- Set up temp directory with arachne_tools.py and script.py ---
-    tmpdir = tempfile.mkdtemp(prefix="hermes_sandbox_")
-    sock_path = os.path.join(tempfile.gettempdir(), f"hermes_rpc_{uuid.uuid4().hex}.sock")
+    tmpdir = tempfile.mkdtemp(prefix="arachne_sandbox_")
+    sock_path = os.path.join(tempfile.gettempdir(), f"arachne_rpc_{uuid.uuid4().hex}.sock")
 
     tool_call_log: list = []
     tool_call_counter = [0]  # mutable so the RPC thread can increment
@@ -627,7 +627,7 @@ _TOOL_DOC_LINES = [
 def build_execute_code_schema(enabled_sandbox_tools: set = None) -> dict:
     """Build the execute_code schema with description listing only enabled tools.
 
-    When tools are disabled via ``hermes tools`` (e.g. web is turned off),
+    When tools are disabled via ``arachne tools`` (e.g. web is turned off),
     the schema description should NOT mention web_search / web_extract —
     otherwise the model thinks they are available and keeps trying to use them.
     """
@@ -646,7 +646,7 @@ def build_execute_code_schema(enabled_sandbox_tools: set = None) -> dict:
     import_str = ", ".join(import_examples) + ", ..."
 
     description = (
-        "Run a Python script that can call Hermes tools programmatically. "
+        "Run a Python script that can call Arachne tools programmatically. "
         "Use this when you need 3+ tool calls with processing logic between them, "
         "need to filter/reduce large tool outputs before they enter your context, "
         "need conditional branching (if X then Y else Z), or need to loop "

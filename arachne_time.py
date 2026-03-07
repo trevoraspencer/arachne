@@ -1,5 +1,5 @@
 """
-Timezone-aware clock for Hermes.
+Timezone-aware clock for Arachne.
 
 Provides a single ``now()`` helper that returns a timezone-aware datetime
 based on the user's configured IANA timezone (e.g. ``Asia/Kolkata``).
@@ -9,7 +9,7 @@ Resolution order:
   2. ``timezone`` key in ``~/.arachne/config.yaml``
   3. Falls back to the server's local time (``datetime.now().astimezone()``)
 
-Invalid timezone values log a warning and fall back safely — Hermes never
+Invalid timezone values log a warning and fall back safely — Arachne never
 crashes due to a bad timezone string.
 """
 
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 try:
     from zoneinfo import ZoneInfo
 except ImportError:
-    # Python 3.8 fallback (shouldn't be needed — Hermes requires 3.9+)
+    # Python 3.8 fallback (shouldn't be needed — Arachne requires 3.9+)
     from backports.zoneinfo import ZoneInfo  # type: ignore[no-redef]
 
 # Cached state — resolved once, reused on every call.
@@ -48,8 +48,8 @@ def _resolve_timezone_name() -> str:
     # 2. config.yaml ``timezone`` key
     try:
         import yaml
-        hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
-        config_path = hermes_home / "config.yaml"
+        arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+        config_path = arachne_home / "config.yaml"
         if config_path.exists():
             with open(config_path) as f:
                 cfg = yaml.safe_load(f) or {}

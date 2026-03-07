@@ -27,7 +27,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from hermes_time import now as _hermes_now
+from arachne_time import now as _arachne_now
 
 logger = logging.getLogger(__name__)
 
@@ -36,11 +36,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from cron.jobs import get_due_jobs, mark_job_run, save_job_output
 
-# Resolve Hermes home directory (respects ARACHNE_HOME override)
-_hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+# Resolve Arachne home directory (respects ARACHNE_HOME override)
+_arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
 
 # File-based lock prevents concurrent ticks from gateway + daemon + systemd timer
-_LOCK_DIR = _hermes_home / "cron"
+_LOCK_DIR = _arachne_home / "cron"
 _LOCK_FILE = _LOCK_DIR / ".tick.lock"
 
 
@@ -87,7 +87,7 @@ def _deliver_result(job: dict, content: str) -> None:
             # Fall back to home channel
             chat_id = os.getenv(f"{platform_name.upper()}_HOME_CHANNEL", "")
             if not chat_id:
-                logger.warning("Job '%s' deliver=%s but no chat_id or home channel. Set via: hermes config set %s_HOME_CHANNEL <channel_id>", job["id"], deliver, platform_name.upper())
+                logger.warning("Job '%s' deliver=%s but no chat_id or home channel. Set via: arachne config set %s_HOME_CHANNEL <channel_id>", job["id"], deliver, platform_name.upper())
                 return
 
     from tools.send_message_tool import _send_to_platform
@@ -170,9 +170,9 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
         # changes take effect without a gateway restart.
         from dotenv import load_dotenv
         try:
-            load_dotenv(str(_hermes_home / ".env"), override=True, encoding="utf-8")
+            load_dotenv(str(_arachne_home / ".env"), override=True, encoding="utf-8")
         except UnicodeDecodeError:
-            load_dotenv(str(_hermes_home / ".env"), override=True, encoding="latin-1")
+            load_dotenv(str(_arachne_home / ".env"), override=True, encoding="latin-1")
 
         model = os.getenv("ARACHNE_MODEL") or os.getenv("LLM_MODEL") or "anthropic/claude-opus-4.6"
 
@@ -180,7 +180,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
         _cfg = {}
         try:
             import yaml
-            _cfg_path = str(_hermes_home / "config.yaml")
+            _cfg_path = str(_arachne_home / "config.yaml")
             if os.path.exists(_cfg_path):
                 with open(_cfg_path) as _f:
                     _cfg = yaml.safe_load(_f) or {}
@@ -211,7 +211,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
             import json as _json
             pfpath = Path(prefill_file).expanduser()
             if not pfpath.is_absolute():
-                pfpath = _hermes_home / pfpath
+                pfpath = _arachne_home / pfpath
             if pfpath.exists():
                 try:
                     with open(pfpath, "r", encoding="utf-8") as _pf:
@@ -253,7 +253,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
             providers_order=pr.get("order"),
             provider_sort=pr.get("sort"),
             quiet_mode=True,
-            session_id=f"cron_{job_id}_{_hermes_now().strftime('%Y%m%d_%H%M%S')}"
+            session_id=f"cron_{job_id}_{_arachne_now().strftime('%Y%m%d_%H%M%S')}"
         )
         
         result = agent.run_conversation(prompt)
@@ -265,7 +265,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
         output = f"""# Cron Job: {job_name}
 
 **Job ID:** {job_id}
-**Run Time:** {_hermes_now().strftime('%Y-%m-%d %H:%M:%S')}
+**Run Time:** {_arachne_now().strftime('%Y-%m-%d %H:%M:%S')}
 **Schedule:** {job.get('schedule_display', 'N/A')}
 
 ## Prompt
@@ -287,7 +287,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
         output = f"""# Cron Job: {job_name} (FAILED)
 
 **Job ID:** {job_id}
-**Run Time:** {_hermes_now().strftime('%Y-%m-%d %H:%M:%S')}
+**Run Time:** {_arachne_now().strftime('%Y-%m-%d %H:%M:%S')}
 **Schedule:** {job.get('schedule_display', 'N/A')}
 
 ## Prompt
@@ -343,11 +343,11 @@ def tick(verbose: bool = True) -> int:
         due_jobs = get_due_jobs()
 
         if verbose and not due_jobs:
-            logger.info("%s - No jobs due", _hermes_now().strftime('%H:%M:%S'))
+            logger.info("%s - No jobs due", _arachne_now().strftime('%H:%M:%S'))
             return 0
 
         if verbose:
-            logger.info("%s - %s job(s) due", _hermes_now().strftime('%H:%M:%S'), len(due_jobs))
+            logger.info("%s - %s job(s) due", _arachne_now().strftime('%H:%M:%S'), len(due_jobs))
 
         executed = 0
         for job in due_jobs:

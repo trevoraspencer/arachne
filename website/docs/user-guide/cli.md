@@ -1,45 +1,45 @@
 ---
 sidebar_position: 1
 title: "CLI Interface"
-description: "Master the Hermes Agent terminal interface — commands, keybindings, personalities, and more"
+description: "Master the Arachne Agent terminal interface — commands, keybindings, personalities, and more"
 ---
 
 # CLI Interface
 
-Hermes Agent's CLI is a full terminal user interface (TUI) — not a web UI. It features multiline editing, slash-command autocomplete, conversation history, interrupt-and-redirect, and streaming tool output. Built for people who live in the terminal.
+Arachne Agent's CLI is a full terminal user interface (TUI) — not a web UI. It features multiline editing, slash-command autocomplete, conversation history, interrupt-and-redirect, and streaming tool output. Built for people who live in the terminal.
 
 ## Running the CLI
 
 ```bash
 # Start an interactive session (default)
-hermes
+arachne
 
 # Single query mode (non-interactive)
-hermes chat -q "Hello"
+arachne chat -q "Hello"
 
 # With a specific model
-hermes chat --model "anthropic/claude-sonnet-4"
+arachne chat --model "anthropic/claude-sonnet-4"
 
 # With a specific provider
-hermes chat --provider nous        # Use Nous Portal
-hermes chat --provider openrouter  # Force OpenRouter
+arachne chat --provider nous        # Use Nous Portal
+arachne chat --provider openrouter  # Force OpenRouter
 
 # With specific toolsets
-hermes chat --toolsets "web,terminal,skills"
+arachne chat --toolsets "web,terminal,skills"
 
 # Resume previous sessions
-hermes --continue             # Resume the most recent CLI session (-c)
-hermes --resume <session_id>  # Resume a specific session by ID (-r)
+arachne --continue             # Resume the most recent CLI session (-c)
+arachne --resume <session_id>  # Resume a specific session by ID (-r)
 
 # Verbose mode (debug output)
-hermes chat --verbose
+arachne chat --verbose
 ```
 
 ## Interface Layout
 
 ```text
 ┌─────────────────────────────────────────────────┐
-│  HERMES-AGENT ASCII Logo                        │
+│  ARACHNE-AGENT ASCII Logo                        │
 │  ┌─────────────┐ ┌────────────────────────────┐ │
 │  │  Caduceus   │ │ Model: claude-sonnet-4     │ │
 │  │  ASCII Art  │ │ Terminal: local            │ │
@@ -154,7 +154,7 @@ agent:
   personalities:
     helpful: "You are a helpful, friendly AI assistant."
     kawaii: "You are a kawaii assistant! Use cute expressions..."
-    pirate: "Arrr! Ye be talkin' to Captain Hermes..."
+    pirate: "Arrr! Ye be talkin' to Captain Arachne..."
     # Add your own!
 ```
 
@@ -212,7 +212,7 @@ When you exit a CLI session, a resume command is printed:
 
 ```
 Resume this session with:
-  hermes --resume 20260225_143052_a1b2c3
+  arachne --resume 20260225_143052_a1b2c3
 
 Session:        20260225_143052_a1b2c3
 Duration:       12m 34s
@@ -222,15 +222,15 @@ Messages:       28 (5 user, 18 tool calls)
 Resume options:
 
 ```bash
-hermes --continue                          # Resume the most recent CLI session
-hermes -c                                  # Short form
-hermes --resume 20260225_143052_a1b2c3     # Resume a specific session by ID
-hermes -r 20260225_143052_a1b2c3           # Short form
+arachne --continue                          # Resume the most recent CLI session
+arachne -c                                  # Short form
+arachne --resume 20260225_143052_a1b2c3     # Resume a specific session by ID
+arachne -r 20260225_143052_a1b2c3           # Short form
 ```
 
 Resuming restores the full conversation history from SQLite. The agent sees all previous messages, tool calls, and responses — just as if you never left.
 
-Use `hermes sessions list` to browse past sessions.
+Use `arachne sessions list` to browse past sessions.
 
 ### Session Logging
 
@@ -266,5 +266,5 @@ By default, the CLI runs in quiet mode which:
 
 For debug output:
 ```bash
-hermes chat --verbose
+arachne chat --verbose
 ```

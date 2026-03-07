@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
 """
-Hermes CLI - Main entry point.
+Arachne CLI - Main entry point.
 
 Usage:
-    hermes                     # Interactive chat (default)
-    hermes chat                # Interactive chat
-    hermes gateway             # Run gateway in foreground
-    hermes gateway start       # Start gateway as service
-    hermes gateway stop        # Stop gateway service
-    hermes gateway status      # Show gateway status
-    hermes gateway install     # Install gateway service
-    hermes gateway uninstall   # Uninstall gateway service
-    hermes setup               # Interactive setup wizard
-    hermes logout              # Clear stored authentication
-    hermes status              # Show status of all components
-    hermes cron                # Manage cron jobs
-    hermes cron list           # List cron jobs
-    hermes cron status         # Check if cron scheduler is running
-    hermes doctor              # Check configuration and dependencies
-    hermes version             # Show version
-    hermes update              # Update to latest version
-    hermes uninstall           # Uninstall Hermes Agent
+    arachne                     # Interactive chat (default)
+    arachne chat                # Interactive chat
+    arachne gateway             # Run gateway in foreground
+    arachne gateway start       # Start gateway as service
+    arachne gateway stop        # Stop gateway service
+    arachne gateway status      # Show gateway status
+    arachne gateway install     # Install gateway service
+    arachne gateway uninstall   # Uninstall gateway service
+    arachne setup               # Interactive setup wizard
+    arachne logout              # Clear stored authentication
+    arachne status              # Show status of all components
+    arachne cron                # Manage cron jobs
+    arachne cron list           # List cron jobs
+    arachne cron status         # Check if cron scheduler is running
+    arachne doctor              # Check configuration and dependencies
+    arachne version             # Show version
+    arachne update              # Update to latest version
+    arachne uninstall           # Uninstall Arachne Agent
 """
 
 import argparse
@@ -35,7 +35,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 # Load .env from ~/.arachne/.env first, then project root as dev fallback
 from dotenv import load_dotenv
-from arachne_cli.config import get_env_path, get_hermes_home
+from arachne_cli.config import get_env_path, get_arachne_home
 _user_env = get_env_path()
 if _user_env.exists():
     try:
@@ -45,7 +45,7 @@ if _user_env.exists():
 load_dotenv(dotenv_path=PROJECT_ROOT / '.env', override=False)
 
 # Point mini-swe-agent at ~/.arachne/ so it shares our config
-os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(get_hermes_home()))
+os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(get_arachne_home()))
 os.environ.setdefault("MSWEA_SILENT_STARTUP", "1")
 
 import logging
@@ -58,7 +58,7 @@ logger = logging.getLogger(__name__)
 
 def _has_any_provider_configured() -> bool:
     """Check if at least one inference provider is usable."""
-    from arachne_cli.config import get_env_path, get_hermes_home
+    from arachne_cli.config import get_env_path, get_arachne_home
     from arachne_cli.auth import get_auth_status
 
     # Check env vars (may be set by .env or shell).
@@ -90,7 +90,7 @@ def _has_any_provider_configured() -> bool:
             pass
 
     # Check for Nous Portal OAuth credentials
-    auth_file = get_hermes_home() / "auth.json"
+    auth_file = get_arachne_home() / "auth.json"
     if auth_file.exists():
         try:
             import json
@@ -134,9 +134,9 @@ def cmd_chat(args):
     # First-run guard: check if any provider is configured before launching
     if not _has_any_provider_configured():
         print()
-        print("It looks like Hermes isn't configured yet -- no API keys or providers found.")
+        print("It looks like Arachne isn't configured yet -- no API keys or providers found.")
         print()
-        print("  Run:  hermes setup")
+        print("  Run:  arachne setup")
         print()
         try:
             reply = input("Run setup now? [Y/n] ").strip().lower()
@@ -146,7 +146,7 @@ def cmd_chat(args):
             cmd_setup(args)
             return
         print()
-        print("You can run 'hermes setup' at any time to configure.")
+        print("You can run 'arachne setup' at any time to configure.")
         sys.exit(1)
 
     # Sync bundled skills on every CLI launch (fast -- skips unchanged skills)
@@ -195,7 +195,7 @@ def cmd_whatsapp(args):
     current_mode = get_env_value("WHATSAPP_MODE") or ""
     if not current_mode:
         print()
-        print("How will you use WhatsApp with Hermes?")
+        print("How will you use WhatsApp with Arachne?")
         print()
         print("  1. Separate bot number (recommended)")
         print("     People message the bot's number directly — cleanest experience.")
@@ -301,7 +301,7 @@ def cmd_whatsapp(args):
         print("✓ Bridge dependencies already installed")
 
     # ── Step 5: Check for existing session ───────────────────────────────
-    session_dir = Path.home() / ".hermes" / "whatsapp" / "session"
+    session_dir = Path.home() / ".arachne" / "whatsapp" / "session"
     session_dir.mkdir(parents=True, exist_ok=True)
 
     if (session_dir / "creds.json").exists():
@@ -317,7 +317,7 @@ def cmd_whatsapp(args):
             print("  ✓ Session cleared")
         else:
             print("\n✓ WhatsApp is configured and paired!")
-            print("  Start the gateway with: hermes gateway")
+            print("  Start the gateway with: arachne gateway")
             return
 
     # ── Step 6: QR code pairing ──────────────────────────────────────────
@@ -348,23 +348,23 @@ def cmd_whatsapp(args):
         print()
         if wa_mode == "bot":
             print("  Next steps:")
-            print("    1. Start the gateway:  hermes gateway")
+            print("    1. Start the gateway:  arachne gateway")
             print("    2. Send a message to the bot's WhatsApp number")
             print("    3. The agent will reply automatically")
             print()
-            print("  Tip: Agent responses are prefixed with '⚕ Hermes Agent'")
+            print("  Tip: Agent responses are prefixed with '⚕ Arachne Agent'")
         else:
             print("  Next steps:")
-            print("    1. Start the gateway:  hermes gateway")
+            print("    1. Start the gateway:  arachne gateway")
             print("    2. Open WhatsApp → Message Yourself")
             print("    3. Type a message — the agent will reply")
             print()
-            print("  Tip: Agent responses are prefixed with '⚕ Hermes Agent'")
+            print("  Tip: Agent responses are prefixed with '⚕ Arachne Agent'")
             print("  so you can tell them apart from your own messages.")
         print()
-        print("  Or install as a service: hermes gateway install")
+        print("  Or install as a service: arachne gateway install")
     else:
-        print("⚠ Pairing may not have completed. Run 'hermes whatsapp' to try again.")
+        print("⚠ Pairing may not have completed. Run 'arachne whatsapp' to try again.")
 
 
 def cmd_setup(args):
@@ -737,7 +737,7 @@ def _model_flow_custom(config):
     else:
         if base_url or api_key:
             deactivate_provider()
-        print("Endpoint saved. Use `/model` in chat or `hermes model` to set a model.")
+        print("Endpoint saved. Use `/model` in chat or `arachne model` to set a model.")
 
 
 # Curated model lists for direct API-key providers
@@ -852,7 +852,7 @@ def _model_flow_api_key_provider(config, provider_id, current_model=""):
 
 
 def cmd_login(args):
-    """Authenticate Hermes CLI with a provider."""
+    """Authenticate Arachne CLI with a provider."""
     from arachne_cli.auth import login_command
     login_command(args)
 
@@ -889,7 +889,7 @@ def cmd_config(args):
 
 def cmd_version(args):
     """Show version."""
-    print(f"Hermes Agent v{__version__}")
+    print(f"Arachne Agent v{__version__}")
     print(f"Project: {PROJECT_ROOT}")
     
     # Show Python version
@@ -904,13 +904,13 @@ def cmd_version(args):
 
 
 def cmd_uninstall(args):
-    """Uninstall Hermes Agent."""
+    """Uninstall Arachne Agent."""
     from arachne_cli.uninstall import run_uninstall
     run_uninstall(args)
 
 
 def _update_via_zip(args):
-    """Update Hermes Agent by downloading a ZIP archive.
+    """Update Arachne Agent by downloading a ZIP archive.
     
     Used on Windows when git file I/O is broken (antivirus, NTFS filter 
     drivers causing 'Invalid argument' errors on file creation).
@@ -925,7 +925,7 @@ def _update_via_zip(args):
     
     print("→ Downloading latest version...")
     try:
-        tmp_dir = tempfile.mkdtemp(prefix="hermes-update-")
+        tmp_dir = tempfile.mkdtemp(prefix="arachne-update-")
         zip_path = os.path.join(tmp_dir, f"arachne-{branch}.zip")
         urlretrieve(zip_url, zip_path)
         
@@ -1006,11 +1006,11 @@ def _update_via_zip(args):
 
 
 def cmd_update(args):
-    """Update Hermes Agent to the latest version."""
+    """Update Arachne Agent to the latest version."""
     import subprocess
     import shutil
     
-    print("⚕ Updating Hermes Agent...")
+    print("⚕ Updating Arachne Agent...")
     print()
     
     # Try git-based update first, fall back to ZIP download on Windows
@@ -1155,7 +1155,7 @@ def cmd_update(args):
                     print("✓ Configuration updated!")
             else:
                 print()
-                print("Skipped. Run 'hermes config migrate' later to configure.")
+                print("Skipped. Run 'arachne config migrate' later to configure.")
         else:
             print("  ✓ Configuration is up to date")
         
@@ -1165,27 +1165,27 @@ def cmd_update(args):
         # Auto-restart gateway if it's running as a systemd service
         try:
             check = subprocess.run(
-                ["systemctl", "--user", "is-active", "hermes-gateway"],
+                ["systemctl", "--user", "is-active", "arachne-gateway"],
                 capture_output=True, text=True, timeout=5,
             )
             if check.stdout.strip() == "active":
                 print()
                 print("→ Gateway service is running — restarting to pick up changes...")
                 restart = subprocess.run(
-                    ["systemctl", "--user", "restart", "hermes-gateway"],
+                    ["systemctl", "--user", "restart", "arachne-gateway"],
                     capture_output=True, text=True, timeout=15,
                 )
                 if restart.returncode == 0:
                     print("✓ Gateway restarted.")
                 else:
                     print(f"⚠ Gateway restart failed: {restart.stderr.strip()}")
-                    print("  Try manually: hermes gateway restart")
+                    print("  Try manually: arachne gateway restart")
         except (FileNotFoundError, subprocess.TimeoutExpired):
             pass  # No systemd (macOS, WSL1, etc.) — skip silently
         
         print()
         print("Tip: You can now select a provider and model:")
-        print("  hermes model              # Select provider and model")
+        print("  arachne model              # Select provider and model")
         
     except subprocess.CalledProcessError as e:
         if sys.platform == "win32":
@@ -1199,30 +1199,30 @@ def cmd_update(args):
 
 
 def main():
-    """Main entry point for hermes CLI."""
+    """Main entry point for arachne CLI."""
     parser = argparse.ArgumentParser(
-        prog="hermes",
-        description="Hermes Agent - AI assistant with tool-calling capabilities",
+        prog="arachne",
+        description="Arachne Agent - AI assistant with tool-calling capabilities",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-    hermes                        Start interactive chat
-    hermes chat -q "Hello"        Single query mode
-    hermes --continue             Resume the most recent session
-    hermes --resume <session_id>  Resume a specific session
-    hermes setup                  Run setup wizard
-    hermes logout                 Clear stored authentication
-    hermes model                  Select default model
-    hermes config                 View configuration
-    hermes config edit            Edit config in $EDITOR
-    hermes config set model gpt-4 Set a config value
-    hermes gateway                Run messaging gateway
-    hermes gateway install        Install as system service
-    hermes sessions list          List past sessions
-    hermes update                 Update to latest version
+    arachne                        Start interactive chat
+    arachne chat -q "Hello"        Single query mode
+    arachne --continue             Resume the most recent session
+    arachne --resume <session_id>  Resume a specific session
+    arachne setup                  Run setup wizard
+    arachne logout                 Clear stored authentication
+    arachne model                  Select default model
+    arachne config                 View configuration
+    arachne config edit            Edit config in $EDITOR
+    arachne config set model gpt-4 Set a config value
+    arachne gateway                Run messaging gateway
+    arachne gateway install        Install as system service
+    arachne sessions list          List past sessions
+    arachne update                 Update to latest version
 
 For more help on a command:
-    hermes <command> --help
+    arachne <command> --help
 """
     )
     
@@ -1235,7 +1235,7 @@ For more help on a command:
         "--resume", "-r",
         metavar="SESSION_ID",
         default=None,
-        help="Resume a previous session by ID (shortcut for: hermes chat --resume ID)"
+        help="Resume a previous session by ID (shortcut for: arachne chat --resume ID)"
     )
     parser.add_argument(
         "--continue", "-c",
@@ -1253,7 +1253,7 @@ For more help on a command:
     chat_parser = subparsers.add_parser(
         "chat",
         help="Interactive chat with the agent",
-        description="Start an interactive chat session with Hermes Agent"
+        description="Start an interactive chat session with Arachne Agent"
     )
     chat_parser.add_argument(
         "-q", "--query",
@@ -1347,8 +1347,8 @@ For more help on a command:
     setup_parser = subparsers.add_parser(
         "setup",
         help="Interactive setup wizard",
-        description="Configure Hermes Agent with an interactive wizard. "
-                    "Run a specific section: hermes setup model|terminal|gateway|tools|agent"
+        description="Configure Arachne Agent with an interactive wizard. "
+                    "Run a specific section: arachne setup model|terminal|gateway|tools|agent"
     )
     setup_parser.add_argument(
         "section",
@@ -1385,7 +1385,7 @@ For more help on a command:
     login_parser = subparsers.add_parser(
         "login",
         help="Authenticate with an inference provider",
-        description="Run OAuth device authorization flow for Hermes CLI"
+        description="Run OAuth device authorization flow for Arachne CLI"
     )
     login_parser.add_argument(
         "--provider",
@@ -1404,7 +1404,7 @@ For more help on a command:
     login_parser.add_argument(
         "--client-id",
         default=None,
-        help="OAuth client id to use (default: hermes-cli)"
+        help="OAuth client id to use (default: arachne-cli)"
     )
     login_parser.add_argument(
         "--scope",
@@ -1455,7 +1455,7 @@ For more help on a command:
     status_parser = subparsers.add_parser(
         "status",
         help="Show status of all components",
-        description="Display status of Hermes Agent components"
+        description="Display status of Arachne Agent components"
     )
     status_parser.add_argument(
         "--all",
@@ -1497,7 +1497,7 @@ For more help on a command:
     doctor_parser = subparsers.add_parser(
         "doctor",
         help="Check configuration and dependencies",
-        description="Diagnose issues with Hermes Agent setup"
+        description="Diagnose issues with Arachne Agent setup"
     )
     doctor_parser.add_argument(
         "--fix",
@@ -1512,7 +1512,7 @@ For more help on a command:
     config_parser = subparsers.add_parser(
         "config",
         help="View and edit configuration",
-        description="Manage Hermes Agent configuration"
+        description="Manage Arachne Agent configuration"
     )
     config_subparsers = config_parser.add_subparsers(dest="config_command")
     
@@ -1805,7 +1805,7 @@ For more help on a command:
     # =========================================================================
     update_parser = subparsers.add_parser(
         "update",
-        help="Update Hermes Agent to the latest version",
+        help="Update Arachne Agent to the latest version",
         description="Pull the latest changes from git and reinstall dependencies"
     )
     update_parser.set_defaults(func=cmd_update)
@@ -1815,8 +1815,8 @@ For more help on a command:
     # =========================================================================
     uninstall_parser = subparsers.add_parser(
         "uninstall",
-        help="Uninstall Hermes Agent",
-        description="Remove Hermes Agent from your system. Can keep configs/data for reinstall."
+        help="Uninstall Arachne Agent",
+        description="Remove Arachne Agent from your system. Can keep configs/data for reinstall."
     )
     uninstall_parser.add_argument(
         "--full",

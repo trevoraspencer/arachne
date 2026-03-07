@@ -1,5 +1,5 @@
 """
-HermesSweEnv -- SWE-Bench Style Environment with Modal Sandboxes
+ArachneSweEnv -- SWE-Bench Style Environment with Modal Sandboxes
 
 A concrete environment for software engineering tasks where the model writes code
 and the reward function runs tests to verify correctness. Uses Modal terminal
@@ -11,9 +11,9 @@ the model's tool calls is preserved for verification.
 
 Usage:
     # Phase 1: OpenAI server type
-    vllm serve YourModel --tool-parser hermes
+    vllm serve YourModel --tool-parser arachne
     run-api
-    python environments/hermes_swe_env.py serve \\
+    python environments/arachne_swe_env.py serve \\
         --openai.base_url http://localhost:8000/v1 \\
         --openai.model_name YourModel \\
         --openai.server_type openai \\
@@ -21,11 +21,11 @@ Usage:
         --env.terminal_backend modal
 
     # Phase 2: VLLM server type (full RL training)
-    python environments/hermes_swe_env.py serve \\
+    python environments/arachne_swe_env.py serve \\
         --openai.base_url http://localhost:8000/v1 \\
         --openai.model_name YourModel \\
         --openai.server_type vllm \\
-        --env.tool_call_parser hermes \\
+        --env.tool_call_parser arachne \\
         --env.terminal_backend modal
 """
 
@@ -47,19 +47,19 @@ from atroposlib.envs.server_handling.server_manager import APIServerConfig
 from atroposlib.type_definitions import Item
 
 from environments.agent_loop import AgentResult
-from environments.hermes_base_env import ArachneAgentBaseEnv, ArachneAgentEnvConfig
+from environments.arachne_base_env import ArachneAgentBaseEnv, ArachneAgentEnvConfig
 from environments.tool_context import ToolContext
 
 logger = logging.getLogger(__name__)
 
 
-class HermesSweEnvConfig(ArachneAgentEnvConfig):
+class ArachneSweEnvConfig(ArachneAgentEnvConfig):
     """Config with defaults for SWE-bench style tasks."""
 
     pass  # Inherits all fields, overrides defaults in config_init
 
 
-class HermesSweEnv(ArachneAgentBaseEnv):
+class ArachneSweEnv(ArachneAgentBaseEnv):
     """
     SWE-bench style environment using Modal terminal backend.
 
@@ -70,17 +70,17 @@ class HermesSweEnv(ArachneAgentBaseEnv):
     and customize format_prompt() and compute_reward() as needed.
     """
 
-    name = "hermes-swe"
-    env_config_cls = HermesSweEnvConfig
+    name = "arachne-swe"
+    env_config_cls = ArachneSweEnvConfig
 
     @classmethod
-    def config_init(cls) -> Tuple[HermesSweEnvConfig, List[APIServerConfig]]:
+    def config_init(cls) -> Tuple[ArachneSweEnvConfig, List[APIServerConfig]]:
         """
         Default configuration for the SWE environment.
 
         Uses Modal terminal backend for cloud isolation and terminal + file + web toolsets.
         """
-        env_config = HermesSweEnvConfig(
+        env_config = ArachneSweEnvConfig(
             # Toolsets: terminal for running code, file for reading/writing, web for docs
             enabled_toolsets=["terminal", "file", "web"],
             disabled_toolsets=None,
@@ -103,11 +103,11 @@ class HermesSweEnv(ArachneAgentBaseEnv):
             # Atropos settings
             group_size=4,
             tokenizer_name="NousResearch/DeepHermes-3-Llama-3-3B-Preview",
-            tool_call_parser="hermes",
+            tool_call_parser="arachne",
             steps_per_eval=50,
             total_steps=500,
             use_wandb=True,
-            wandb_name="hermes-swe",
+            wandb_name="arachne-swe",
         )
 
         server_configs = [
@@ -226,4 +226,4 @@ class HermesSweEnv(ArachneAgentBaseEnv):
 
 
 if __name__ == "__main__":
-    HermesSweEnv.cli()
+    ArachneSweEnv.cli()

@@ -299,7 +299,7 @@ class TestTeePattern:
         assert dangerous is True
         assert key is not None
 
-    def test_tee_hermes_env(self):
+    def test_tee_arachne_env(self):
         dangerous, key, desc = detect_dangerous_command("echo x | tee ~/.arachne/.env")
         assert dangerous is True
         assert key is not None

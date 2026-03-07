@@ -2,11 +2,11 @@
 name: ascii-art
 description: Generate ASCII art using pyfiglet (571 fonts), cowsay, boxes, toilet, image-to-ascii conversion, and search curated art from emojicombos.com and asciiart.eu (11,000+ artworks). Falls back to LLM-generated art.
 version: 3.1.0
-author: 0xbyt4, Hermes Agent
+author: 0xbyt4, Arachne Agent
 license: MIT
 dependencies: []
 metadata:
-  hermes:
+  arachne:
     tags: [ASCII, Art, Banners, Creative, Unicode, Text-Art, pyfiglet, figlet, cowsay, boxes]
     related_skills: [excalidraw]
 
@@ -127,7 +127,7 @@ boxes -l                                       # List all 70+ designs
 ### Combine with pyfiglet
 
 ```bash
-python3 -m pyfiglet "HERMES" -f slant | boxes -d stone
+python3 -m pyfiglet "ARACHNE" -f slant | boxes -d stone
 ```
 
 ## Tool 4: TOIlet (Colored Text Art)

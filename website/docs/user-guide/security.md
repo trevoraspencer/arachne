@@ -6,7 +6,7 @@ description: "Security model, dangerous command approval, user authorization, co
 
 # Security
 
-Hermes Agent is designed with a defense-in-depth security model. This page covers every security boundary — from command approval to container isolation to user authorization on messaging platforms.
+Arachne Agent is designed with a defense-in-depth security model. This page covers every security boundary — from command approval to container isolation to user authorization on messaging platforms.
 
 ## Overview
 
@@ -20,7 +20,7 @@ The security model has five layers:
 
 ## Dangerous Command Approval
 
-Before executing any command, Hermes checks it against a curated list of dangerous patterns. If a match is found, the user must explicitly approve it.
+Before executing any command, Arachne checks it against a curated list of dangerous patterns. If a match is found, the user must explicitly approve it.
 
 ### What Triggers Approval
 
@@ -91,12 +91,12 @@ command_allowlist:
 These patterns are loaded at startup and silently approved in all future sessions.
 
 :::tip
-Use `hermes config edit` to review or remove patterns from your permanent allowlist.
+Use `arachne config edit` to review or remove patterns from your permanent allowlist.
 :::
 
 ## User Authorization (Gateway)
 
-When running the messaging gateway, Hermes controls who can interact with the bot through a layered authorization system.
+When running the messaging gateway, Arachne controls who can interact with the bot through a layered authorization system.
 
 ### Authorization Check Order
 
@@ -142,13 +142,13 @@ or configure platform allowlists (e.g., TELEGRAM_ALLOWED_USERS=your_id).
 
 ### DM Pairing System
 
-For more flexible authorization, Hermes includes a code-based pairing system. Instead of requiring user IDs upfront, unknown users receive a one-time pairing code that the bot owner approves via the CLI.
+For more flexible authorization, Arachne includes a code-based pairing system. Instead of requiring user IDs upfront, unknown users receive a one-time pairing code that the bot owner approves via the CLI.
 
 **How it works:**
 
 1. An unknown user sends a DM to the bot
 2. The bot replies with an 8-character pairing code
-3. The bot owner runs `hermes pairing approve <platform> <code>` on the CLI
+3. The bot owner runs `arachne pairing approve <platform> <code>` on the CLI
 4. The user is permanently approved for that platform
 
 **Security features** (based on OWASP + NIST SP 800-63-4 guidance):
@@ -168,16 +168,16 @@ For more flexible authorization, Hermes includes a code-based pairing system. In
 
 ```bash
 # List pending and approved users
-hermes pairing list
+arachne pairing list
 
 # Approve a pairing code
-hermes pairing approve telegram ABC12DEF
+arachne pairing approve telegram ABC12DEF
 
 # Revoke a user's access
-hermes pairing revoke telegram 123456789
+arachne pairing revoke telegram 123456789
 
 # Clear all pending codes
-hermes pairing clear-pending
+arachne pairing clear-pending
 ```
 
 **Storage:** Pairing data is stored in `~/.arachne/pairing/` with per-platform JSON files:
@@ -187,7 +187,7 @@ hermes pairing clear-pending
 
 ## Container Isolation
 
-When using the `docker` terminal backend, Hermes applies strict security hardening to every container.
+When using the `docker` terminal backend, Arachne applies strict security hardening to every container.
 
 ### Docker Security Flags
 
@@ -301,7 +301,7 @@ Blocked files show a warning:
 7. **Set `MESSAGING_CWD`** — don't let the agent operate from sensitive directories
 8. **Run as non-root** — never run the gateway as root
 9. **Monitor logs** — check `~/.arachne/logs/` for unauthorized access attempts
-10. **Keep updated** — run `hermes update` regularly for security patches
+10. **Keep updated** — run `arachne update` regularly for security patches
 
 ### Securing API Keys
 
@@ -321,7 +321,7 @@ For maximum security, run the gateway on a separate machine or VM:
 terminal:
   backend: ssh
   ssh_host: "agent-worker.local"
-  ssh_user: "hermes"
+  ssh_user: "arachne"
   ssh_key: "~/.ssh/arachne_key"
 ```
 

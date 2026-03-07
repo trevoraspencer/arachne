@@ -1,5 +1,5 @@
 """
-Interactive setup wizard for Hermes Agent.
+Interactive setup wizard for Arachne Agent.
 
 Modular wizard with independently-runnable sections:
   1. Model & Provider — choose your AI provider and model
@@ -23,9 +23,9 @@ PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
 # Import config helpers
 from arachne_cli.config import (
-    get_hermes_home, get_config_path, get_env_path,
+    get_arachne_home, get_config_path, get_env_path,
     load_config, save_config, save_env_value, get_env_value,
-    ensure_hermes_home, DEFAULT_CONFIG
+    ensure_arachne_home, DEFAULT_CONFIG
 )
 
 from arachne_cli.colors import Colors, color
@@ -281,10 +281,10 @@ def _prompt_api_key(var: dict):
         save_env_value(var["name"], value)
         print_success(f"  ✓ Saved")
     else:
-        print_warning(f"  Skipped (configure later with 'hermes setup')")
+        print_warning(f"  Skipped (configure later with 'arachne setup')")
 
 
-def _print_setup_summary(config: dict, hermes_home):
+def _print_setup_summary(config: dict, arachne_home):
     """Print the setup completion summary."""
     # Tool availability summary
     print()
@@ -375,7 +375,7 @@ def _print_setup_summary(config: dict, hermes_home):
     
     disabled_tools = [(name, var) for name, avail, var in tool_status if not avail]
     if disabled_tools:
-        print_warning("Some tools are disabled. Run 'hermes setup tools' to configure them,")
+        print_warning("Some tools are disabled. Run 'arachne setup tools' to configure them,")
         print_warning("or edit ~/.arachne/.env directly to add the missing API keys.")
         print()
     
@@ -391,22 +391,22 @@ def _print_setup_summary(config: dict, hermes_home):
     print()
     print(f"   {color('Settings:', Colors.YELLOW)}  {get_config_path()}")
     print(f"   {color('API Keys:', Colors.YELLOW)}  {get_env_path()}")
-    print(f"   {color('Data:', Colors.YELLOW)}      {hermes_home}/cron/, sessions/, logs/")
+    print(f"   {color('Data:', Colors.YELLOW)}      {arachne_home}/cron/, sessions/, logs/")
     print()
     
     print(color("─" * 60, Colors.DIM))
     print()
     print(color("📝 To edit your configuration:", Colors.CYAN, Colors.BOLD))
     print()
-    print(f"   {color('hermes setup', Colors.GREEN)}          Re-run the full wizard")
-    print(f"   {color('hermes setup model', Colors.GREEN)}    Change model/provider")
-    print(f"   {color('hermes setup terminal', Colors.GREEN)} Change terminal backend")
-    print(f"   {color('hermes setup gateway', Colors.GREEN)}  Configure messaging")
-    print(f"   {color('hermes setup tools', Colors.GREEN)}    Configure tool providers")
+    print(f"   {color('arachne setup', Colors.GREEN)}          Re-run the full wizard")
+    print(f"   {color('arachne setup model', Colors.GREEN)}    Change model/provider")
+    print(f"   {color('arachne setup terminal', Colors.GREEN)} Change terminal backend")
+    print(f"   {color('arachne setup gateway', Colors.GREEN)}  Configure messaging")
+    print(f"   {color('arachne setup tools', Colors.GREEN)}    Configure tool providers")
     print()
-    print(f"   {color('hermes config', Colors.GREEN)}         View current settings")
-    print(f"   {color('hermes config edit', Colors.GREEN)}    Open config in your editor")
-    print(f"   {color('hermes config set KEY VALUE', Colors.GREEN)}")
+    print(f"   {color('arachne config', Colors.GREEN)}         View current settings")
+    print(f"   {color('arachne config edit', Colors.GREEN)}    Open config in your editor")
+    print(f"   {color('arachne config set KEY VALUE', Colors.GREEN)}")
     print(f"                          Set a specific value")
     print()
     print(f"   Or edit the files directly:")
@@ -418,9 +418,9 @@ def _print_setup_summary(config: dict, hermes_home):
     print()
     print(color("🚀 Ready to go!", Colors.CYAN, Colors.BOLD))
     print()
-    print(f"   {color('hermes', Colors.GREEN)}              Start chatting")
-    print(f"   {color('hermes gateway', Colors.GREEN)}      Start messaging gateway")
-    print(f"   {color('hermes doctor', Colors.GREEN)}       Check for issues")
+    print(f"   {color('arachne', Colors.GREEN)}              Start chatting")
+    print(f"   {color('arachne gateway', Colors.GREEN)}      Start messaging gateway")
+    print(f"   {color('arachne doctor', Colors.GREEN)}       Check for issues")
     print()
 
 
@@ -466,7 +466,7 @@ def _prompt_container_resources(config: dict):
 
 
 # Tool categories and provider config are now in tools_config.py (shared
-# between `hermes tools` and `hermes setup tools`).
+# between `arachne tools` and `arachne setup tools`).
 
 
 # =============================================================================
@@ -532,7 +532,7 @@ def setup_model_provider(config: dict):
     default_provider = len(provider_choices) - 1 if has_any_provider else 2
     
     if not has_any_provider:
-        print_warning("An inference provider is required for Hermes to work.")
+        print_warning("An inference provider is required for Arachne to work.")
         print()
     
     provider_idx = prompt_choice("Select your inference provider:", provider_choices, default_provider)
@@ -574,11 +574,11 @@ def setup_model_provider(config: dict):
 
         except SystemExit:
             print_warning("Nous Portal login was cancelled or failed.")
-            print_info("You can try again later with: hermes model")
+            print_info("You can try again later with: arachne model")
             selected_provider = None
         except Exception as e:
             print_error(f"Login failed: {e}")
-            print_info("You can try again later with: hermes model")
+            print_info("You can try again later with: arachne model")
             selected_provider = None
 
     elif provider_idx == 1:  # OpenAI Codex
@@ -598,11 +598,11 @@ def setup_model_provider(config: dict):
             _update_config_for_provider("openai-codex", DEFAULT_CODEX_BASE_URL)
         except SystemExit:
             print_warning("OpenAI Codex login was cancelled or failed.")
-            print_info("You can try again later with: hermes model")
+            print_info("You can try again later with: arachne model")
             selected_provider = None
         except Exception as e:
             print_error(f"Login failed: {e}")
-            print_info("You can try again later with: hermes model")
+            print_info("You can try again later with: arachne model")
             selected_provider = None
 
     elif provider_idx == 2:  # OpenRouter
@@ -980,7 +980,7 @@ def setup_terminal_backend(config: dict):
     import shutil
 
     print_header("Terminal Backend")
-    print_info("Choose where Hermes runs shell commands and code.")
+    print_info("Choose where Arachne runs shell commands and code.")
     print_info("This affects tool execution, file access, and isolation.")
     print()
 
@@ -1029,7 +1029,7 @@ def setup_terminal_backend(config: dict):
         # CWD for messaging
         print()
         print_info("Working directory for messaging sessions:")
-        print_info("  When using Hermes via Telegram/Discord, this is where")
+        print_info("  When using Arachne via Telegram/Discord, this is where")
         print_info("  the agent starts. CLI mode always starts in the current directory.")
         current_cwd = config.get('terminal', {}).get('cwd', '')
         cwd = prompt("  Messaging working directory", current_cwd or str(Path.home()))
@@ -1392,7 +1392,7 @@ def setup_agent_settings(config: dict):
 def setup_gateway(config: dict):
     """Configure messaging platform integrations."""
     print_header("Messaging Platforms")
-    print_info("Connect to messaging platforms to chat with Hermes from anywhere.")
+    print_info("Connect to messaging platforms to chat with Arachne from anywhere.")
     print()
 
     # ── Telegram ──
@@ -1425,7 +1425,7 @@ def setup_gateway(config: dict):
             
             # Home channel setup with better guidance
             print()
-            print_info("📬 Home Channel: where Hermes delivers cron job results,")
+            print_info("📬 Home Channel: where Arachne delivers cron job results,")
             print_info("   cross-platform messages, and notifications.")
             print_info("   For Telegram DMs, this is your user ID (same as above).")
             
@@ -1488,7 +1488,7 @@ def setup_gateway(config: dict):
             
             # Home channel setup with better guidance
             print()
-            print_info("📬 Home Channel: where Hermes delivers cron job results,")
+            print_info("📬 Home Channel: where Arachne delivers cron job results,")
             print_info("   cross-platform messages, and notifications.")
             print_info("   To get a channel ID: right-click a channel → Copy Channel ID")
             print_info("   (requires Developer Mode in Discord settings)")
@@ -1546,12 +1546,12 @@ def setup_gateway(config: dict):
     existing_whatsapp = get_env_value('WHATSAPP_ENABLED')
     if not existing_whatsapp and prompt_yes_no("Set up WhatsApp?", False):
         print_info("WhatsApp connects via a built-in bridge (Baileys).")
-        print_info("Requires Node.js. Run 'hermes whatsapp' for guided setup.")
+        print_info("Requires Node.js. Run 'arachne whatsapp' for guided setup.")
         print()
         if prompt_yes_no("Enable WhatsApp now?", True):
             save_env_value("WHATSAPP_ENABLED", "true")
             print_success("WhatsApp enabled")
-            print_info("Run 'hermes whatsapp' to choose your mode (separate bot number")
+            print_info("Run 'arachne whatsapp' to choose your mode (separate bot number")
             print_info("or personal self-chat) and pair via QR code.")
     
     # ── Gateway Service Setup ──
@@ -1582,7 +1582,7 @@ def setup_gateway(config: dict):
             print_info("   messages can't be delivered to those platforms.")
             print_info("   Set one later with /set-home in your chat, or:")
             for plat in missing_home:
-                print_info(f"     hermes config set {plat.upper()}_HOME_CHANNEL <channel_id>")
+                print_info(f"     arachne config set {plat.upper()}_HOME_CHANNEL <channel_id>")
 
         # Offer to install the gateway as a system service
         import platform as _platform
@@ -1636,13 +1636,13 @@ def setup_gateway(config: dict):
                             print_error(f"  Start failed: {e}")
                 except Exception as e:
                     print_error(f"  Install failed: {e}")
-                    print_info("  You can try manually: hermes gateway install")
+                    print_info("  You can try manually: arachne gateway install")
             else:
-                print_info("  You can install later: hermes gateway install")
-                print_info("  Or run in foreground:  hermes gateway")
+                print_info("  You can install later: arachne gateway install")
+                print_info("  Or run in foreground:  arachne gateway")
         else:
             print_info("Start the gateway to bring your bots online:")
-            print_info("   hermes gateway              # Run in foreground")
+            print_info("   arachne gateway              # Run in foreground")
 
         print_info("━" * 50)
 
@@ -1654,7 +1654,7 @@ def setup_gateway(config: dict):
 def setup_tools(config: dict):
     """Configure tools — delegates to the unified tools_command() in tools_config.py.
     
-    Both `hermes setup tools` and `hermes tools` use the same flow:
+    Both `arachne setup tools` and `arachne tools` use the same flow:
     platform selection → toolset toggles → provider/API key configuration.
     """
     from arachne_cli.tools_config import tools_command
@@ -1678,17 +1678,17 @@ def run_setup_wizard(args):
     """Run the interactive setup wizard.
     
     Supports full, quick, and section-specific setup:
-      hermes setup           — full or quick (auto-detected)
-      hermes setup model     — just model/provider
-      hermes setup terminal  — just terminal backend
-      hermes setup gateway   — just messaging platforms
-      hermes setup tools     — just tool configuration
-      hermes setup agent     — just agent settings
+      arachne setup           — full or quick (auto-detected)
+      arachne setup model     — just model/provider
+      arachne setup terminal  — just terminal backend
+      arachne setup gateway   — just messaging platforms
+      arachne setup tools     — just tool configuration
+      arachne setup agent     — just agent settings
     """
-    ensure_hermes_home()
+    ensure_arachne_home()
     
     config = load_config()
-    hermes_home = get_hermes_home()
+    arachne_home = get_arachne_home()
     
     # Check if a specific section was requested
     section = getattr(args, 'section', None)
@@ -1697,7 +1697,7 @@ def run_setup_wizard(args):
             if key == section:
                 print()
                 print(color("┌─────────────────────────────────────────────────────────┐", Colors.MAGENTA))
-                print(color(f"│     ⚕ Hermes Setup — {label:<34s} │", Colors.MAGENTA))
+                print(color(f"│     ⚕ Arachne Setup — {label:<34s} │", Colors.MAGENTA))
                 print(color("└─────────────────────────────────────────────────────────┘", Colors.MAGENTA))
                 func(config)
                 save_config(config)
@@ -1720,9 +1720,9 @@ def run_setup_wizard(args):
     
     print()
     print(color("┌─────────────────────────────────────────────────────────┐", Colors.MAGENTA))
-    print(color("│             ⚕ Hermes Agent Setup Wizard                │", Colors.MAGENTA))
+    print(color("│             ⚕ Arachne Agent Setup Wizard                │", Colors.MAGENTA))
     print(color("├─────────────────────────────────────────────────────────┤", Colors.MAGENTA))
-    print(color("│  Let's configure your Hermes Agent installation.       │", Colors.MAGENTA))
+    print(color("│  Let's configure your Arachne Agent installation.       │", Colors.MAGENTA))
     print(color("│  Press Ctrl+C at any time to exit.                     │", Colors.MAGENTA))
     print(color("└─────────────────────────────────────────────────────────┘", Colors.MAGENTA))
     
@@ -1730,7 +1730,7 @@ def run_setup_wizard(args):
         # ── Returning User Menu ──
         print()
         print_header("Welcome Back!")
-        print_success("You already have Hermes configured.")
+        print_success("You already have Arachne configured.")
         print()
 
         menu_choices = [
@@ -1752,17 +1752,17 @@ def run_setup_wizard(args):
 
         if choice == 0:
             # Quick setup
-            _run_quick_setup(config, hermes_home)
+            _run_quick_setup(config, arachne_home)
             return
         elif choice == 1:
             # Full setup — fall through to run all sections
             pass
         elif choice in (2, 8):
             # Separator — treat as exit
-            print_info("Exiting. Run 'hermes setup' again when ready.")
+            print_info("Exiting. Run 'arachne setup' again when ready.")
             return
         elif choice == 9:
-            print_info("Exiting. Run 'hermes setup' again when ready.")
+            print_info("Exiting. Run 'arachne setup' again when ready.")
             return
         elif 3 <= choice <= 7:
             # Individual section
@@ -1770,7 +1770,7 @@ def run_setup_wizard(args):
             _, label, func = SETUP_SECTIONS[section_idx]
             func(config)
             save_config(config)
-            _print_setup_summary(config, hermes_home)
+            _print_setup_summary(config, arachne_home)
             return
     else:
         # ── First-Time Setup ──
@@ -1793,10 +1793,10 @@ def run_setup_wizard(args):
     print_header("Configuration Location")
     print_info(f"Config file:  {get_config_path()}")
     print_info(f"Secrets file: {get_env_path()}")
-    print_info(f"Data folder:  {hermes_home}")
+    print_info(f"Data folder:  {arachne_home}")
     print_info(f"Install dir:  {PROJECT_ROOT}")
     print()
-    print_info("You can edit these files directly or use 'hermes config edit'")
+    print_info("You can edit these files directly or use 'arachne config edit'")
 
     # Section 1: Model & Provider
     setup_model_provider(config)
@@ -1815,10 +1815,10 @@ def run_setup_wizard(args):
 
     # Save and show summary
     save_config(config)
-    _print_setup_summary(config, hermes_home)
+    _print_setup_summary(config, arachne_home)
 
 
-def _run_quick_setup(config: dict, hermes_home):
+def _run_quick_setup(config: dict, arachne_home):
     """Quick setup — only configure items that are missing."""
     from arachne_cli.config import (
         get_missing_env_vars, get_missing_config_fields,
@@ -1839,7 +1839,7 @@ def _run_quick_setup(config: dict, hermes_home):
     if not has_anything_missing:
         print_success("Everything is configured! Nothing to do.")
         print()
-        print_info("Run 'hermes setup' and choose 'Full Setup' to reconfigure,")
+        print_info("Run 'arachne setup' and choose 'Full Setup' to reconfigure,")
         print_info("or pick a specific section from the menu.")
         return
 
@@ -1897,8 +1897,8 @@ def _run_quick_setup(config: dict, hermes_home):
     if missing_messaging:
         print()
         print_header("Messaging Platforms")
-        print_info("Connect Hermes to messaging apps to chat from anywhere.")
-        print_info("You can configure these later with 'hermes setup gateway'.")
+        print_info("Connect Arachne to messaging apps to chat from anywhere.")
+        print_info("You can configure these later with 'arachne setup gateway'.")
 
         # Group by platform (preserving order)
         platform_order = []
@@ -1961,4 +1961,4 @@ def _run_quick_setup(config: dict, hermes_home):
         save_config(config)
 
     # Jump to summary
-    _print_setup_summary(config, hermes_home)
+    _print_setup_summary(config, arachne_home)

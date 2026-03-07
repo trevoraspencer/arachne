@@ -18,7 +18,7 @@ from typing import Optional
 
 def _get_pid_path() -> Path:
     """Return the path to the gateway PID file, respecting ARACHNE_HOME."""
-    home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+    home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
     return home / "gateway.pid"
 
 

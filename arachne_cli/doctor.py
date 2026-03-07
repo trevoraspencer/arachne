@@ -1,7 +1,7 @@
 """
-Doctor command for hermes CLI.
+Doctor command for arachne CLI.
 
-Diagnoses issues with Hermes Agent setup.
+Diagnoses issues with Arachne Agent setup.
 """
 
 import os
@@ -10,10 +10,10 @@ import subprocess
 import shutil
 from pathlib import Path
 
-from arachne_cli.config import get_project_root, get_hermes_home, get_env_path
+from arachne_cli.config import get_project_root, get_arachne_home, get_env_path
 
 PROJECT_ROOT = get_project_root()
-ARACHNE_HOME = get_hermes_home()
+ARACHNE_HOME = get_arachne_home()
 
 # Load environment variables from ~/.arachne/.env so API key checks work
 from dotenv import load_dotenv
@@ -56,7 +56,7 @@ def run_doctor(args):
     
     print()
     print(color("┌─────────────────────────────────────────────────────────┐", Colors.CYAN))
-    print(color("│                 🩺 Hermes Doctor                        │", Colors.CYAN))
+    print(color("│                 🩺 Arachne Doctor                        │", Colors.CYAN))
     print(color("└─────────────────────────────────────────────────────────┘", Colors.CYAN))
     
     # =========================================================================
@@ -140,7 +140,7 @@ def run_doctor(args):
             check_ok("API key configured")
         else:
             check_warn("No API key found in ~/.arachne/.env")
-            issues.append("Run 'hermes setup' to configure API keys")
+            issues.append("Run 'arachne setup' to configure API keys")
     else:
         # Also check project root as fallback
         fallback_env = PROJECT_ROOT / '.env'
@@ -152,11 +152,11 @@ def run_doctor(args):
                 env_path.parent.mkdir(parents=True, exist_ok=True)
                 env_path.touch()
                 check_ok("Created empty ~/.arachne/.env")
-                check_info("Run 'hermes setup' to configure API keys")
+                check_info("Run 'arachne setup' to configure API keys")
                 fixed_count += 1
             else:
-                check_info("Run 'hermes setup' to create one")
-                issues.append("Run 'hermes setup' to create .env")
+                check_info("Run 'arachne setup' to create one")
+                issues.append("Run 'arachne setup' to create .env")
     
     # Check ~/.arachne/config.yaml (primary) or project cli-config.yaml (fallback)
     config_path = ARACHNE_HOME / 'config.yaml'
@@ -215,12 +215,12 @@ def run_doctor(args):
     print()
     print(color("◆ Directory Structure", Colors.CYAN, Colors.BOLD))
     
-    hermes_home = ARACHNE_HOME
-    if hermes_home.exists():
+    arachne_home = ARACHNE_HOME
+    if arachne_home.exists():
         check_ok("~/.arachne directory exists")
     else:
         if should_fix:
-            hermes_home.mkdir(parents=True, exist_ok=True)
+            arachne_home.mkdir(parents=True, exist_ok=True)
             check_ok("Created ~/.arachne directory")
             fixed_count += 1
         else:
@@ -229,7 +229,7 @@ def run_doctor(args):
     # Check expected subdirectories
     expected_subdirs = ["cron", "sessions", "logs", "skills", "memories"]
     for subdir_name in expected_subdirs:
-        subdir_path = hermes_home / subdir_name
+        subdir_path = arachne_home / subdir_name
         if subdir_path.exists():
             check_ok(f"~/.arachne/{subdir_name}/ exists")
         else:
@@ -241,7 +241,7 @@ def run_doctor(args):
                 check_warn(f"~/.arachne/{subdir_name}/ not found", "(will be created on first use)")
     
     # Check for SOUL.md persona file
-    soul_path = hermes_home / "SOUL.md"
+    soul_path = arachne_home / "SOUL.md"
     if soul_path.exists():
         content = soul_path.read_text(encoding="utf-8").strip()
         # Check if it's just the template comments (no real content)
@@ -251,20 +251,20 @@ def run_doctor(args):
         else:
             check_info("~/.arachne/SOUL.md exists but is empty — edit it to customize personality")
     else:
-        check_warn("~/.arachne/SOUL.md not found", "(create it to give Hermes a custom personality)")
+        check_warn("~/.arachne/SOUL.md not found", "(create it to give Arachne a custom personality)")
         if should_fix:
             soul_path.parent.mkdir(parents=True, exist_ok=True)
             soul_path.write_text(
-                "# Hermes Agent Persona\n\n"
-                "<!-- Edit this file to customize how Hermes communicates. -->\n\n"
-                "You are Hermes, a helpful AI assistant.\n",
+                "# Arachne Agent Persona\n\n"
+                "<!-- Edit this file to customize how Arachne communicates. -->\n\n"
+                "You are Arachne, a helpful AI assistant.\n",
                 encoding="utf-8",
             )
             check_ok("Created ~/.arachne/SOUL.md with basic template")
             fixed_count += 1
     
     # Check memory directory
-    memories_dir = hermes_home / "memories"
+    memories_dir = arachne_home / "memories"
     if memories_dir.exists():
         check_ok("~/.arachne/memories/ directory exists")
         memory_file = memories_dir / "MEMORY.md"
@@ -287,7 +287,7 @@ def run_doctor(args):
             fixed_count += 1
     
     # Check SQLite session store
-    state_db_path = hermes_home / "state.db"
+    state_db_path = arachne_home / "state.db"
     if state_db_path.exists():
         try:
             import sqlite3
@@ -569,7 +569,7 @@ def run_doctor(args):
         # Count disabled tools with API key requirements
         api_disabled = [u for u in unavailable if (u.get("missing_vars") or u.get("env_vars"))]
         if api_disabled:
-            issues.append("Run 'hermes setup' to configure missing API keys for full tool access")
+            issues.append("Run 'arachne setup' to configure missing API keys for full tool access")
     except Exception as e:
         check_warn("Could not check tool availability", f"({e})")
     
@@ -596,7 +596,7 @@ def run_doctor(args):
         if q_count > 0:
             check_warn(f"{q_count} skill(s) in quarantine", "(pending review)")
     else:
-        check_warn("Skills Hub directory not initialized", "(run: hermes skills list)")
+        check_warn("Skills Hub directory not initialized", "(run: arachne skills list)")
 
     from arachne_cli.config import get_env_value
     github_token = get_env_value("GITHUB_TOKEN") or get_env_value("GH_TOKEN")
@@ -630,7 +630,7 @@ def run_doctor(args):
             print(f"  {i}. {issue}")
         print()
         if not should_fix:
-            print(color("  Tip: run 'hermes doctor --fix' to auto-fix what's possible.", Colors.DIM))
+            print(color("  Tip: run 'arachne doctor --fix' to auto-fix what's possible.", Colors.DIM))
     else:
         print(color("─" * 60, Colors.GREEN))
         print(color("  All checks passed! 🎉", Colors.GREEN, Colors.BOLD))

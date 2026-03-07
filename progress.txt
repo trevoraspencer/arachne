@@ -5,9 +5,12 @@ Started: Sat Mar  7 20:46:12 UTC 2026
 - Binary/image files (*.png, *.jpg, etc.) must NOT be renamed or edited
 - Submodules (mini-swe-agent/, tinker-atropos/) and .git/ are excluded from all operations
 - Model name strings to protect: NousResearch/Hermes-3-Llama-3.1-8B, NousResearch/DeepHermes-3-Llama-3-3B-Preview, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT1, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT2
+- Additional NousResearch dataset strings to protect: hermes-agent-megascience-sft1, terminal-tasks-glm-hermes-agent
 - The `hermes` entrypoint file at root was renamed to `arachne`
 - `environments/hermes_swe_env/` renamed to `environments/arachne_swe_env/`
 - Manifest of all renames saved at `_rename_manifest.txt`
+- After US-004, only .ralph/rebrand-arachne-prompt.md naming rules table retains hermes in "Find" column — this is intentional
+- All NousResearch/hermes-agent GitHub URLs are preserved (not renamed to arachne)
 
 ---
 
@@ -51,4 +54,19 @@ Started: Sat Mar  7 20:46:12 UTC 2026
   - HermesAgent is a prefix for many compound names (HermesAgentLoop, HermesAgentBaseEnv, HermesAgentEnvConfig) — simple prefix replacement handles all correctly
   - No model name conflicts with these patterns since model names use hyphenated form (Hermes-3, NousResearch/Hermes-Agent-Thinking-*)
   - ~/.hermes replacement is safe — never appears in external URLs
+---
+
+## 2026-03-07 - US-004
+- What was implemented: Replaced all remaining standalone hermes/Hermes/HERMES with arachne/Arachne/ARACHNE, with model name protection
+- Two-pass approach: (1) bulk sed replace of hermes→arachne, Hermes→Arachne, HERMES→ARACHNE across 268 files, (2) restore protected NousResearch model name strings and external URLs
+- Model name strings restored: NousResearch/Hermes-3-Llama-3.1-8B, NousResearch/DeepHermes-3-Llama-3-3B-Preview, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT1, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT2
+- External URLs restored: NousResearch/hermes-agent (GitHub), NousResearch/Hermes-Agent (package.json), hermes-agent-megascience, terminal-tasks-glm-hermes-agent
+- Also restored .ralph/rebrand-arachne-prompt.md naming rules table (Find column) and model name references in instructions
+- Files changed: ~268 files across all directories (tools/, environments/, arachne_cli/, tests/, scripts/, website/, gateway/, skills/, .github/, landingpage/, .ralph/, etc.)
+- **Learnings for future iterations:**
+  - The two-pass approach (bulk replace, then restore) works reliably for standalone replacements too
+  - Model name restoration patterns must be applied most-specific-first (e.g. NousResearch/Arachne-Agent-Thinking before NousResearch/Arachne-Agent)
+  - The .ralph/ prompt file is a meta-document — its "Find" column in the naming rules table should retain original hermes names
+  - After standalone replace, only .ralph/rebrand-arachne-prompt.md retains hermes references (in naming rules table Find column) — this is correct
+  - Corrupted model name patterns to check after replacement: NousResearch/arachne, NousResearch/Arachne, Arachne-3, Arachne-2, DeepArachne, arachne-3, arachne-2
 ---

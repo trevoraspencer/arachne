@@ -61,7 +61,7 @@ def _scan_context_content(content: str, filename: str) -> str:
 # =========================================================================
 
 DEFAULT_AGENT_IDENTITY = (
-    "You are Hermes Agent, an intelligent AI assistant created by Nous Research. "
+    "You are Arachne Agent, an intelligent AI assistant created by Nous Research. "
     "You are helpful, knowledgeable, and direct. You assist users with a wide "
     "range of tasks including answering questions, writing and editing code, "
     "analyzing information, creative work, and executing actions via your tools. "
@@ -166,8 +166,8 @@ def build_skills_system_prompt() -> str:
     match skills by meaning, not just name.
     Filters out skills incompatible with the current OS platform.
     """
-    hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
-    skills_dir = hermes_home / "skills"
+    arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+    skills_dir = arachne_home / "skills"
 
     if not skills_dir.exists():
         return ""
@@ -334,7 +334,7 @@ def build_context_files_prompt(cwd: Optional[str] = None) -> str:
             soul_path = candidate
             break
     if not soul_path:
-        global_soul = Path.home() / ".hermes" / "SOUL.md"
+        global_soul = Path.home() / ".arachne" / "SOUL.md"
         if global_soul.exists():
             soul_path = global_soul
 

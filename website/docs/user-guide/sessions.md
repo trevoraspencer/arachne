@@ -6,7 +6,7 @@ description: "Session persistence, resume, search, management, and per-platform 
 
 # Sessions
 
-Hermes Agent automatically saves every conversation as a session. Sessions enable conversation resume, cross-session search, and full conversation history management.
+Arachne Agent automatically saves every conversation as a session. Sessions enable conversation resume, cross-session search, and full conversation history management.
 
 ## How Sessions Work
 
@@ -30,7 +30,7 @@ Each session is tagged with its source platform:
 
 | Source | Description |
 |--------|-------------|
-| `cli` | Interactive CLI (`hermes` or `hermes chat`) |
+| `cli` | Interactive CLI (`arachne` or `arachne chat`) |
 | `telegram` | Telegram messenger |
 | `discord` | Discord server/DM |
 | `whatsapp` | WhatsApp messenger |
@@ -44,12 +44,12 @@ Resume previous conversations from the CLI using `--continue` or `--resume`:
 
 ```bash
 # Resume the most recent CLI session
-hermes --continue
-hermes -c
+arachne --continue
+arachne -c
 
 # Or with the chat subcommand
-hermes chat --continue
-hermes chat -c
+arachne chat --continue
+arachne chat -c
 ```
 
 This looks up the most recent `cli` session from the SQLite database and loads its full conversation history.
@@ -58,14 +58,14 @@ This looks up the most recent `cli` session from the SQLite database and loads i
 
 ```bash
 # Resume a specific session by ID
-hermes --resume 20250305_091523_a1b2c3d4
-hermes -r 20250305_091523_a1b2c3d4
+arachne --resume 20250305_091523_a1b2c3d4
+arachne -r 20250305_091523_a1b2c3d4
 
 # Or with the chat subcommand
-hermes chat --resume 20250305_091523_a1b2c3d4
+arachne chat --resume 20250305_091523_a1b2c3d4
 ```
 
-Session IDs are shown when you exit a CLI session, and can be found with `hermes sessions list`.
+Session IDs are shown when you exit a CLI session, and can be found with `arachne sessions list`.
 
 :::tip
 Session IDs follow the format `YYYYMMDD_HHMMSS_<8-char-hex>`, e.g. `20250305_091523_a1b2c3d4`. You only need to provide enough of the ID to be unique.
@@ -73,19 +73,19 @@ Session IDs follow the format `YYYYMMDD_HHMMSS_<8-char-hex>`, e.g. `20250305_091
 
 ## Session Management Commands
 
-Hermes provides a full set of session management commands via `hermes sessions`:
+Arachne provides a full set of session management commands via `arachne sessions`:
 
 ### List Sessions
 
 ```bash
 # List recent sessions (default: last 20)
-hermes sessions list
+arachne sessions list
 
 # Filter by platform
-hermes sessions list --source telegram
+arachne sessions list --source telegram
 
 # Show more sessions
-hermes sessions list --limit 50
+arachne sessions list --limit 50
 ```
 
 Output format:
@@ -101,13 +101,13 @@ ID                             Source       Model                          Messa
 
 ```bash
 # Export all sessions to a JSONL file
-hermes sessions export backup.jsonl
+arachne sessions export backup.jsonl
 
 # Export sessions from a specific platform
-hermes sessions export telegram-history.jsonl --source telegram
+arachne sessions export telegram-history.jsonl --source telegram
 
 # Export a single session
-hermes sessions export session.jsonl --session-id 20250305_091523_a1b2c3d4
+arachne sessions export session.jsonl --session-id 20250305_091523_a1b2c3d4
 ```
 
 Exported files contain one JSON object per line with full session metadata and all messages.
@@ -116,26 +116,26 @@ Exported files contain one JSON object per line with full session metadata and a
 
 ```bash
 # Delete a specific session (with confirmation)
-hermes sessions delete 20250305_091523_a1b2c3d4
+arachne sessions delete 20250305_091523_a1b2c3d4
 
 # Delete without confirmation
-hermes sessions delete 20250305_091523_a1b2c3d4 --yes
+arachne sessions delete 20250305_091523_a1b2c3d4 --yes
 ```
 
 ### Prune Old Sessions
 
 ```bash
 # Delete ended sessions older than 90 days (default)
-hermes sessions prune
+arachne sessions prune
 
 # Custom age threshold
-hermes sessions prune --older-than 30
+arachne sessions prune --older-than 30
 
 # Only prune sessions from a specific platform
-hermes sessions prune --source telegram --older-than 60
+arachne sessions prune --source telegram --older-than 60
 
 # Skip confirmation
-hermes sessions prune --older-than 30 --yes
+arachne sessions prune --older-than 30 --yes
 ```
 
 :::info
@@ -145,7 +145,7 @@ Pruning only deletes **ended** sessions (sessions that have been explicitly ende
 ### Session Statistics
 
 ```bash
-hermes sessions stats
+arachne sessions stats
 ```
 
 Output:
@@ -159,7 +159,7 @@ Total messages: 3847
 Database size: 12.4 MB
 ```
 
-For deeper analytics — token usage, cost estimates, tool breakdown, and activity patterns — use [`hermes insights`](/docs/reference/cli-commands#insights).
+For deeper analytics — token usage, cost estimates, tool breakdown, and activity patterns — use [`arachne insights`](/docs/reference/cli-commands#insights).
 
 ## Session Search Tool
 
@@ -249,14 +249,14 @@ Key tables in `state.db`:
 
 ```bash
 # Prune sessions older than 90 days
-hermes sessions prune
+arachne sessions prune
 
 # Delete a specific session
-hermes sessions delete <session_id>
+arachne sessions delete <session_id>
 
 # Export before pruning (backup)
-hermes sessions export backup.jsonl
-hermes sessions prune --older-than 30 --yes
+arachne sessions export backup.jsonl
+arachne sessions prune --older-than 30 --yes
 ```
 
 :::tip

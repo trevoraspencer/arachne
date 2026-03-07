@@ -1,5 +1,5 @@
 // =========================================================================
-// Hermes Agent Landing Page — Interactions
+// Arachne Agent Landing Page — Interactions
 // =========================================================================
 
 // --- Platform install commands ---

@@ -1,4 +1,4 @@
-"""Base class for all Hermes execution environment backends."""
+"""Base class for all Arachne execution environment backends."""
 
 from abc import ABC, abstractmethod
 import os
@@ -16,13 +16,13 @@ def get_sandbox_dir() -> Path:
     if custom:
         p = Path(custom)
     else:
-        p = Path.home() / ".hermes" / "sandboxes"
+        p = Path.home() / ".arachne" / "sandboxes"
     p.mkdir(parents=True, exist_ok=True)
     return p
 
 
 class BaseEnvironment(ABC):
-    """Common interface for all Hermes execution backends.
+    """Common interface for all Arachne execution backends.
 
     Subclasses implement execute() and cleanup(). Shared helpers eliminate
     duplicated subprocess boilerplate across backends.

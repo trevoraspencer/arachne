@@ -1,12 +1,12 @@
 ---
 sidebar_position: 5
 title: "WhatsApp"
-description: "Set up Hermes Agent as a WhatsApp bot via the built-in Baileys bridge"
+description: "Set up Arachne Agent as a WhatsApp bot via the built-in Baileys bridge"
 ---
 
 # WhatsApp Setup
 
-WhatsApp doesn't have a simple bot API like Telegram or Discord. Hermes includes a built-in bridge using [Baileys](https://github.com/WhiskeySockets/Baileys) that connects via WhatsApp Web.
+WhatsApp doesn't have a simple bot API like Telegram or Discord. Arachne includes a built-in bridge using [Baileys](https://github.com/WhiskeySockets/Baileys) that connects via WhatsApp Web.
 
 ## Two Modes
 
@@ -18,7 +18,7 @@ WhatsApp doesn't have a simple bot API like Telegram or Discord. Hermes includes
 ## Setup
 
 ```bash
-hermes whatsapp
+arachne whatsapp
 ```
 
 The wizard will:
@@ -41,8 +41,8 @@ The wizard will:
 ## Starting the Gateway
 
 ```bash
-hermes gateway            # Foreground
-hermes gateway install    # Or install as a system service
+arachne gateway            # Foreground
+arachne gateway install    # Or install as a system service
 ```
 
 The gateway starts the WhatsApp bridge automatically using the saved session.
@@ -57,13 +57,13 @@ WHATSAPP_ALLOWED_USERS=15551234567     # Comma-separated phone numbers with coun
 
 ## Important Notes
 
-- Agent responses are prefixed with "⚕ **Hermes Agent**" for easy identification
+- Agent responses are prefixed with "⚕ **Arachne Agent**" for easy identification
 - WhatsApp Web sessions can disconnect if WhatsApp updates their protocol
 - The gateway reconnects automatically
-- If you see persistent failures, re-pair with `hermes whatsapp`
+- If you see persistent failures, re-pair with `arachne whatsapp`
 
 :::info Re-pairing
-If WhatsApp Web sessions disconnect (protocol updates, phone reset), re-pair with `hermes whatsapp`. The gateway handles temporary disconnections automatically.
+If WhatsApp Web sessions disconnect (protocol updates, phone reset), re-pair with `arachne whatsapp`. The gateway handles temporary disconnections automatically.
 :::
 
 ## Voice Messages

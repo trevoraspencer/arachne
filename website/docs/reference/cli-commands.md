@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 title: "CLI Commands Reference"
-description: "Comprehensive reference for all hermes CLI commands and slash commands"
+description: "Comprehensive reference for all arachne CLI commands and slash commands"
 ---
 
 # CLI Commands Reference
@@ -14,107 +14,107 @@ These are commands you run from your shell.
 
 | Command | Description |
 |---------|-------------|
-| `hermes` | Start interactive chat (default) |
-| `hermes chat -q "Hello"` | Single query mode (non-interactive) |
-| `hermes chat --continue` / `-c` | Resume the most recent session |
-| `hermes chat --resume <id>` / `-r <id>` | Resume a specific session |
-| `hermes chat --model <name>` | Use a specific model |
-| `hermes chat --provider <name>` | Force a provider (`nous`, `openrouter`, `zai`, `kimi-coding`, `minimax`, `minimax-cn`) |
-| `hermes chat --toolsets "web,terminal"` / `-t` | Use specific toolsets |
-| `hermes chat --verbose` | Enable verbose/debug output |
+| `arachne` | Start interactive chat (default) |
+| `arachne chat -q "Hello"` | Single query mode (non-interactive) |
+| `arachne chat --continue` / `-c` | Resume the most recent session |
+| `arachne chat --resume <id>` / `-r <id>` | Resume a specific session |
+| `arachne chat --model <name>` | Use a specific model |
+| `arachne chat --provider <name>` | Force a provider (`nous`, `openrouter`, `zai`, `kimi-coding`, `minimax`, `minimax-cn`) |
+| `arachne chat --toolsets "web,terminal"` / `-t` | Use specific toolsets |
+| `arachne chat --verbose` | Enable verbose/debug output |
 
 ### Provider & Model Management
 
 | Command | Description |
 |---------|-------------|
-| `hermes model` | Switch provider and model interactively |
-| `hermes login` | OAuth login to a provider (use `--provider` to specify) |
-| `hermes logout` | Clear provider authentication |
+| `arachne model` | Switch provider and model interactively |
+| `arachne login` | OAuth login to a provider (use `--provider` to specify) |
+| `arachne logout` | Clear provider authentication |
 
 ### Configuration
 
 | Command | Description |
 |---------|-------------|
-| `hermes setup` | Full setup wizard (provider, terminal, messaging) |
-| `hermes config` | View current configuration |
-| `hermes config edit` | Open config.yaml in your editor |
-| `hermes config set KEY VAL` | Set a specific value |
-| `hermes config check` | Check for missing config (useful after updates) |
-| `hermes config migrate` | Interactively add missing options |
-| `hermes tools` | Interactive tool configuration per platform |
-| `hermes status` | Show configuration status (including auth) |
-| `hermes doctor` | Diagnose issues |
+| `arachne setup` | Full setup wizard (provider, terminal, messaging) |
+| `arachne config` | View current configuration |
+| `arachne config edit` | Open config.yaml in your editor |
+| `arachne config set KEY VAL` | Set a specific value |
+| `arachne config check` | Check for missing config (useful after updates) |
+| `arachne config migrate` | Interactively add missing options |
+| `arachne tools` | Interactive tool configuration per platform |
+| `arachne status` | Show configuration status (including auth) |
+| `arachne doctor` | Diagnose issues |
 
 ### Maintenance
 
 | Command | Description |
 |---------|-------------|
-| `hermes update` | Update to latest version |
-| `hermes uninstall` | Uninstall (can keep configs for later reinstall) |
-| `hermes version` | Show version info |
+| `arachne update` | Update to latest version |
+| `arachne uninstall` | Uninstall (can keep configs for later reinstall) |
+| `arachne version` | Show version info |
 
 ### Gateway (Messaging + Cron)
 
 | Command | Description |
 |---------|-------------|
-| `hermes gateway` | Run gateway in foreground |
-| `hermes gateway setup` | Configure messaging platforms interactively |
-| `hermes gateway install` | Install as system service (Linux/macOS) |
-| `hermes gateway start` | Start the service |
-| `hermes gateway stop` | Stop the service |
-| `hermes gateway restart` | Restart the service |
-| `hermes gateway status` | Check service status |
-| `hermes gateway uninstall` | Uninstall the system service |
-| `hermes whatsapp` | Pair WhatsApp via QR code |
+| `arachne gateway` | Run gateway in foreground |
+| `arachne gateway setup` | Configure messaging platforms interactively |
+| `arachne gateway install` | Install as system service (Linux/macOS) |
+| `arachne gateway start` | Start the service |
+| `arachne gateway stop` | Stop the service |
+| `arachne gateway restart` | Restart the service |
+| `arachne gateway status` | Check service status |
+| `arachne gateway uninstall` | Uninstall the system service |
+| `arachne whatsapp` | Pair WhatsApp via QR code |
 
 ### Skills
 
 | Command | Description |
 |---------|-------------|
-| `hermes skills browse` | Browse all available skills with pagination (official first) |
-| `hermes skills search <query>` | Search skill registries |
-| `hermes skills install <identifier>` | Install a skill (with security scan) |
-| `hermes skills inspect <identifier>` | Preview before installing |
-| `hermes skills list` | List installed skills |
-| `hermes skills list --source hub` | List hub-installed skills only |
-| `hermes skills audit` | Re-scan all hub skills |
-| `hermes skills uninstall <name>` | Remove a hub skill |
-| `hermes skills publish <path> --to github --repo owner/repo` | Publish a skill |
-| `hermes skills snapshot export <file>` | Export skill config |
-| `hermes skills snapshot import <file>` | Import from snapshot |
-| `hermes skills tap add <repo>` | Add a custom source |
-| `hermes skills tap remove <repo>` | Remove a source |
-| `hermes skills tap list` | List custom sources |
+| `arachne skills browse` | Browse all available skills with pagination (official first) |
+| `arachne skills search <query>` | Search skill registries |
+| `arachne skills install <identifier>` | Install a skill (with security scan) |
+| `arachne skills inspect <identifier>` | Preview before installing |
+| `arachne skills list` | List installed skills |
+| `arachne skills list --source hub` | List hub-installed skills only |
+| `arachne skills audit` | Re-scan all hub skills |
+| `arachne skills uninstall <name>` | Remove a hub skill |
+| `arachne skills publish <path> --to github --repo owner/repo` | Publish a skill |
+| `arachne skills snapshot export <file>` | Export skill config |
+| `arachne skills snapshot import <file>` | Import from snapshot |
+| `arachne skills tap add <repo>` | Add a custom source |
+| `arachne skills tap remove <repo>` | Remove a source |
+| `arachne skills tap list` | List custom sources |
 
 ### Cron & Pairing
 
 | Command | Description |
 |---------|-------------|
-| `hermes cron list` | View scheduled jobs |
-| `hermes cron status` | Check if cron scheduler is running |
-| `hermes cron tick` | Manually trigger a cron tick |
-| `hermes pairing list` | View pending + approved users |
-| `hermes pairing approve <platform> <code>` | Approve a pairing code |
-| `hermes pairing revoke <platform> <user_id>` | Remove user access |
-| `hermes pairing clear-pending` | Clear all pending pairing requests |
+| `arachne cron list` | View scheduled jobs |
+| `arachne cron status` | Check if cron scheduler is running |
+| `arachne cron tick` | Manually trigger a cron tick |
+| `arachne pairing list` | View pending + approved users |
+| `arachne pairing approve <platform> <code>` | Approve a pairing code |
+| `arachne pairing revoke <platform> <user_id>` | Remove user access |
+| `arachne pairing clear-pending` | Clear all pending pairing requests |
 
 ### Sessions
 
 | Command | Description |
 |---------|-------------|
-| `hermes sessions list` | Browse past sessions |
-| `hermes sessions export <id>` | Export a session |
-| `hermes sessions delete <id>` | Delete a specific session |
-| `hermes sessions prune` | Remove old sessions |
-| `hermes sessions stats` | Show session statistics |
+| `arachne sessions list` | Browse past sessions |
+| `arachne sessions export <id>` | Export a session |
+| `arachne sessions delete <id>` | Delete a specific session |
+| `arachne sessions prune` | Remove old sessions |
+| `arachne sessions stats` | Show session statistics |
 
 ### Insights
 
 | Command | Description |
 |---------|-------------|
-| `hermes insights` | Show usage analytics for the last 30 days |
-| `hermes insights --days 7` | Analyze a custom time window |
-| `hermes insights --source telegram` | Filter by platform |
+| `arachne insights` | Show usage analytics for the last 30 days |
+| `arachne insights --days 7` | Analyze a custom time window |
+| `arachne insights --source telegram` | Filter by platform |
 
 ---
 
@@ -181,7 +181,7 @@ These work in messaging platforms (Telegram, Discord, Slack, WhatsApp) but not t
 | `/sethome` | Set this chat as the home channel |
 | `/status` | Show session info |
 | `/reload-mcp` | Reload MCP servers from config |
-| `/update` | Update Hermes Agent to the latest version |
+| `/update` | Update Arachne Agent to the latest version |
 
 ---
 

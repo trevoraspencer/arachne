@@ -18,7 +18,7 @@ from tools.interrupt import is_interrupted
 
 logger = logging.getLogger(__name__)
 
-_SNAPSHOT_STORE = Path.home() / ".hermes" / "modal_snapshots.json"
+_SNAPSHOT_STORE = Path.home() / ".arachne" / "modal_snapshots.json"
 
 
 def _load_snapshots() -> Dict[str, str]:

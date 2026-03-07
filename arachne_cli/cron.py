@@ -1,11 +1,11 @@
 """
-Cron subcommand for hermes CLI.
+Cron subcommand for arachne CLI.
 
-Handles: hermes cron [list|status|tick]
+Handles: arachne cron [list|status|tick]
 
-Cronjobs are executed automatically by the gateway daemon (hermes gateway).
+Cronjobs are executed automatically by the gateway daemon (arachne gateway).
 Install the gateway as a service for background execution:
-    hermes gateway install
+    arachne gateway install
 """
 
 import sys
@@ -72,7 +72,7 @@ def cron_list(show_all: bool = False):
     from arachne_cli.gateway import find_gateway_pids
     if not find_gateway_pids():
         print(color("  ⚠  Gateway is not running — jobs won't fire automatically.", Colors.YELLOW))
-        print(color("     Start it with: hermes gateway install", Colors.DIM))
+        print(color("     Start it with: arachne gateway install", Colors.DIM))
         print()
 
 
@@ -97,8 +97,8 @@ def cron_status():
         print(color("✗ Gateway is not running — cron jobs will NOT fire", Colors.RED))
         print()
         print("  To enable automatic execution:")
-        print("    hermes gateway install    # Install as system service (recommended)")
-        print("    hermes gateway            # Or run in foreground")
+        print("    arachne gateway install    # Install as system service (recommended)")
+        print("    arachne gateway            # Or run in foreground")
     
     print()
     
@@ -130,5 +130,5 @@ def cron_command(args):
     
     else:
         print(f"Unknown cron command: {subcmd}")
-        print("Usage: hermes cron [list|status|tick]")
+        print("Usage: arachne cron [list|status|tick]")
         sys.exit(1)

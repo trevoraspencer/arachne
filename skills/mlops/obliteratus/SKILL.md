@@ -2,11 +2,11 @@
 name: obliteratus
 description: Remove refusal behaviors from open-weight LLMs using OBLITERATUS — mechanistic interpretability techniques (diff-in-means, SVD, whitened SVD, SAE decomposition, etc.) to excise guardrails while preserving reasoning. 9 CLI methods (+ 4 Python-API-only), 15 analysis modules, 116 model presets across 5 compute tiers. Use when a user wants to uncensor, abliterate, or remove refusal from an LLM.
 version: 1.0.0
-author: Hermes Agent
+author: Arachne Agent
 license: MIT
 dependencies: [obliteratus, torch, transformers, bitsandbytes, accelerate, safetensors]
 metadata:
-  hermes:
+  arachne:
     tags: [Abliteration, Uncensoring, Refusal-Removal, LLM, Weight-Projection, SVD, Mechanistic-Interpretability, HuggingFace, Model-Surgery]
 
 ---
@@ -15,7 +15,7 @@ metadata:
 
 Remove refusal behaviors (guardrails) from open-weight LLMs without retraining or fine-tuning. Uses mechanistic interpretability techniques — including diff-in-means, SVD, whitened SVD, SAE decomposition, Bayesian kernel projection, and more — to identify and surgically excise refusal directions from model weights while preserving reasoning capabilities.
 
-**License warning:** OBLITERATUS is AGPL-3.0. NEVER import it as a Python library. Always invoke via CLI (`obliteratus` command) or subprocess. This keeps Hermes Agent's MIT license clean.
+**License warning:** OBLITERATUS is AGPL-3.0. NEVER import it as a Python library. Always invoke via CLI (`obliteratus` command) or subprocess. This keeps Arachne Agent's MIT license clean.
 
 ## When to Use This Skill
 
@@ -299,7 +299,7 @@ obliteratus run my_study.yaml
 8. **Disk space** — Output is full model copy. 8B fp16 = ~16GB, 70B fp16 = ~140GB
 9. **Slow on CPU** — CPU-only is viable only for tiny models (<1B). Anything bigger needs GPU.
 
-## Complementary Hermes Skills
+## Complementary Arachne Skills
 
 After abliteration:
 - **axolotl** / **unsloth** — Fine-tune the abliterated model further

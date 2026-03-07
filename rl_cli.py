@@ -30,8 +30,8 @@ import yaml
 # Load .env from ~/.arachne/.env first, then project root as dev fallback
 from dotenv import load_dotenv
 
-_hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
-_user_env = _hermes_home / ".env"
+_arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+_user_env = _arachne_home / ".env"
 _project_env = Path(__file__).parent / '.env'
 
 if _user_env.exists():
@@ -76,14 +76,14 @@ DEFAULT_MODEL = "anthropic/claude-opus-4.5"
 DEFAULT_BASE_URL = OPENROUTER_BASE_URL
 
 
-def load_hermes_config() -> dict:
+def load_arachne_config() -> dict:
     """
     Load configuration from ~/.arachne/config.yaml.
     
     Returns:
         dict: Configuration with model, base_url, etc.
     """
-    config_path = _hermes_home / 'config.yaml'
+    config_path = _arachne_home / 'config.yaml'
     
     config = {
         "model": DEFAULT_MODEL,
@@ -283,7 +283,7 @@ def main(
         python rl_cli.py --check-server
     """
     # Load config from ~/.arachne/config.yaml
-    config = load_hermes_config()
+    config = load_arachne_config()
     
     # Use config values if not explicitly provided
     if model is None:

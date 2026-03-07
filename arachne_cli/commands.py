@@ -1,4 +1,4 @@
-"""Slash command definitions and autocomplete for the Hermes CLI.
+"""Slash command definitions and autocomplete for the Arachne CLI.
 
 Contains the COMMANDS dict and the SlashCommandCompleter class.
 These are pure data/UI with no ArachneCLI state dependency.

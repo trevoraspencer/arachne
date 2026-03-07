@@ -1,4 +1,4 @@
-# Hermes-Agent Atropos Environments
+# Arachne-Agent Atropos Environments
 
 This directory contains the integration layer between **arachne's** tool-calling capabilities and the **Atropos** RL training framework. It provides everything needed to run agentic LLMs through multi-turn tool-calling loops, score their output with arbitrary reward functions, and feed results into Atropos for training or evaluation.
 
@@ -16,7 +16,7 @@ This directory contains the integration layer between **arachne's** tool-calling
                     └───────────┬───────────┘
                                 │ inherits
                     ┌───────────┴───────────┐
-                    │  ArachneAgentBaseEnv    │  hermes_base_env.py
+                    │  ArachneAgentBaseEnv    │  arachne_base_env.py
                     │  - Terminal backend    │
                     │  - Tool resolution     │
                     │  - Agent loop          │
@@ -26,7 +26,7 @@ This directory contains the integration layer between **arachne's** tool-calling
                                 │ inherits
               ┌─────────────────┼─────────────────┐
               │                 │                  │
-     TerminalTestEnv     HermesSweEnv    TerminalBench2EvalEnv
+     TerminalTestEnv     ArachneSweEnv    TerminalBench2EvalEnv
      (stack testing)     (SWE training)   (TB2 benchmark eval)
 ```
 
@@ -39,7 +39,7 @@ This directory contains the integration layer between **arachne's** tool-calling
 - CLI interface with three subcommands: `serve`, `process`, `evaluate`
 - `evaluate_log()` for saving eval results to JSON + samples.jsonl
 
-**ArachneAgentBaseEnv** (`hermes_base_env.py`) extends BaseEnv with arachne specifics:
+**ArachneAgentBaseEnv** (`arachne_base_env.py`) extends BaseEnv with arachne specifics:
 - Sets `os.environ["TERMINAL_ENV"]` to configure the terminal backend (local, docker, modal, daytona, ssh, singularity)
 - Resolves arachne toolsets via `_resolve_tools_for_group()` (calls `get_tool_definitions()` which queries `tools/registry.py`)
 - Implements `collect_trajectory()` which runs the full agent loop and computes rewards
@@ -115,7 +115,7 @@ The patches are:
 - **Transparent** -- same interface and behavior, only the internal async execution changes
 - **Universal** -- works identically in normal CLI use (no running event loop)
 
-Applied automatically at import time by `hermes_base_env.py`.
+Applied automatically at import time by `arachne_base_env.py`.
 
 ### Tool Call Parsers (`tool_call_parsers/`)
 
@@ -124,7 +124,7 @@ Client-side parsers that extract structured `tool_calls` from raw model output t
 Each parser is a standalone reimplementation of the corresponding VLLM parser's `extract_tool_calls()` logic. No VLLM dependency -- only standard library (`re`, `json`, `uuid`) and `openai` types.
 
 Available parsers:
-- `hermes` -- Hermes/ChatML `<tool_call>` XML format
+- `arachne` -- Arachne/ChatML `<tool_call>` XML format
 - `mistral` -- Mistral `[TOOL_CALLS]` format
 - `llama3_json` -- Llama 3 JSON tool calling
 - `qwen` -- Qwen tool calling format
@@ -139,7 +139,7 @@ Usage:
 ```python
 from environments.tool_call_parsers import get_parser
 
-parser = get_parser("hermes")
+parser = get_parser("arachne")
 content, tool_calls = parser.parse(raw_model_output)
 ```
 
@@ -169,14 +169,14 @@ Uses ManagedServer for exact token IDs + logprobs via `/generate`. Client-side t
 environments/
 ├── README.md                     # This file
 ├── __init__.py                   # Package exports
-├── hermes_base_env.py            # Abstract base (ArachneAgentBaseEnv)
+├── arachne_base_env.py            # Abstract base (ArachneAgentBaseEnv)
 ├── agent_loop.py                 # Multi-turn agent engine (ArachneAgentLoop)
 ├── tool_context.py               # Per-rollout tool access for reward functions
 ├── patches.py                    # Async-safety patches for Modal backend
 │
 ├── tool_call_parsers/            # Phase 2 client-side parsers
 │   ├── __init__.py               # Registry + base class
-│   ├── hermes_parser.py
+│   ├── arachne_parser.py
 │   ├── mistral_parser.py
 │   ├── llama_parser.py
 │   ├── qwen_parser.py
@@ -191,8 +191,8 @@ environments/
 ├── terminal_test_env/            # Stack validation environment
 │   └── terminal_test_env.py
 │
-├── hermes_swe_env/               # SWE-bench style training environment
-│   └── hermes_swe_env.py
+├── arachne_swe_env/               # SWE-bench style training environment
+│   └── arachne_swe_env.py
 │
 └── benchmarks/                   # Evaluation benchmarks
     ├── terminalbench_2/          # 89 terminal tasks, Modal sandboxes
@@ -219,12 +219,12 @@ python environments/terminal_test_env/terminal_test_env.py process \
     --env.data_path_to_save_groups terminal_test_output.jsonl
 ```
 
-### HermesSweEnv (`hermes_swe_env/`)
+### ArachneSweEnv (`arachne_swe_env/`)
 
 SWE-bench style training environment. The model gets a coding task, uses terminal + file + web tools to solve it, and the reward function runs tests in the same Modal sandbox.
 
 ```bash
-python environments/hermes_swe_env/hermes_swe_env.py serve \
+python environments/arachne_swe_env/arachne_swe_env.py serve \
     --openai.model_name YourModel \
     --env.dataset_name bigcode/humanevalpack \
     --env.terminal_backend modal
@@ -265,7 +265,7 @@ python environments/benchmarks/terminalbench_2/terminalbench2_env.py evaluate \
 3. Implement the four abstract methods + `evaluate()`
 
 ```python
-from environments.hermes_base_env import ArachneAgentBaseEnv, ArachneAgentEnvConfig
+from environments.arachne_base_env import ArachneAgentBaseEnv, ArachneAgentEnvConfig
 
 class MyEnvConfig(ArachneAgentEnvConfig):
     pass  # Add custom fields as needed
@@ -323,12 +323,12 @@ For eval benchmarks, follow the pattern in `terminalbench2_env.py`:
 
 | Field | Description | Default |
 |-------|-------------|---------|
-| `enabled_toolsets` | Which hermes toolsets to enable | `None` (all) |
+| `enabled_toolsets` | Which arachne toolsets to enable | `None` (all) |
 | `disabled_toolsets` | Toolsets to disable | `None` |
 | `distribution` | Probabilistic toolset distribution name | `None` |
 | `max_agent_turns` | Max LLM calls per rollout | `30` |
 | `agent_temperature` | Sampling temperature | `1.0` |
 | `terminal_backend` | `local`, `docker`, `modal`, `daytona`, `ssh`, `singularity` | `local` |
 | `system_prompt` | System message for the agent | `None` |
-| `tool_call_parser` | Parser name for Phase 2 | `hermes` |
+| `tool_call_parser` | Parser name for Phase 2 | `arachne` |
 | `eval_handling` | `STOP_TRAIN`, `LIMIT_TRAIN`, `NONE` | `STOP_TRAIN` |

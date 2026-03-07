@@ -67,7 +67,7 @@ ARACHNE_CADUCEUS = """[#CD7F32]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⣀⣀�
 
 COMPACT_BANNER = """
 [bold #FFD700]╔══════════════════════════════════════════════════════════════╗[/]
-[bold #FFD700]║[/]  [#FFBF00]⚕ NOUS HERMES[/] [dim #B8860B]- AI Agent Framework[/]              [bold #FFD700]║[/]
+[bold #FFD700]║[/]  [#FFBF00]⚕ NOUS ARACHNE[/] [dim #B8860B]- AI Agent Framework[/]              [bold #FFD700]║[/]
 [bold #FFD700]║[/]  [#CD7F32]Messenger of the Digital Gods[/]    [dim #B8860B]Nous Research[/]   [bold #FFD700]║[/]
 [bold #FFD700]╚══════════════════════════════════════════════════════════════╝[/]
 """
@@ -81,8 +81,8 @@ def get_available_skills() -> Dict[str, List[str]]:
     """Scan ~/.arachne/skills/ and return skills grouped by category."""
     import os
 
-    hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
-    skills_dir = hermes_home / "skills"
+    arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+    skills_dir = arachne_home / "skills"
     skills_by_category = {}
 
     if not skills_dir.exists():
@@ -117,9 +117,9 @@ def check_for_updates() -> Optional[int]:
     ``~/.arachne/.update_check``).  Returns the number of commits behind,
     or ``None`` if the check fails or isn't applicable.
     """
-    hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
-    repo_dir = hermes_home / "arachne"
-    cache_file = hermes_home / ".update_check"
+    arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+    repo_dir = arachne_home / "arachne"
+    cache_file = arachne_home / ".update_check"
 
     # Must be a git repo
     if not (repo_dir / ".git").exists():
@@ -339,7 +339,7 @@ def build_welcome_banner(console: Console, model: str, cwd: str,
             commits_word = "commit" if behind == 1 else "commits"
             right_lines.append(
                 f"[bold yellow]⚠ {behind} {commits_word} behind[/]"
-                f"[dim yellow] — run [bold]hermes update[/bold] to update[/]"
+                f"[dim yellow] — run [bold]arachne update[/bold] to update[/]"
             )
     except Exception:
         pass  # Never break the banner over an update check
@@ -349,7 +349,7 @@ def build_welcome_banner(console: Console, model: str, cwd: str,
 
     outer_panel = Panel(
         layout_table,
-        title=f"[bold #FFD700]Hermes Agent {VERSION}[/]",
+        title=f"[bold #FFD700]Arachne Agent {VERSION}[/]",
         border_style="#CD7F32",
         padding=(0, 2),
     )

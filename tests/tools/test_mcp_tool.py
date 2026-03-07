@@ -86,7 +86,7 @@ class TestLoadMCPConfig:
 # ---------------------------------------------------------------------------
 
 class TestSchemaConversion:
-    def test_converts_mcp_tool_to_hermes_schema(self):
+    def test_converts_mcp_tool_to_arachne_schema(self):
         from tools.mcp_tool import _convert_mcp_schema
 
         mcp_tool = _make_mcp_tool(name="read_file", description="Read a file")
@@ -466,7 +466,7 @@ class TestMCPServerTask:
 
 class TestToolsetInjection:
     def test_mcp_tools_added_to_all_arachne_toolsets(self):
-        """Discovered MCP tools are dynamically injected into all hermes-* toolsets."""
+        """Discovered MCP tools are dynamically injected into all arachne-* toolsets."""
         from tools.mcp_tool import MCPServerTask
 
         mock_tools = [_make_mcp_tool("list_files", "List files")]
@@ -481,10 +481,10 @@ class TestToolsetInjection:
             return server
 
         fake_toolsets = {
-            "hermes-cli": {"tools": ["terminal"], "description": "CLI", "includes": []},
-            "hermes-telegram": {"tools": ["terminal"], "description": "TG", "includes": []},
-            "hermes-gateway": {"tools": [], "description": "GW", "includes": []},
-            "non-hermes": {"tools": [], "description": "other", "includes": []},
+            "arachne-cli": {"tools": ["terminal"], "description": "CLI", "includes": []},
+            "arachne-telegram": {"tools": ["terminal"], "description": "TG", "includes": []},
+            "arachne-gateway": {"tools": [], "description": "GW", "includes": []},
+            "non-arachne": {"tools": [], "description": "other", "includes": []},
         }
         fake_config = {"fs": {"command": "npx", "args": []}}
 
@@ -497,14 +497,14 @@ class TestToolsetInjection:
             result = discover_mcp_tools()
 
         assert "mcp_fs_list_files" in result
-        # All hermes-* toolsets get injection
-        assert "mcp_fs_list_files" in fake_toolsets["hermes-cli"]["tools"]
-        assert "mcp_fs_list_files" in fake_toolsets["hermes-telegram"]["tools"]
-        assert "mcp_fs_list_files" in fake_toolsets["hermes-gateway"]["tools"]
-        # Non-hermes toolset should NOT get injection
-        assert "mcp_fs_list_files" not in fake_toolsets["non-hermes"]["tools"]
+        # All arachne-* toolsets get injection
+        assert "mcp_fs_list_files" in fake_toolsets["arachne-cli"]["tools"]
+        assert "mcp_fs_list_files" in fake_toolsets["arachne-telegram"]["tools"]
+        assert "mcp_fs_list_files" in fake_toolsets["arachne-gateway"]["tools"]
+        # Non-arachne toolset should NOT get injection
+        assert "mcp_fs_list_files" not in fake_toolsets["non-arachne"]["tools"]
         # Original tools preserved
-        assert "terminal" in fake_toolsets["hermes-cli"]["tools"]
+        assert "terminal" in fake_toolsets["arachne-cli"]["tools"]
 
     def test_server_connection_failure_skipped(self):
         """If one server fails to connect, others still proceed."""
@@ -531,7 +531,7 @@ class TestToolsetInjection:
             "good": {"command": "npx", "args": []},
         }
         fake_toolsets = {
-            "hermes-cli": {"tools": [], "description": "CLI", "includes": []},
+            "arachne-cli": {"tools": [], "description": "CLI", "includes": []},
         }
 
         with patch("tools.mcp_tool._MCP_AVAILABLE", True), \
@@ -573,7 +573,7 @@ class TestToolsetInjection:
             "good": {"command": "npx", "args": []},
         }
         fake_toolsets = {
-            "hermes-cli": {"tools": [], "description": "CLI", "includes": []},
+            "arachne-cli": {"tools": [], "description": "CLI", "includes": []},
         }
 
         with patch("tools.mcp_tool._MCP_AVAILABLE", True), \

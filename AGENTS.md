@@ -1,8 +1,8 @@
-# Hermes Agent - Development Guide
+# Arachne Agent - Development Guide
 
 Instructions for AI coding assistants (GitHub Copilot, Cursor, etc.) and human developers.
 
-Hermes Agent is an AI agent harness with tool-calling capabilities, interactive CLI, messaging integrations, and scheduled tasks.
+Arachne Agent is an AI agent harness with tool-calling capabilities, interactive CLI, messaging integrations, and scheduled tasks.
 
 ## Development Environment
 
@@ -218,44 +218,44 @@ Implementation (`agent/skill_commands.py`, shared between CLI and gateway):
 
 ---
 
-## Hermes CLI Commands
+## Arachne CLI Commands
 
-The unified `hermes` command provides all functionality:
+The unified `arachne` command provides all functionality:
 
 | Command | Description |
 |---------|-------------|
-| `hermes` | Interactive chat (default) |
-| `hermes chat -q "..."` | Single query mode |
-| `hermes setup` | Configure API keys and settings |
-| `hermes config` | View current configuration |
-| `hermes config edit` | Open config in editor |
-| `hermes config set KEY VAL` | Set a specific value |
-| `hermes config check` | Check for missing config |
-| `hermes config migrate` | Prompt for missing config interactively |
-| `hermes status` | Show configuration status |
-| `hermes doctor` | Diagnose issues |
-| `hermes update` | Update to latest (checks for new config) |
-| `hermes uninstall` | Uninstall (can keep configs for reinstall) |
-| `hermes gateway` | Start gateway (messaging + cron scheduler) |
-| `hermes gateway setup` | Configure messaging platforms interactively |
-| `hermes gateway install` | Install gateway as system service |
-| `hermes cron list` | View scheduled jobs |
-| `hermes cron status` | Check if cron scheduler is running |
-| `hermes version` | Show version info |
-| `hermes pairing list/approve/revoke` | Manage DM pairing codes |
+| `arachne` | Interactive chat (default) |
+| `arachne chat -q "..."` | Single query mode |
+| `arachne setup` | Configure API keys and settings |
+| `arachne config` | View current configuration |
+| `arachne config edit` | Open config in editor |
+| `arachne config set KEY VAL` | Set a specific value |
+| `arachne config check` | Check for missing config |
+| `arachne config migrate` | Prompt for missing config interactively |
+| `arachne status` | Show configuration status |
+| `arachne doctor` | Diagnose issues |
+| `arachne update` | Update to latest (checks for new config) |
+| `arachne uninstall` | Uninstall (can keep configs for reinstall) |
+| `arachne gateway` | Start gateway (messaging + cron scheduler) |
+| `arachne gateway setup` | Configure messaging platforms interactively |
+| `arachne gateway install` | Install gateway as system service |
+| `arachne cron list` | View scheduled jobs |
+| `arachne cron status` | Check if cron scheduler is running |
+| `arachne version` | Show version info |
+| `arachne pairing list/approve/revoke` | Manage DM pairing codes |
 
 ---
 
 ## Messaging Gateway
 
-The gateway connects Hermes to Telegram, Discord, Slack, and WhatsApp.
+The gateway connects Arachne to Telegram, Discord, Slack, and WhatsApp.
 
 ### Setup
 
 The interactive setup wizard handles platform configuration:
 
 ```bash
-hermes gateway setup      # Arrow-key menu of all platforms, configure tokens/allowlists/home channels
+arachne gateway setup      # Arrow-key menu of all platforms, configure tokens/allowlists/home channels
 ```
 
 This is the recommended way to configure messaging. It shows which platforms are already set up, walks through each one interactively, and offers to start/restart the gateway service at the end.
@@ -282,7 +282,7 @@ MESSAGING_CWD=/home/myuser                # Terminal working directory for messa
 
 ### Working Directory Behavior
 
-- **CLI (`hermes` command)**: Uses current directory (`.` → `os.getcwd()`)
+- **CLI (`arachne` command)**: Uses current directory (`.` → `os.getcwd()`)
 - **Messaging (Telegram/Discord)**: Uses `MESSAGING_CWD` (default: home directory)
 
 This is intentional: CLI users are in a terminal and expect the agent to work in their current directory, while messaging users need a consistent starting location.
@@ -303,7 +303,7 @@ Users can find their IDs:
 
 Instead of static allowlists, users can pair via one-time codes:
 1. Unknown user DMs the bot → receives pairing code
-2. Owner runs `hermes pairing approve <platform> <code>`
+2. Owner runs `arachne pairing approve <platform> <code>`
 3. User is permanently authorized
 
 Security: 8-char codes, 1-hour expiry, rate-limited (1/10min/user), max 3 pending per platform, lockout after 5 failed attempts, `chmod 0600` on data files.
@@ -347,9 +347,9 @@ The gateway keeps the "typing..." indicator active throughout processing, refres
 ### Platform Toolsets:
 
 Each platform has a dedicated toolset in `toolsets.py`:
-- `hermes-telegram`: Full tools including terminal (with safety checks)
-- `hermes-discord`: Full tools including terminal
-- `hermes-whatsapp`: Full tools including terminal
+- `arachne-telegram`: Full tools including terminal (with safety checks)
+- `arachne-discord`: Full tools including terminal
+- `arachne-whatsapp`: Full tools including terminal
 
 ---
 
@@ -367,7 +367,7 @@ When adding new configuration variables, you MUST follow this process:
 
 1. Add to `DEFAULT_CONFIG` in `arachne_cli/config.py`
 2. **CRITICAL**: Bump `_config_version` in `DEFAULT_CONFIG` when adding required fields
-3. This triggers migration prompts for existing users on next `hermes update` or `hermes setup`
+3. This triggers migration prompts for existing users on next `arachne update` or `arachne setup`
 
 Example:
 ```python
@@ -414,7 +414,7 @@ The system uses `_config_version` to detect outdated configs:
 
 1. `check_for_missing_config()` compares user config to `DEFAULT_CONFIG`
 2. `migrate_config()` interactively prompts for missing values
-3. Called automatically by `hermes update` and optionally by `hermes setup`
+3. Called automatically by `arachne update` and optionally by `arachne setup`
 
 ---
 
@@ -468,7 +468,7 @@ The terminal tool includes safety checks for potentially destructive commands (e
 **Approval Flow (Messaging):**
 - Command is blocked with explanation
 - Agent explains the command was blocked for safety
-- User must add the pattern to their allowlist via `hermes config edit` or run the command directly on their machine
+- User must add the pattern to their allowlist via `arachne config edit` or run the command directly on their machine
 
 **Configuration:**
 - `command_allowlist` in `~/.arachne/config.yaml` stores permanently allowed patterns
@@ -659,7 +659,7 @@ description: Brief description for listing
 version: 1.0.0
 platforms: [macos]              # Optional — restrict to specific OS (macos/linux/windows)
 metadata:
-  hermes:
+  arachne:
     tags: [tag1, tag2]
     related_skills: [other-skill]
 ---
@@ -668,7 +668,7 @@ metadata:
 
 **Platform filtering** — Skills with a `platforms` field are automatically excluded from the system prompt index, `skills_list()`, and slash commands on incompatible platforms. Skills without the field load everywhere (backward compatible). See `skills/apple/` for macOS-only examples (iMessage, Reminders, Notes, FindMy).
 
-**Skills Hub** — user-driven skill search/install from online registries and official optional skills. Sources: official optional skills (shipped with repo, labeled "official"), GitHub (openai/skills, anthropics/skills, custom taps), ClawHub, Claude marketplace, LobeHub. Not exposed as an agent tool — the model cannot search for or install skills. Users manage skills via `hermes skills browse/search/install` CLI commands or the `/skills` slash command in chat.
+**Skills Hub** — user-driven skill search/install from online registries and official optional skills. Sources: official optional skills (shipped with repo, labeled "official"), GitHub (openai/skills, anthropics/skills, custom taps), ClawHub, Claude marketplace, LobeHub. Not exposed as an agent tool — the model cannot search for or install skills. Users manage skills via `arachne skills browse/search/install` CLI commands or the `/skills` slash command in chat.
 
 Key files:
 - `tools/skills_tool.py` — Agent-facing skill list/view (progressive disclosure)
@@ -682,7 +682,7 @@ Key files:
 
 After making changes:
 
-1. Run `hermes doctor` to check setup
-2. Run `hermes config check` to verify config
-3. Test with `hermes chat -q "test message"`
-4. For new config options, test fresh install: `rm -rf ~/.arachne && hermes setup`
+1. Run `arachne doctor` to check setup
+2. Run `arachne config check` to verify config
+3. Test with `arachne chat -q "test message"`
+4. For new config options, test fresh install: `rm -rf ~/.arachne && arachne setup`

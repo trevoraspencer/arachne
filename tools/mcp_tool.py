@@ -380,7 +380,7 @@ def _run_on_mcp_loop(coro, timeout: float = 30):
 # ---------------------------------------------------------------------------
 
 def _load_mcp_config() -> Dict[str, dict]:
-    """Read ``mcp_servers`` from the Hermes config file.
+    """Read ``mcp_servers`` from the Arachne config file.
 
     Returns a dict of ``{server_name: server_config}`` or empty dict.
     Server config can contain either ``command``/``args``/``env`` for stdio
@@ -675,7 +675,7 @@ def _make_check_fn(server_name: str):
 # ---------------------------------------------------------------------------
 
 def _convert_mcp_schema(server_name: str, mcp_tool) -> dict:
-    """Convert an MCP tool listing to the Hermes registry schema format.
+    """Convert an MCP tool listing to the Arachne registry schema format.
 
     Args:
         server_name: The logical server name for prefixing.
@@ -934,10 +934,10 @@ def discover_mcp_tools() -> List[str]:
     _run_on_mcp_loop(_discover_all(), timeout=120)
 
     if all_tools:
-        # Dynamically inject into all hermes-* platform toolsets
+        # Dynamically inject into all arachne-* platform toolsets
         from toolsets import TOOLSETS
         for ts_name, ts in TOOLSETS.items():
-            if ts_name.startswith("hermes-"):
+            if ts_name.startswith("arachne-"):
                 for tool_name in all_tools:
                     if tool_name not in ts["tools"]:
                         ts["tools"].append(tool_name)

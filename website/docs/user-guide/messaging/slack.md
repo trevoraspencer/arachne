@@ -1,12 +1,12 @@
 ---
 sidebar_position: 4
 title: "Slack"
-description: "Set up Hermes Agent as a Slack bot"
+description: "Set up Arachne Agent as a Slack bot"
 ---
 
 # Slack Setup
 
-Connect Hermes Agent to Slack using Socket Mode for real-time communication.
+Connect Arachne Agent to Slack using Socket Mode for real-time communication.
 
 ## Setup Steps
 
@@ -15,7 +15,7 @@ Connect Hermes Agent to Slack using Socket Mode for real-time communication.
 3. **Get tokens:**
    - Bot Token (`xoxb-...`): OAuth & Permissions → Install to Workspace
    - App Token (`xapp-...`): Basic Information → App-Level Tokens → Generate (with `connections:write` scope)
-4. **Configure:** Run `hermes gateway setup` and select Slack, or add to `~/.arachne/.env` manually:
+4. **Configure:** Run `arachne gateway setup` and select Slack, or add to `~/.arachne/.env` manually:
 
 ```bash
 SLACK_BOT_TOKEN=xoxb-...
@@ -26,7 +26,7 @@ SLACK_ALLOWED_USERS=U01234ABCDE    # Comma-separated Slack user IDs
 5. **Start the gateway:**
 
 ```bash
-hermes gateway
+arachne gateway
 ```
 
 ## Optional: Home Channel

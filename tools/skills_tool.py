@@ -36,7 +36,7 @@ SKILL.md Format (YAML Frontmatter, agentskills.io compatible):
                                   #   Omit to load on all platforms (default)
     compatibility: Requires X     # Optional (agentskills.io)
     metadata:                     # Optional, arbitrary key-value (agentskills.io)
-      hermes:
+      arachne:
         tags: [fine-tuning, llm]
         related_skills: [peft, lora]
     ---
@@ -75,7 +75,7 @@ import yaml
 # All skills live in ~/.arachne/skills/ (seeded from bundled skills/ on install).
 # This is the single source of truth -- agent edits, hub installs, and bundled
 # skills all coexist here without polluting the git repo.
-ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
 SKILLS_DIR = ARACHNE_HOME / "skills"
 
 # Anthropic-recommended limits for progressive disclosure efficiency
@@ -601,14 +601,14 @@ def skill_view(name: str, file_path: str = None, task_id: str = None) -> str:
                     script_files.extend([str(f.relative_to(skill_dir)) for f in scripts_dir.glob(ext)])
         
         # Read tags/related_skills with backward compat:
-        # Check metadata.hermes.* first (agentskills.io convention), fall back to top-level
-        hermes_meta = {}
+        # Check metadata.arachne.* first (agentskills.io convention), fall back to top-level
+        arachne_meta = {}
         metadata = frontmatter.get('metadata')
         if isinstance(metadata, dict):
-            hermes_meta = metadata.get('hermes', {}) or {}
+            arachne_meta = metadata.get('arachne', {}) or {}
         
-        tags = _parse_tags(hermes_meta.get('tags') or frontmatter.get('tags', ''))
-        related_skills = _parse_tags(hermes_meta.get('related_skills') or frontmatter.get('related_skills', ''))
+        tags = _parse_tags(arachne_meta.get('tags') or frontmatter.get('tags', ''))
+        related_skills = _parse_tags(arachne_meta.get('related_skills') or frontmatter.get('related_skills', ''))
         
         # Build linked files structure for clear discovery
         linked_files = {}

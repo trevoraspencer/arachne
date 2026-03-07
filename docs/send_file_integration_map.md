@@ -1,4 +1,4 @@
-# send_file Integration Map — Hermes Agent Codebase Deep Dive
+# send_file Integration Map — Arachne Agent Codebase Deep Dive
 
 ## 1. environments/tool_context.py — Base64 File Transfer Implementation
 
@@ -7,7 +7,7 @@
 - Creates parent dirs in sandbox via `self.terminal(f"mkdir -p {parent}")`
 - **Chunk size:** 60,000 chars (~60KB per shell command)
 - **Small files (<=60KB b64):** Single `printf '%s' '{b64}' | base64 -d > {remote_path}`
-- **Large files:** Writes chunks to `/tmp/_hermes_upload.b64` via `printf >> append`, then `base64 -d` to target
+- **Large files:** Writes chunks to `/tmp/_arachne_upload.b64` via `printf >> append`, then `base64 -d` to target
 - **Error handling:** Checks local file exists; returns `{exit_code, output}`
 - **Size limits:** No explicit limit, but shell arg limit ~2MB means chunking is necessary for files >~45KB raw
 - **No theoretical max** — but very large files would be slow (many terminal round trips)
@@ -66,7 +66,7 @@
 
 ### Connection management:
 - Uses SSH ControlMaster for persistent connection
-- Control socket at `/tmp/hermes-ssh/{user}@{host}:{port}.sock`
+- Control socket at `/tmp/arachne-ssh/{user}@{host}:{port}.sock`
 - ControlPersist=300 (5 min keepalive)
 - BatchMode=yes (non-interactive)
 - Stores: `self.host`, `self.user`, `self.port`, `self.key_path`
@@ -326,7 +326,7 @@ send_file_tool.py:
     1. Get environment from _active_environments[task_id]
     2. Detect backend type (docker/ssh/modal/local)
     3. Extract file to ~/.arachne/file_cache/{uuid}_{filename}
-    4. Return: '{"success": true, "media_tag": "MEDIA:/home/user/.hermes/file_cache/abc123_output.pdf"}'
+    4. Return: '{"success": true, "media_tag": "MEDIA:/home/user/.arachne/file_cache/abc123_output.pdf"}'
     │
     ▼
 LLM includes MEDIA: tag in its response text

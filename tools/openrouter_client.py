@@ -1,4 +1,4 @@
-"""Shared OpenRouter API client for Hermes tools.
+"""Shared OpenRouter API client for Arachne tools.
 
 Provides a single lazy-initialized AsyncOpenAI client that all tool modules
 can share, eliminating the duplicated _get_openrouter_client() / 
@@ -30,7 +30,7 @@ def get_async_client() -> AsyncOpenAI:
             base_url=OPENROUTER_BASE_URL,
             default_headers={
                 "HTTP-Referer": "https://github.com/NousResearch/hermes-agent",
-                "X-OpenRouter-Title": "Hermes Agent",
+                "X-OpenRouter-Title": "Arachne Agent",
                 "X-OpenRouter-Categories": "productivity,cli-agent",
             },
         )

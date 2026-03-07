@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SQLite State Store for Hermes Agent.
+SQLite State Store for Arachne Agent.
 
 Provides persistent session storage with FTS5 full-text search, replacing
 the per-session JSONL file approach. Stores session metadata, full message
@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 
 
-DEFAULT_DB_PATH = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes")) / "state.db"
+DEFAULT_DB_PATH = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne")) / "state.db"
 
 SCHEMA_VERSION = 2
 

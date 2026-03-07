@@ -1,12 +1,12 @@
 ---
 sidebar_position: 9
 title: "Personality & SOUL.md"
-description: "Customize Hermes Agent's personality — SOUL.md, built-in personalities, and custom persona definitions"
+description: "Customize Arachne Agent's personality — SOUL.md, built-in personalities, and custom persona definitions"
 ---
 
 # Personality & SOUL.md
 
-Hermes Agent's personality is fully customizable. You can use the built-in personality presets, create a global SOUL.md file, or define your own custom personas in config.yaml.
+Arachne Agent's personality is fully customizable. You can use the built-in personality presets, create a global SOUL.md file, or define your own custom personas in config.yaml.
 
 ## SOUL.md — Custom Personality File
 
@@ -19,7 +19,7 @@ SOUL.md is a special context file that defines the agent's personality, tone, an
 | `./SOUL.md` (project directory) | Per-project personality |
 | `~/.arachne/SOUL.md` | Global default personality |
 
-The project-level file takes precedence. If no SOUL.md exists in the current directory, Hermes falls back to the global one in `~/.arachne/`.
+The project-level file takes precedence. If no SOUL.md exists in the current directory, Arachne falls back to the global one in `~/.arachne/`.
 
 ### How It Affects the System Prompt
 
@@ -61,7 +61,7 @@ SOUL.md is scanned for prompt injection patterns before being loaded. Keep the c
 
 ## Built-In Personalities
 
-Hermes ships with 14 built-in personalities defined in the CLI config. Switch between them with the `/personality` command.
+Arachne ships with 14 built-in personalities defined in the CLI config. Switch between them with the `/personality` command.
 
 | Name | Description |
 |------|-------------|
@@ -72,7 +72,7 @@ Hermes ships with 14 built-in personalities defined in the CLI config. Switch be
 | **teacher** | Patient educator with clear examples |
 | **kawaii** | Cute expressions, sparkles, and enthusiasm ★ |
 | **catgirl** | Neko-chan with cat-like expressions, nya~ |
-| **pirate** | Captain Hermes, tech-savvy buccaneer |
+| **pirate** | Captain Arachne, tech-savvy buccaneer |
 | **shakespeare** | Bardic prose with dramatic flair |
 | **surfer** | Totally chill bro vibes |
 | **noir** | Hard-boiled detective narration |
@@ -86,10 +86,10 @@ Hermes ships with 14 built-in personalities defined in the CLI config. Switch be
 `You are a kawaii assistant! Use cute expressions and sparkles, be super enthusiastic about everything! Every response should feel warm and adorable desu~!`
 
 **noir:**
-> The rain hammered against the terminal like regrets on a guilty conscience. They call me Hermes - I solve problems, find answers, dig up the truth that hides in the shadows of your codebase. In this city of silicon and secrets, everyone's got something to hide. What's your story, pal?
+> The rain hammered against the terminal like regrets on a guilty conscience. They call me Arachne - I solve problems, find answers, dig up the truth that hides in the shadows of your codebase. In this city of silicon and secrets, everyone's got something to hide. What's your story, pal?
 
 **pirate:**
-> Arrr! Ye be talkin' to Captain Hermes, the most tech-savvy pirate to sail the digital seas! Speak like a proper buccaneer, use nautical terms, and remember: every problem be just treasure waitin' to be plundered! Yo ho ho!
+> Arrr! Ye be talkin' to Captain Arachne, the most tech-savvy pirate to sail the digital seas! Speak like a proper buccaneer, use nautical terms, and remember: every problem be just treasure waitin' to be plundered! Yo ho ho!
 
 ## Switching Personalities
 
@@ -198,13 +198,13 @@ You are assisting with a machine learning research project.
 EOF
 ```
 
-This personality only applies when running Hermes from that project directory.
+This personality only applies when running Arachne from that project directory.
 
 ## How Personality Interacts with the System Prompt
 
 The system prompt is assembled in layers (from `agent/prompt_builder.py` and `run_agent.py`):
 
-1. **Default identity**: *"You are Hermes Agent, an intelligent AI assistant created by Nous Research..."*
+1. **Default identity**: *"You are Arachne Agent, an intelligent AI assistant created by Nous Research..."*
 2. **Platform hint**: formatting guidance based on the platform (CLI, Telegram, etc.)
 3. **Memory**: MEMORY.md and USER.md contents
 4. **Skills index**: available skills listing

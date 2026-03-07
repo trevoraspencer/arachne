@@ -28,12 +28,12 @@ from typing import Dict, Optional, Any, List
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Resolve Hermes home directory (respects ARACHNE_HOME override)
-_hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+# Resolve Arachne home directory (respects ARACHNE_HOME override)
+_arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
 
 # Load environment variables from ~/.arachne/.env first
 from dotenv import load_dotenv
-_env_path = _hermes_home / '.env'
+_env_path = _arachne_home / '.env'
 if _env_path.exists():
     try:
         load_dotenv(_env_path, encoding="utf-8")
@@ -44,7 +44,7 @@ load_dotenv()
 
 # Bridge config.yaml values into the environment so os.getenv() picks them up.
 # config.yaml is authoritative for terminal settings — overrides .env.
-_config_path = _hermes_home / 'config.yaml'
+_config_path = _arachne_home / 'config.yaml'
 if _config_path.exists():
     try:
         import yaml as _yaml
@@ -109,7 +109,7 @@ os.environ["ARACHNE_EXEC_ASK"] = "1"
 
 # Set terminal working directory for messaging platforms
 # Uses MESSAGING_CWD if set, otherwise defaults to home directory
-# This is separate from CLI which uses the directory where `hermes` is run
+# This is separate from CLI which uses the directory where `arachne` is run
 messaging_cwd = os.getenv("MESSAGING_CWD") or str(Path.home())
 os.environ["TERMINAL_CWD"] = messaging_cwd
 
@@ -280,7 +280,7 @@ class GatewayRunner:
         if not file_path:
             try:
                 import yaml as _y
-                cfg_path = _hermes_home / "config.yaml"
+                cfg_path = _arachne_home / "config.yaml"
                 if cfg_path.exists():
                     with open(cfg_path) as _f:
                         cfg = _y.safe_load(_f) or {}
@@ -291,7 +291,7 @@ class GatewayRunner:
             return []
         path = Path(file_path).expanduser()
         if not path.is_absolute():
-            path = _hermes_home / path
+            path = _arachne_home / path
         if not path.exists():
             logger.warning("Prefill messages file not found: %s", path)
             return []
@@ -318,7 +318,7 @@ class GatewayRunner:
             return prompt
         try:
             import yaml as _y
-            cfg_path = _hermes_home / "config.yaml"
+            cfg_path = _arachne_home / "config.yaml"
             if cfg_path.exists():
                 with open(cfg_path) as _f:
                     cfg = _y.safe_load(_f) or {}
@@ -339,7 +339,7 @@ class GatewayRunner:
         if not effort:
             try:
                 import yaml as _y
-                cfg_path = _hermes_home / "config.yaml"
+                cfg_path = _arachne_home / "config.yaml"
                 if cfg_path.exists():
                     with open(cfg_path) as _f:
                         cfg = _y.safe_load(_f) or {}
@@ -362,7 +362,7 @@ class GatewayRunner:
         """Load OpenRouter provider routing preferences from config.yaml."""
         try:
             import yaml as _y
-            cfg_path = _hermes_home / "config.yaml"
+            cfg_path = _arachne_home / "config.yaml"
             if cfg_path.exists():
                 with open(cfg_path) as _f:
                     cfg = _y.safe_load(_f) or {}
@@ -377,7 +377,7 @@ class GatewayRunner:
         
         Returns True if at least one adapter connected successfully.
         """
-        logger.info("Starting Hermes Gateway...")
+        logger.info("Starting Arachne Gateway...")
         logger.info("Session storage: %s", self.config.sessions_dir)
         
         # Warn if no user allowlists are configured and open access is not opted in
@@ -675,7 +675,7 @@ class GatewayRunner:
                             f"Hi~ I don't recognize you yet!\n\n"
                             f"Here's your pairing code: `{code}`\n\n"
                             f"Ask the bot owner to run:\n"
-                            f"`hermes pairing approve {platform_name} {code}`"
+                            f"`arachne pairing approve {platform_name} {code}`"
                         )
                 else:
                     adapter = self.adapters.get(source.platform)
@@ -849,7 +849,7 @@ class GatewayRunner:
                     await adapter.send(
                         source.chat_id,
                         f"📬 No home channel is set for {platform_name.title()}. "
-                        f"A home channel is where Hermes delivers cron job results "
+                        f"A home channel is where Arachne delivers cron job results "
                         f"and cross-platform messages.\n\n"
                         f"Type /sethome to make this chat your home channel, "
                         f"or ignore to skip."
@@ -1093,7 +1093,7 @@ class GatewayRunner:
         is_running = session_key in self._running_agents
         
         lines = [
-            "📊 **Hermes Gateway Status**",
+            "📊 **Arachne Gateway Status**",
             "",
             f"**Session ID:** `{session_entry.session_id[:12]}...`",
             f"**Created:** {session_entry.created_at.strftime('%Y-%m-%d %H:%M')}",
@@ -1122,7 +1122,7 @@ class GatewayRunner:
     async def _handle_help_command(self, event: MessageEvent) -> str:
         """Handle /help command - list available commands."""
         lines = [
-            "📖 **Hermes Commands**\n",
+            "📖 **Arachne Commands**\n",
             "`/new` — Start a new conversation",
             "`/reset` — Reset conversation history",
             "`/status` — Show session info",
@@ -1136,7 +1136,7 @@ class GatewayRunner:
             "`/usage` — Show token usage for this session",
             "`/insights [days]` — Show usage insights and analytics",
             "`/reload-mcp` — Reload MCP servers from config",
-            "`/update` — Update Hermes Agent to the latest version",
+            "`/update` — Update Arachne Agent to the latest version",
             "`/help` — Show this message",
         ]
         try:
@@ -1155,7 +1155,7 @@ class GatewayRunner:
         import yaml
 
         args = event.get_command_args().strip()
-        config_path = _hermes_home / 'config.yaml'
+        config_path = _arachne_home / 'config.yaml'
 
         # Resolve current model the same way the agent init does:
         # env vars first, then config.yaml always overrides.
@@ -1208,7 +1208,7 @@ class GatewayRunner:
         import yaml
 
         args = event.get_command_args().strip().lower()
-        config_path = _hermes_home / 'config.yaml'
+        config_path = _arachne_home / 'config.yaml'
 
         try:
             if config_path.exists():
@@ -1322,7 +1322,7 @@ class GatewayRunner:
         # Save to config.yaml
         try:
             import yaml
-            config_path = _hermes_home / 'config.yaml'
+            config_path = _arachne_home / 'config.yaml'
             user_config = {}
             if config_path.exists():
                 with open(config_path) as f:
@@ -1546,10 +1546,10 @@ class GatewayRunner:
             return f"❌ MCP reload failed: {e}"
 
     async def _handle_update_command(self, event: MessageEvent) -> str:
-        """Handle /update command — update Hermes Agent to the latest version.
+        """Handle /update command — update Arachne Agent to the latest version.
 
-        Spawns ``hermes update`` in a separate systemd scope so it survives the
-        gateway restart that ``hermes update`` triggers at the end.  A marker
+        Spawns ``arachne update`` in a separate systemd scope so it survives the
+        gateway restart that ``arachne update`` triggers at the end.  A marker
         file is written so the *new* gateway process can notify the user of the
         result on startup.
         """
@@ -1564,13 +1564,13 @@ class GatewayRunner:
         if not git_dir.exists():
             return "✗ Not a git repository — cannot update."
 
-        hermes_bin = shutil.which("hermes")
-        if not hermes_bin:
-            return "✗ `hermes` command not found on PATH."
+        arachne_bin = shutil.which("arachne")
+        if not arachne_bin:
+            return "✗ `arachne` command not found on PATH."
 
         # Write marker so the restarted gateway can notify this chat
-        pending_path = _hermes_home / ".update_pending.json"
-        output_path = _hermes_home / ".update_output.txt"
+        pending_path = _arachne_home / ".update_pending.json"
+        output_path = _arachne_home / ".update_output.txt"
         pending = {
             "platform": event.source.platform.value,
             "chat_id": event.source.chat_id,
@@ -1579,15 +1579,15 @@ class GatewayRunner:
         }
         pending_path.write_text(json.dumps(pending))
 
-        # Spawn `hermes update` in a separate cgroup so it survives gateway
+        # Spawn `arachne update` in a separate cgroup so it survives gateway
         # restart.  systemd-run --user --scope creates a transient scope unit.
-        update_cmd = f"{hermes_bin} update > {output_path} 2>&1"
+        update_cmd = f"{arachne_bin} update > {output_path} 2>&1"
         try:
             systemd_run = shutil.which("systemd-run")
             if systemd_run:
                 subprocess.Popen(
                     [systemd_run, "--user", "--scope",
-                     "--unit=hermes-update", "--",
+                     "--unit=arachne-update", "--",
                      "bash", "-c", update_cmd],
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL,
@@ -1605,15 +1605,15 @@ class GatewayRunner:
             pending_path.unlink(missing_ok=True)
             return f"✗ Failed to start update: {e}"
 
-        return "⚕ Starting Hermes update… I'll notify you when it's done."
+        return "⚕ Starting Arachne update… I'll notify you when it's done."
 
     async def _send_update_notification(self) -> None:
         """If the gateway is starting after a ``/update``, notify the user."""
         import json
         import re as _re
 
-        pending_path = _hermes_home / ".update_pending.json"
-        output_path = _hermes_home / ".update_output.txt"
+        pending_path = _arachne_home / ".update_pending.json"
+        output_path = _arachne_home / ".update_output.txt"
 
         if not pending_path.exists():
             return
@@ -1639,9 +1639,9 @@ class GatewayRunner:
                     # Truncate if too long for a single message
                     if len(output) > 3500:
                         output = "…" + output[-3500:]
-                    msg = f"✅ Hermes update finished — gateway restarted.\n\n```\n{output}\n```"
+                    msg = f"✅ Arachne update finished — gateway restarted.\n\n```\n{output}\n```"
                 else:
-                    msg = "✅ Hermes update finished — gateway restarted successfully."
+                    msg = "✅ Arachne update finished — gateway restarted successfully."
                 await adapter.send(chat_id, msg)
                 logger.info("Sent post-update notification to %s:%s", platform_str, chat_id)
         except Exception as e:
@@ -1884,17 +1884,17 @@ class GatewayRunner:
         # Determine toolset based on platform.
         # Check config.yaml for per-platform overrides, fallback to hardcoded defaults.
         default_toolset_map = {
-            Platform.LOCAL: "hermes-cli",
-            Platform.TELEGRAM: "hermes-telegram",
-            Platform.DISCORD: "hermes-discord",
-            Platform.WHATSAPP: "hermes-whatsapp",
-            Platform.SLACK: "hermes-slack",
+            Platform.LOCAL: "arachne-cli",
+            Platform.TELEGRAM: "arachne-telegram",
+            Platform.DISCORD: "arachne-discord",
+            Platform.WHATSAPP: "arachne-whatsapp",
+            Platform.SLACK: "arachne-slack",
         }
         
         # Try to load platform_toolsets from config
         platform_toolsets_config = {}
         try:
-            config_path = _hermes_home / 'config.yaml'
+            config_path = _arachne_home / 'config.yaml'
             if config_path.exists():
                 import yaml
                 with open(config_path, 'r') as f:
@@ -1917,14 +1917,14 @@ class GatewayRunner:
         if config_toolsets and isinstance(config_toolsets, list):
             enabled_toolsets = config_toolsets
         else:
-            default_toolset = default_toolset_map.get(source.platform, "hermes-telegram")
+            default_toolset = default_toolset_map.get(source.platform, "arachne-telegram")
             enabled_toolsets = [default_toolset]
         
         # Tool progress mode from config.yaml: "all", "new", "verbose", "off"
         # Falls back to env vars for backward compatibility
         _progress_cfg = {}
         try:
-            _tp_cfg_path = _hermes_home / "config.yaml"
+            _tp_cfg_path = _arachne_home / "config.yaml"
             if _tp_cfg_path.exists():
                 import yaml as _tp_yaml
                 with open(_tp_cfg_path) as _tp_f:
@@ -2143,7 +2143,7 @@ class GatewayRunner:
 
             try:
                 import yaml as _y
-                _cfg_path = _hermes_home / "config.yaml"
+                _cfg_path = _arachne_home / "config.yaml"
                 if _cfg_path.exists():
                     with open(_cfg_path) as _f:
                         _cfg = _y.safe_load(_f) or {}
@@ -2413,7 +2413,7 @@ def _start_cron_ticker(stop_event: threading.Event, adapters=None, interval: int
     Background thread that ticks the cron scheduler at a regular interval.
     
     Runs inside the gateway process so cronjobs fire automatically without
-    needing a separate `hermes cron daemon` or system cron entry.
+    needing a separate `arachne cron daemon` or system cron entry.
 
     Also refreshes the channel directory every 5 minutes and prunes the
     image/audio/document cache once per hour.
@@ -2475,16 +2475,16 @@ async def start_gateway(config: Optional[GatewayConfig] = None) -> bool:
     from gateway.status import get_running_pid
     existing_pid = get_running_pid()
     if existing_pid is not None and existing_pid != os.getpid():
-        hermes_home = os.getenv("ARACHNE_HOME", "~/.arachne")
+        arachne_home = os.getenv("ARACHNE_HOME", "~/.arachne")
         logger.error(
             "Another gateway instance is already running (PID %d, ARACHNE_HOME=%s). "
-            "Use 'hermes gateway restart' to replace it, or 'hermes gateway stop' first.",
-            existing_pid, hermes_home,
+            "Use 'arachne gateway restart' to replace it, or 'arachne gateway stop' first.",
+            existing_pid, arachne_home,
         )
         print(
             f"\n❌ Gateway already running (PID {existing_pid}).\n"
-            f"   Use 'hermes gateway restart' to replace it,\n"
-            f"   or 'hermes gateway stop' to kill it first.\n"
+            f"   Use 'arachne gateway restart' to replace it,\n"
+            f"   or 'arachne gateway stop' to kill it first.\n"
         )
         return False
 
@@ -2496,7 +2496,7 @@ async def start_gateway(config: Optional[GatewayConfig] = None) -> bool:
         pass
 
     # Configure rotating file log so gateway output is persisted for debugging
-    log_dir = _hermes_home / 'logs'
+    log_dir = _arachne_home / 'logs'
     log_dir.mkdir(parents=True, exist_ok=True)
     file_handler = RotatingFileHandler(
         log_dir / 'gateway.log',
@@ -2574,7 +2574,7 @@ def main():
     """CLI entry point for the gateway."""
     import argparse
     
-    parser = argparse.ArgumentParser(description="Hermes Gateway - Multi-platform messaging")
+    parser = argparse.ArgumentParser(description="Arachne Gateway - Multi-platform messaging")
     parser.add_argument("--config", "-c", help="Path to gateway config file")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     

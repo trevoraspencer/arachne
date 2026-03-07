@@ -1,5 +1,5 @@
 """
-ArachneAgentBaseEnv -- Abstract Base Environment for Hermes-Agent + Atropos
+ArachneAgentBaseEnv -- Abstract Base Environment for Arachne-Agent + Atropos
 
 Provides the Atropos integration plumbing that all arachne environments share:
 - Two-mode operation (OpenAI server for Phase 1, VLLM ManagedServer for Phase 2)
@@ -82,7 +82,7 @@ class ArachneAgentEnvConfig(BaseEnvConfig):
     # Mutually exclusive: use either enabled_toolsets OR distribution
     enabled_toolsets: Optional[List[str]] = Field(
         default=None,
-        description="Explicit list of hermes toolsets to enable (e.g., ['terminal', 'file', 'web']). "
+        description="Explicit list of arachne toolsets to enable (e.g., ['terminal', 'file', 'web']). "
         "If None and distribution is also None, all available toolsets are enabled.",
     )
     disabled_toolsets: Optional[List[str]] = Field(
@@ -154,10 +154,10 @@ class ArachneAgentEnvConfig(BaseEnvConfig):
 
     # --- Phase 2: Tool call parsing ---
     tool_call_parser: str = Field(
-        default="hermes",
+        default="arachne",
         description="Tool call parser name for Phase 2 (VLLM server type). "
         "Ignored in Phase 1 (OpenAI server type where VLLM parses natively). "
-        "Options: hermes, mistral, llama3_json, qwen, deepseek_v3, etc.",
+        "Options: arachne, mistral, llama3_json, qwen, deepseek_v3, etc.",
     )
 
     # --- Provider-specific parameters ---
@@ -211,7 +211,7 @@ class ArachneAgentBaseEnv(BaseEnv):
     ):
         super().__init__(config, server_configs, slurm, testing)
 
-        # Set terminal environment variables so hermes tools pick them up.
+        # Set terminal environment variables so arachne tools pick them up.
         # These can all be overridden per-environment via config fields instead
         # of requiring users to set shell env vars.
         if config.terminal_backend:
@@ -473,10 +473,10 @@ class ArachneAgentBaseEnv(BaseEnv):
                 tc_parser = get_parser(self.config.tool_call_parser)
             except KeyError:
                 logger.warning(
-                    "Tool call parser '%s' not found, falling back to 'hermes'",
+                    "Tool call parser '%s' not found, falling back to 'arachne'",
                     self.config.tool_call_parser,
                 )
-                tc_parser = get_parser("hermes")
+                tc_parser = get_parser("arachne")
 
             try:
                 async with self.server.managed_server(

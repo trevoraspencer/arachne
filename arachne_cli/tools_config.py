@@ -1,7 +1,7 @@
 """
-Unified tool configuration for Hermes Agent.
+Unified tool configuration for Arachne Agent.
 
-`hermes tools` and `hermes setup tools` both enter this module.
+`arachne tools` and `arachne setup tools` both enter this module.
 Select a platform → toggle toolsets on/off → for newly enabled tools
 that need API keys, run through provider-aware configuration.
 
@@ -17,7 +17,7 @@ import os
 
 from arachne_cli.config import (
     load_config, save_config, get_env_value, save_env_value,
-    get_hermes_home,
+    get_arachne_home,
 )
 from arachne_cli.colors import Colors, color
 
@@ -98,11 +98,11 @@ CONFIGURABLE_TOOLSETS = [
 
 # Platform display config
 PLATFORMS = {
-    "cli":      {"label": "🖥️  CLI",       "default_toolset": "hermes-cli"},
-    "telegram": {"label": "📱 Telegram",   "default_toolset": "hermes-telegram"},
-    "discord":  {"label": "💬 Discord",    "default_toolset": "hermes-discord"},
-    "slack":    {"label": "💼 Slack",      "default_toolset": "hermes-slack"},
-    "whatsapp": {"label": "📱 WhatsApp",   "default_toolset": "hermes-whatsapp"},
+    "cli":      {"label": "🖥️  CLI",       "default_toolset": "arachne-cli"},
+    "telegram": {"label": "📱 Telegram",   "default_toolset": "arachne-telegram"},
+    "discord":  {"label": "💬 Discord",    "default_toolset": "arachne-discord"},
+    "slack":    {"label": "💼 Slack",      "default_toolset": "arachne-slack"},
+    "whatsapp": {"label": "📱 WhatsApp",   "default_toolset": "arachne-whatsapp"},
 }
 
 
@@ -834,12 +834,12 @@ def _reconfigure_simple_requirements(ts_key: str):
 # ─── Main Entry Point ─────────────────────────────────────────────────────────
 
 def tools_command(args=None):
-    """Entry point for `hermes tools` and `hermes setup tools`."""
+    """Entry point for `arachne tools` and `arachne setup tools`."""
     config = load_config()
     enabled_platforms = _get_enabled_platforms()
 
     print()
-    print(color("⚕ Hermes Tool Configuration", Colors.CYAN, Colors.BOLD))
+    print(color("⚕ Arachne Tool Configuration", Colors.CYAN, Colors.BOLD))
     print(color("  Enable or disable tools per platform.", Colors.DIM))
     print(color("  Tools that need API keys will be configured when enabled.", Colors.DIM))
     print()
@@ -915,5 +915,5 @@ def tools_command(args=None):
 
     print()
     print(color("  Tool configuration saved to ~/.arachne/config.yaml", Colors.DIM))
-    print(color("  Changes take effect on next 'hermes' or gateway restart.", Colors.DIM))
+    print(color("  Changes take effect on next 'arachne' or gateway restart.", Colors.DIM))
     print()

@@ -1,12 +1,12 @@
 ---
 sidebar_position: 3
 title: "Discord"
-description: "Set up Hermes Agent as a Discord bot"
+description: "Set up Arachne Agent as a Discord bot"
 ---
 
 # Discord Setup
 
-Connect Hermes Agent to Discord to chat with it in DMs or server channels.
+Connect Arachne Agent to Discord to chat with it in DMs or server channels.
 
 ## Setup Steps
 
@@ -14,7 +14,7 @@ Connect Hermes Agent to Discord to chat with it in DMs or server channels.
 2. **Enable intents:** Bot → Privileged Gateway Intents → enable **Message Content Intent**
 3. **Get your user ID:** Enable Developer Mode in Discord settings, right-click your name → Copy ID
 4. **Invite to your server:** OAuth2 → URL Generator → scopes: `bot`, `applications.commands` → permissions: Send Messages, Read Message History, Attach Files
-5. **Configure:** Run `hermes gateway setup` and select Discord, or add to `~/.arachne/.env` manually:
+5. **Configure:** Run `arachne gateway setup` and select Discord, or add to `~/.arachne/.env` manually:
 
 ```bash
 DISCORD_BOT_TOKEN=MTIz...
@@ -24,7 +24,7 @@ DISCORD_ALLOWED_USERS=YOUR_USER_ID
 6. **Start the gateway:**
 
 ```bash
-hermes gateway
+arachne gateway
 ```
 
 ## Optional: Home Channel

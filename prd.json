@@ -72,7 +72,7 @@
         "Verification: corrupted model string grep returns empty after restoration"
       ],
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "notes": "This is the broadest and most delicate pass. Model name patterns: NousResearch/Hermes-*, Hermes-3, Hermes-2. These must be preserved exactly. Check the model name list from _rename_manifest.txt (recorded in US-001)."
     },
     {

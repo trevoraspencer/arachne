@@ -53,7 +53,7 @@ if _aux_sync_client is not None:
     if "openrouter" in str(_aux_sync_client.base_url).lower():
         _async_kwargs["default_headers"] = {
             "HTTP-Referer": "https://github.com/NousResearch/hermes-agent",
-            "X-OpenRouter-Title": "Hermes Agent",
+            "X-OpenRouter-Title": "Arachne Agent",
                 "X-OpenRouter-Categories": "productivity,cli-agent",
         }
     _aux_async_client = AsyncOpenAI(**_async_kwargs)

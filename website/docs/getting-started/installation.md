@@ -1,12 +1,12 @@
 ---
 sidebar_position: 2
 title: "Installation"
-description: "Install Hermes Agent on Linux, macOS, or WSL2"
+description: "Install Arachne Agent on Linux, macOS, or WSL2"
 ---
 
 # Installation
 
-Get Hermes Agent up and running in under two minutes with the one-line installer, or follow the manual steps for full control.
+Get Arachne Agent up and running in under two minutes with the one-line installer, or follow the manual steps for full control.
 
 ## Quick Install
 
@@ -17,12 +17,12 @@ curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scri
 ```
 
 :::warning Windows
-Native Windows is **not supported**. Please install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) and run Hermes Agent from there. The install command above works inside WSL2.
+Native Windows is **not supported**. Please install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) and run Arachne Agent from there. The install command above works inside WSL2.
 :::
 
 ### What the Installer Does
 
-The installer handles everything automatically — all dependencies (Python, Node.js, ripgrep, ffmpeg), the repo clone, virtual environment, and global `hermes` command setup. It finishes by running the interactive setup wizard to configure your LLM provider.
+The installer handles everything automatically — all dependencies (Python, Node.js, ripgrep, ffmpeg), the repo clone, virtual environment, and global `arachne` command setup. It finishes by running the interactive setup wizard to configure your LLM provider.
 
 ### After Installation
 
@@ -30,8 +30,8 @@ Reload your shell and start chatting:
 
 ```bash
 source ~/.bashrc   # or: source ~/.zshrc
-hermes setup       # Configure API keys (if you skipped during install)
-hermes             # Start chatting!
+arachne setup       # Configure API keys (if you skipped during install)
+arachne             # Start chatting!
 ```
 
 ---
@@ -81,7 +81,7 @@ uv venv venv --python 3.11
 ```
 
 :::tip
-You do **not** need to activate the venv to use `hermes`. The entry point has a hardcoded shebang pointing to the venv Python, so it works globally once symlinked.
+You do **not** need to activate the venv to use `arachne`. The entry point has a hardcoded shebang pointing to the venv Python, so it works globally once symlinked.
 :::
 
 ### Step 3: Install Python Dependencies
@@ -169,14 +169,14 @@ FAL_KEY=your-fal-key                   # Image generation (FLUX)
 
 Or set them via the CLI:
 ```bash
-hermes config set OPENROUTER_API_KEY sk-or-v1-your-key-here
+arachne config set OPENROUTER_API_KEY sk-or-v1-your-key-here
 ```
 
-### Step 8: Add `hermes` to Your PATH
+### Step 8: Add `arachne` to Your PATH
 
 ```bash
 mkdir -p ~/.local/bin
-ln -sf "$(pwd)/venv/bin/hermes" ~/.local/bin/hermes
+ln -sf "$(pwd)/venv/bin/arachne" ~/.local/bin/arachne
 ```
 
 If `~/.local/bin` isn't on your PATH, add it to your shell config:
@@ -195,16 +195,16 @@ fish_add_path $HOME/.local/bin
 ### Step 9: Run the Setup Wizard (Optional)
 
 ```bash
-hermes setup
+arachne setup
 ```
 
 ### Step 10: Verify the Installation
 
 ```bash
-hermes version    # Check that the command is available
-hermes doctor     # Run diagnostics to verify everything is working
-hermes status     # Check your configuration
-hermes chat -q "Hello! What tools do you have available?"
+arachne version    # Check that the command is available
+arachne doctor     # Run diagnostics to verify everything is working
+arachne status     # Check your configuration
+arachne chat -q "Hello! What tools do you have available?"
 ```
 
 ---
@@ -237,13 +237,13 @@ cp cli-config.yaml.example ~/.arachne/config.yaml
 touch ~/.arachne/.env
 echo 'OPENROUTER_API_KEY=sk-or-v1-your-key' >> ~/.arachne/.env
 
-# Make hermes available globally
+# Make arachne available globally
 mkdir -p ~/.local/bin
-ln -sf "$(pwd)/venv/bin/hermes" ~/.local/bin/hermes
+ln -sf "$(pwd)/venv/bin/arachne" ~/.local/bin/arachne
 
 # Verify
-hermes doctor
-hermes
+arachne doctor
+arachne
 ```
 
 ---
@@ -252,8 +252,8 @@ hermes
 
 | Problem | Solution |
 |---------|----------|
-| `hermes: command not found` | Reload your shell (`source ~/.bashrc`) or check PATH |
-| `API key not set` | Run `hermes setup` or `hermes config set OPENROUTER_API_KEY your_key` |
-| Missing config after update | Run `hermes config check` then `hermes config migrate` |
+| `arachne: command not found` | Reload your shell (`source ~/.bashrc`) or check PATH |
+| `API key not set` | Run `arachne setup` or `arachne config set OPENROUTER_API_KEY your_key` |
+| Missing config after update | Run `arachne config check` then `arachne config migrate` |
 
-For more diagnostics, run `hermes doctor` — it will tell you exactly what's missing and how to fix it.
+For more diagnostics, run `arachne doctor` — it will tell you exactly what's missing and how to fix it.

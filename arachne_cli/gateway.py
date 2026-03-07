@@ -1,7 +1,7 @@
 """
-Gateway subcommand for hermes CLI.
+Gateway subcommand for arachne CLI.
 
-Handles: hermes gateway [run|start|stop|restart|status|install|uninstall|setup]
+Handles: arachne gateway [run|start|stop|restart|status|install|uninstall|setup]
 """
 
 import asyncio
@@ -30,7 +30,7 @@ def find_gateway_pids() -> list:
     pids = []
     patterns = [
         "arachne_cli.main gateway",
-        "hermes gateway",
+        "arachne gateway",
         "gateway/run.py",
     ]
 
@@ -119,14 +119,14 @@ def is_windows() -> bool:
 # Service Configuration
 # =============================================================================
 
-SERVICE_NAME = "hermes-gateway"
-SERVICE_DESCRIPTION = "Hermes Agent Gateway - Messaging Platform Integration"
+SERVICE_NAME = "arachne-gateway"
+SERVICE_DESCRIPTION = "Arachne Agent Gateway - Messaging Platform Integration"
 
 def get_systemd_unit_path() -> Path:
     return Path.home() / ".config" / "systemd" / "user" / f"{SERVICE_NAME}.service"
 
 def get_launchd_plist_path() -> Path:
-    return Path.home() / "Library" / "LaunchAgents" / "ai.hermes.gateway.plist"
+    return Path.home() / "Library" / "LaunchAgents" / "ai.arachne.gateway.plist"
 
 def get_python_path() -> str:
     if is_windows():
@@ -138,12 +138,12 @@ def get_python_path() -> str:
     return sys.executable
 
 def get_arachne_cli_path() -> str:
-    """Get the path to the hermes CLI."""
+    """Get the path to the arachne CLI."""
     # Check if installed via pip
     import shutil
-    hermes_bin = shutil.which("hermes")
-    if hermes_bin:
-        return hermes_bin
+    arachne_bin = shutil.which("arachne")
+    if arachne_bin:
+        return arachne_bin
     
     # Fallback to direct module execution
     return f"{get_python_path()} -m arachne_cli.main"
@@ -193,8 +193,8 @@ def systemd_install(force: bool = False):
     print("✓ Service installed and enabled!")
     print()
     print("Next steps:")
-    print(f"  hermes gateway start              # Start the service")
-    print(f"  hermes gateway status             # Check status")
+    print(f"  arachne gateway start              # Start the service")
+    print(f"  arachne gateway status             # Check status")
     print(f"  journalctl --user -u {SERVICE_NAME} -f  # View logs")
     print()
     print("To enable lingering (keeps running after logout):")
@@ -229,7 +229,7 @@ def systemd_status(deep: bool = False):
     unit_path = get_systemd_unit_path()
     if not unit_path.exists():
         print("✗ Gateway service is not installed")
-        print("  Run: hermes gateway install")
+        print("  Run: arachne gateway install")
         return
     
     # Show detailed status first
@@ -251,7 +251,7 @@ def systemd_status(deep: bool = False):
         print("✓ Gateway service is running")
     else:
         print("✗ Gateway service is stopped")
-        print("  Run: hermes gateway start")
+        print("  Run: arachne gateway start")
     
     if deep:
         print()
@@ -269,7 +269,7 @@ def systemd_status(deep: bool = False):
 def generate_launchd_plist() -> str:
     python_path = get_python_path()
     working_dir = str(PROJECT_ROOT)
-    log_dir = Path.home() / ".hermes" / "logs"
+    log_dir = Path.home() / ".arachne" / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     
     return f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -277,7 +277,7 @@ def generate_launchd_plist() -> str:
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>ai.hermes.gateway</string>
+    <string>ai.arachne.gateway</string>
     
     <key>ProgramArguments</key>
     <array>
@@ -327,7 +327,7 @@ def launchd_install(force: bool = False):
     print("✓ Service installed and loaded!")
     print()
     print("Next steps:")
-    print("  hermes gateway status             # Check status")
+    print("  arachne gateway status             # Check status")
     print("  tail -f ~/.arachne/logs/gateway.log  # View logs")
 
 def launchd_uninstall():
@@ -341,11 +341,11 @@ def launchd_uninstall():
     print("✓ Service uninstalled")
 
 def launchd_start():
-    subprocess.run(["launchctl", "start", "ai.hermes.gateway"], check=True)
+    subprocess.run(["launchctl", "start", "ai.arachne.gateway"], check=True)
     print("✓ Service started")
 
 def launchd_stop():
-    subprocess.run(["launchctl", "stop", "ai.hermes.gateway"], check=True)
+    subprocess.run(["launchctl", "stop", "ai.arachne.gateway"], check=True)
     print("✓ Service stopped")
 
 def launchd_restart():
@@ -354,7 +354,7 @@ def launchd_restart():
 
 def launchd_status(deep: bool = False):
     result = subprocess.run(
-        ["launchctl", "list", "ai.hermes.gateway"],
+        ["launchctl", "list", "ai.arachne.gateway"],
         capture_output=True,
         text=True
     )
@@ -366,7 +366,7 @@ def launchd_status(deep: bool = False):
         print("✗ Gateway service is not loaded")
     
     if deep:
-        log_file = Path.home() / ".hermes" / "logs" / "gateway.log"
+        log_file = Path.home() / ".arachne" / "logs" / "gateway.log"
         if log_file.exists():
             print()
             print("Recent logs:")
@@ -384,7 +384,7 @@ def run_gateway(verbose: bool = False):
     from gateway.run import start_gateway
     
     print("┌─────────────────────────────────────────────────────────┐")
-    print("│           ⚕ Hermes Gateway Starting...                 │")
+    print("│           ⚕ Arachne Gateway Starting...                 │")
     print("├─────────────────────────────────────────────────────────┤")
     print("│  Messaging platforms + cron scheduler                    │")
     print("│  Press Ctrl+C to stop                                   │")
@@ -499,7 +499,7 @@ def _platform_status(platform: dict) -> str:
     val = get_env_value(token_var)
     if token_var == "WHATSAPP_ENABLED":
         if val and val.lower() == "true":
-            session_file = Path.home() / ".hermes" / "whatsapp" / "session" / "creds.json"
+            session_file = Path.home() / ".arachne" / "whatsapp" / "session" / "creds.json"
             if session_file.exists():
                 return "configured + paired"
             return "enabled, not paired"
@@ -557,7 +557,7 @@ def _setup_standard_platform(platform: dict):
                 print()
                 access_choices = [
                     "Enable open access (anyone can message the bot)",
-                    "Use DM pairing (unknown users request access, you approve with 'hermes pairing approve')",
+                    "Use DM pairing (unknown users request access, you approve with 'arachne pairing approve')",
                     "Skip for now (bot will deny all users until configured)",
                 ]
                 access_idx = prompt_choice("  How should unauthorized users be handled?", access_choices, 1)
@@ -566,9 +566,9 @@ def _setup_standard_platform(platform: dict):
                     print_warning("  Open access enabled — anyone can use your bot!")
                 elif access_idx == 1:
                     print_success("  DM pairing mode — users will receive a code to request access.")
-                    print_info("  Approve with: hermes pairing approve {platform} {code}")
+                    print_info("  Approve with: arachne pairing approve {platform} {code}")
                 else:
-                    print_info("  Skipped — configure later with 'hermes gateway setup'")
+                    print_info("  Skipped — configure later with 'arachne gateway setup'")
             continue
 
         value = prompt(f"  {var['prompt']}", password=var.get("password", False))
@@ -621,7 +621,7 @@ def _is_service_running() -> bool:
         return result.stdout.strip() == "active"
     elif is_macos() and get_launchd_plist_path().exists():
         result = subprocess.run(
-            ["launchctl", "list", "ai.hermes.gateway"],
+            ["launchctl", "list", "ai.arachne.gateway"],
             capture_output=True, text=True
         )
         return result.returncode == 0
@@ -706,7 +706,7 @@ def gateway_setup():
                         launchd_restart()
                     else:
                         kill_gateway_processes()
-                        print_info("Start manually: hermes gateway")
+                        print_info("Start manually: arachne gateway")
                 except subprocess.CalledProcessError as e:
                     print_error(f"  Restart failed: {e}")
         elif service_installed:
@@ -740,16 +740,16 @@ def gateway_setup():
                                 print_error(f"  Start failed: {e}")
                     except subprocess.CalledProcessError as e:
                         print_error(f"  Install failed: {e}")
-                        print_info("  You can try manually: hermes gateway install")
+                        print_info("  You can try manually: arachne gateway install")
                 else:
-                    print_info("  You can install later: hermes gateway install")
-                    print_info("  Or run in foreground:  hermes gateway")
+                    print_info("  You can install later: arachne gateway install")
+                    print_info("  Or run in foreground:  arachne gateway")
             else:
                 print_info("  Service install not supported on this platform.")
-                print_info("  Run in foreground: hermes gateway")
+                print_info("  Run in foreground: arachne gateway")
     else:
         print()
-        print_info("No platforms configured. Run 'hermes gateway setup' when ready.")
+        print_info("No platforms configured. Run 'arachne gateway setup' when ready.")
 
     print()
 
@@ -781,7 +781,7 @@ def gateway_command(args):
             launchd_install(force)
         else:
             print("Service installation not supported on this platform.")
-            print("Run manually: hermes gateway run")
+            print("Run manually: arachne gateway run")
             sys.exit(1)
     
     elif subcmd == "uninstall":
@@ -873,10 +873,10 @@ def gateway_command(args):
                 print("  (Running manually, not as a system service)")
                 print()
                 print("To install as a service:")
-                print("  hermes gateway install")
+                print("  arachne gateway install")
             else:
                 print("✗ Gateway is not running")
                 print()
                 print("To start:")
-                print("  hermes gateway          # Run in foreground")
-                print("  hermes gateway install  # Install as service")
+                print("  arachne gateway          # Run in foreground")
+                print("  arachne gateway install  # Install as service")

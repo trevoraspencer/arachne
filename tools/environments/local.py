@@ -48,7 +48,7 @@ def _find_shell() -> str:
             return candidate
 
     raise RuntimeError(
-        "Git Bash not found. Hermes Agent requires Git for Windows on Windows.\n"
+        "Git Bash not found. Arachne Agent requires Git for Windows on Windows.\n"
         "Install it from: https://git-scm.com/download/win\n"
         "Or set ARACHNE_GIT_BASH_PATH to your bash.exe location."
     )
@@ -165,9 +165,9 @@ class LocalEnvironment(BaseEnvironment):
             fenced_cmd = (
                 f"printf '{_OUTPUT_FENCE}';"
                 f" {exec_command};"
-                f" __hermes_rc=$?;"
+                f" __arachne_rc=$?;"
                 f" printf '{_OUTPUT_FENCE}';"
-                f" exit $__hermes_rc"
+                f" exit $__arachne_rc"
             )
             proc = subprocess.Popen(
                 [user_shell, "-lic", fenced_cmd],

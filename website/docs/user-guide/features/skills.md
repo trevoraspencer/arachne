@@ -27,8 +27,8 @@ Every installed skill is automatically available as a slash command:
 You can also interact with skills through natural conversation:
 
 ```bash
-hermes chat --toolsets skills -q "What skills do you have?"
-hermes chat --toolsets skills -q "Show me the axolotl skill"
+arachne chat --toolsets skills -q "What skills do you have?"
+arachne chat --toolsets skills -q "Show me the axolotl skill"
 ```
 
 ## Progressive Disclosure
@@ -52,7 +52,7 @@ description: Brief description of what this skill does
 version: 1.0.0
 platforms: [macos, linux]     # Optional — restrict to specific OS platforms
 metadata:
-  hermes:
+  arachne:
     tags: [python, automation]
     category: devops
 ---
@@ -144,17 +144,17 @@ The `patch` action is preferred for updates — it's more token-efficient than `
 Browse, search, install, and manage skills from online registries and official optional skills:
 
 ```bash
-hermes skills browse                     # Browse all hub skills (official first)
-hermes skills browse --source official   # Browse only official optional skills
-hermes skills search kubernetes          # Search all sources
-hermes skills install openai/skills/k8s  # Install with security scan
-hermes skills inspect openai/skills/k8s  # Preview before installing
-hermes skills list --source hub          # List hub-installed skills
-hermes skills audit                      # Re-scan all hub skills
-hermes skills uninstall k8s              # Remove a hub skill
-hermes skills publish skills/my-skill --to github --repo owner/repo
-hermes skills snapshot export setup.json # Export skill config
-hermes skills tap add myorg/skills-repo  # Add a custom source
+arachne skills browse                     # Browse all hub skills (official first)
+arachne skills browse --source official   # Browse only official optional skills
+arachne skills search kubernetes          # Search all sources
+arachne skills install openai/skills/k8s  # Install with security scan
+arachne skills inspect openai/skills/k8s  # Preview before installing
+arachne skills list --source hub          # List hub-installed skills
+arachne skills audit                      # Re-scan all hub skills
+arachne skills uninstall k8s              # Remove a hub skill
+arachne skills publish skills/my-skill --to github --repo owner/repo
+arachne skills snapshot export setup.json # Export skill config
+arachne skills tap add myorg/skills-repo  # Add a custom source
 ```
 
 All hub-installed skills go through a **security scanner** that checks for data exfiltration, prompt injection, destructive commands, and other threats.
@@ -163,7 +163,7 @@ All hub-installed skills go through a **security scanner** that checks for data 
 
 | Level | Source | Policy |
 |-------|--------|--------|
-| `builtin` | Ships with Hermes | Always trusted |
+| `builtin` | Ships with Arachne | Always trusted |
 | `official` | `optional-skills/` in the repo | Builtin trust, no third-party warning |
 | `trusted` | openai/skills, anthropics/skills | Trusted sources |
 | `community` | Everything else | Any findings = blocked unless `--force` |

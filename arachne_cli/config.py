@@ -1,15 +1,15 @@
 """
-Configuration management for Hermes Agent.
+Configuration management for Arachne Agent.
 
 Config files are stored in ~/.arachne/ for easy access:
 - ~/.arachne/config.yaml  - All settings (model, toolsets, terminal, etc.)
 - ~/.arachne/.env         - API keys and secrets
 
 This module provides:
-- hermes config          - Show current configuration
-- hermes config edit     - Open config in editor
-- hermes config set      - Set a specific value
-- hermes config wizard   - Re-run setup wizard
+- arachne config          - Show current configuration
+- arachne config edit     - Open config in editor
+- arachne config set      - Set a specific value
+- arachne config wizard   - Re-run setup wizard
 """
 
 import os
@@ -30,25 +30,25 @@ from arachne_cli.colors import Colors, color
 # Config paths
 # =============================================================================
 
-def get_hermes_home() -> Path:
-    """Get the Hermes home directory (~/.arachne)."""
-    return Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+def get_arachne_home() -> Path:
+    """Get the Arachne home directory (~/.arachne)."""
+    return Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
 
 def get_config_path() -> Path:
     """Get the main config file path."""
-    return get_hermes_home() / "config.yaml"
+    return get_arachne_home() / "config.yaml"
 
 def get_env_path() -> Path:
     """Get the .env file path (for API keys)."""
-    return get_hermes_home() / ".env"
+    return get_arachne_home() / ".env"
 
 def get_project_root() -> Path:
     """Get the project installation directory."""
     return Path(__file__).parent.parent.resolve()
 
-def ensure_hermes_home():
+def ensure_arachne_home():
     """Ensure ~/.arachne directory structure exists."""
-    home = get_hermes_home()
+    home = get_arachne_home()
     (home / "cron").mkdir(parents=True, exist_ok=True)
     (home / "sessions").mkdir(parents=True, exist_ok=True)
     (home / "logs").mkdir(parents=True, exist_ok=True)
@@ -61,7 +61,7 @@ def ensure_hermes_home():
 
 DEFAULT_CONFIG = {
     "model": "anthropic/claude-opus-4.6",
-    "toolsets": ["hermes-cli"],
+    "toolsets": ["arachne-cli"],
     "max_turns": 100,
     
     "terminal": {
@@ -137,7 +137,7 @@ DEFAULT_CONFIG = {
     "prefill_messages_file": "",
     
     # Honcho AI-native memory -- reads ~/.honcho/config.json as single source of truth.
-    # This section is only needed for hermes-specific overrides; everything else
+    # This section is only needed for arachne-specific overrides; everything else
     # (apiKey, workspace, peerName, sessions, enabled) comes from the global config.
     "honcho": {},
 
@@ -722,7 +722,7 @@ def load_config() -> Dict[str, Any]:
 
 def save_config(config: Dict[str, Any]):
     """Save configuration to ~/.arachne/config.yaml."""
-    ensure_hermes_home()
+    ensure_arachne_home()
     config_path = get_config_path()
     
     with open(config_path, 'w') as f:
@@ -750,7 +750,7 @@ def load_env() -> Dict[str, str]:
 
 def save_env_value(key: str, value: str):
     """Save or update a value in ~/.arachne/.env."""
-    ensure_hermes_home()
+    ensure_arachne_home()
     env_path = get_env_path()
     
     # On Windows, open() defaults to the system locale (cp1252) which can
@@ -812,7 +812,7 @@ def show_config():
     
     print()
     print(color("┌─────────────────────────────────────────────────────────┐", Colors.CYAN))
-    print(color("│              ⚕ Hermes Configuration                    │", Colors.CYAN))
+    print(color("│              ⚕ Arachne Configuration                    │", Colors.CYAN))
     print(color("└─────────────────────────────────────────────────────────┘", Colors.CYAN))
     
     # Paths
@@ -903,9 +903,9 @@ def show_config():
     
     print()
     print(color("─" * 60, Colors.DIM))
-    print(color("  hermes config edit     # Edit config file", Colors.DIM))
-    print(color("  hermes config set KEY VALUE", Colors.DIM))
-    print(color("  hermes setup           # Run setup wizard", Colors.DIM))
+    print(color("  arachne config edit     # Edit config file", Colors.DIM))
+    print(color("  arachne config set KEY VALUE", Colors.DIM))
+    print(color("  arachne setup           # Run setup wizard", Colors.DIM))
     print()
 
 
@@ -990,7 +990,7 @@ def set_config_value(key: str, value: str):
     current[parts[-1]] = value
     
     # Write only user config back (not the full merged defaults)
-    ensure_hermes_home()
+    ensure_arachne_home()
     with open(config_path, 'w') as f:
         yaml.dump(user_config, f, default_flow_style=False, sort_keys=False)
     
@@ -1029,12 +1029,12 @@ def config_command(args):
         key = getattr(args, 'key', None)
         value = getattr(args, 'value', None)
         if not key or not value:
-            print("Usage: hermes config set KEY VALUE")
+            print("Usage: arachne config set KEY VALUE")
             print()
             print("Examples:")
-            print("  hermes config set model anthropic/claude-sonnet-4")
-            print("  hermes config set terminal.backend docker")
-            print("  hermes config set OPENROUTER_API_KEY sk-or-...")
+            print("  arachne config set model anthropic/claude-sonnet-4")
+            print("  arachne config set terminal.backend docker")
+            print("  arachne config set OPENROUTER_API_KEY sk-or-...")
             sys.exit(1)
         set_config_value(key, value)
     
@@ -1134,7 +1134,7 @@ def config_command(args):
         if missing_config:
             print()
             print(color(f"  {len(missing_config)} new config option(s) available", Colors.YELLOW))
-            print(f"    Run 'hermes config migrate' to add them")
+            print(f"    Run 'arachne config migrate' to add them")
         
         print()
     
@@ -1142,11 +1142,11 @@ def config_command(args):
         print(f"Unknown config command: {subcmd}")
         print()
         print("Available commands:")
-        print("  hermes config           Show current configuration")
-        print("  hermes config edit      Open config in editor")
-        print("  hermes config set K V   Set a config value")
-        print("  hermes config check     Check for missing/outdated config")
-        print("  hermes config migrate   Update config with new options")
-        print("  hermes config path      Show config file path")
-        print("  hermes config env-path  Show .env file path")
+        print("  arachne config           Show current configuration")
+        print("  arachne config edit      Open config in editor")
+        print("  arachne config set K V   Set a config value")
+        print("  arachne config check     Check for missing/outdated config")
+        print("  arachne config migrate   Update config with new options")
+        print("  arachne config path      Show config file path")
+        print("  arachne config env-path  Show .env file path")
         sys.exit(1)

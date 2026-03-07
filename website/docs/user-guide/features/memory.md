@@ -1,12 +1,12 @@
 ---
 sidebar_position: 3
 title: "Persistent Memory"
-description: "How Hermes Agent remembers across sessions — MEMORY.md, USER.md, and session search"
+description: "How Arachne Agent remembers across sessions — MEMORY.md, USER.md, and session search"
 ---
 
 # Persistent Memory
 
-Hermes Agent has bounded, curated memory that persists across sessions. This lets it remember your preferences, your projects, your environment, and things it has learned.
+Arachne Agent has bounded, curated memory that persists across sessions. This lets it remember your preferences, your projects, your environment, and things it has learned.
 
 ## How It Works
 
@@ -181,7 +181,7 @@ Beyond MEMORY.md and USER.md, the agent can search its past conversations using 
 - The agent can find things it discussed weeks ago, even if they're not in its active memory
 
 ```bash
-hermes sessions list    # Browse past sessions
+arachne sessions list    # Browse past sessions
 ```
 
 ### session_search vs memory
@@ -231,8 +231,8 @@ cat > ~/.honcho/config.json << 'EOF'
   "apiKey": "your-honcho-api-key",
   "peerName": "your-name",
   "hosts": {
-    "hermes": {
-      "workspace": "hermes"
+    "arachne": {
+      "workspace": "arachne"
     }
   }
 }
@@ -241,7 +241,7 @@ EOF
 
 Or via environment variable:
 ```bash
-hermes config set HONCHO_API_KEY your-key
+arachne config set HONCHO_API_KEY your-key
 ```
 
 :::tip

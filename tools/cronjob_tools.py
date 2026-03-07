@@ -1,8 +1,8 @@
 """
-Cron job management tools for Hermes Agent.
+Cron job management tools for Arachne Agent.
 
 These tools allow the agent to schedule, list, and remove automated tasks.
-Only available when running via CLI (hermes-cli toolset).
+Only available when running via CLI (arachne-cli toolset).
 
 IMPORTANT: Cronjobs run in isolated sessions with NO prior context.
 The prompt must contain ALL necessary information.

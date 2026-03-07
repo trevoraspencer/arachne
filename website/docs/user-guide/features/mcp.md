@@ -1,16 +1,16 @@
 ---
 sidebar_position: 4
 title: "MCP (Model Context Protocol)"
-description: "Connect Hermes Agent to external tool servers via MCP — databases, APIs, filesystems, and more"
+description: "Connect Arachne Agent to external tool servers via MCP — databases, APIs, filesystems, and more"
 ---
 
 # MCP (Model Context Protocol)
 
-MCP lets Hermes Agent connect to external tool servers — giving the agent access to databases, APIs, filesystems, and more without any code changes.
+MCP lets Arachne Agent connect to external tool servers — giving the agent access to databases, APIs, filesystems, and more without any code changes.
 
 ## Overview
 
-The [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) is an open standard for connecting AI agents to external tools and data sources. MCP servers expose tools over a lightweight RPC protocol, and Hermes Agent can connect to any compliant server automatically.
+The [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) is an open standard for connecting AI agents to external tools and data sources. MCP servers expose tools over a lightweight RPC protocol, and Arachne Agent can connect to any compliant server automatically.
 
 What this means for you:
 
@@ -131,7 +131,7 @@ Many MCP server docs show Claude Desktop JSON format. Here's the translation:
 }
 ```
 
-**Hermes YAML:**
+**Arachne YAML:**
 ```yaml
 mcp_servers:                          # mcpServers → mcp_servers (snake_case)
   filesystem:
@@ -165,7 +165,7 @@ In addition to the server's own tools, each MCP server also gets 4 utility tools
 
 ### Reconnection
 
-If an MCP server disconnects, Hermes automatically reconnects with exponential backoff (1s, 2s, 4s, 8s, 16s — max 5 attempts). Initial connection failures are reported immediately.
+If an MCP server disconnects, Arachne automatically reconnects with exponential backoff (1s, 2s, 4s, 8s, 16s — max 5 attempts). Initial connection failures are reported immediately.
 
 ### Shutdown
 
@@ -267,7 +267,7 @@ mcp_servers:
 
 ### Reload MCP Servers
 
-You can reload MCP servers without restarting Hermes:
+You can reload MCP servers without restarting Arachne:
 
 - In the CLI: the agent reconnects automatically
 - In messaging: send `/reload-mcp`

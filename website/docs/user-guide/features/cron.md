@@ -37,11 +37,11 @@ The agent will use the `schedule_cronjob` tool to set it up.
 **Cron execution is handled by the gateway daemon.** The gateway ticks the scheduler every 60 seconds, running any due jobs in isolated agent sessions:
 
 ```bash
-hermes gateway install     # Install as system service (recommended)
-hermes gateway             # Or run in foreground
+arachne gateway install     # Install as system service (recommended)
+arachne gateway             # Or run in foreground
 
-hermes cron list           # View scheduled jobs
-hermes cron status         # Check if gateway is running
+arachne cron list           # View scheduled jobs
+arachne cron status         # Check if gateway is running
 ```
 
 ### The Gateway Scheduler
@@ -75,9 +75,9 @@ When scheduling jobs, you specify where the output goes:
 | `"telegram:123456"` | Specific Telegram chat by ID | For directing output to a specific chat |
 | `"discord:987654"` | Specific Discord channel by ID | For directing output to a specific channel |
 
-**How `"origin"` works:** When a job is created from a messaging platform, Hermes records the source platform and chat ID. When the job runs and deliver is `"origin"`, the output is sent back to that exact platform and chat. If origin info isn't available (e.g., job created from CLI), delivery falls back to local.
+**How `"origin"` works:** When a job is created from a messaging platform, Arachne records the source platform and chat ID. When the job runs and deliver is `"origin"`, the output is sent back to that exact platform and chat. If origin info isn't available (e.g., job created from CLI), delivery falls back to local.
 
-**How platform names work:** When you specify a bare platform name like `"telegram"`, Hermes first checks if the job's origin matches that platform and uses the origin chat ID. Otherwise, it falls back to the platform's home channel configured via environment variable (e.g., `TELEGRAM_HOME_CHANNEL`).
+**How platform names work:** When you specify a bare platform name like `"telegram"`, Arachne first checks if the job's origin matches that platform and uses the origin chat ID. Otherwise, it falls back to the platform's home channel configured via environment variable (e.g., `TELEGRAM_HOME_CHANNEL`).
 
 The agent's final response is automatically delivered — you do **not** need to include `send_message` in the cron prompt.
 
@@ -234,8 +234,8 @@ schedule_cronjob(
 
 ```bash
 # CLI commands
-hermes cron list           # View all scheduled jobs
-hermes cron status         # Check if the scheduler is running
+arachne cron list           # View all scheduled jobs
+arachne cron status         # Check if the scheduler is running
 
 # Slash commands (inside chat)
 /cron list

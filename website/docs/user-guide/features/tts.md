@@ -6,7 +6,7 @@ description: "Text-to-speech and voice message transcription across all platform
 
 # Voice & TTS
 
-Hermes Agent supports both text-to-speech output and voice message transcription across all messaging platforms.
+Arachne Agent supports both text-to-speech output and voice message transcription across all messaging platforms.
 
 ## Text-to-Speech
 

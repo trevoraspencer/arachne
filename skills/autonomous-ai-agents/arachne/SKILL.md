@@ -1,23 +1,23 @@
 ---
 name: arachne-spawning
-description: Spawn additional Hermes Agent instances as autonomous subprocesses for independent long-running tasks. Supports non-interactive one-shot mode (-q) and interactive PTY mode for multi-turn collaboration. Different from delegate_task — this runs a full separate hermes process.
+description: Spawn additional Arachne Agent instances as autonomous subprocesses for independent long-running tasks. Supports non-interactive one-shot mode (-q) and interactive PTY mode for multi-turn collaboration. Different from delegate_task — this runs a full separate arachne process.
 version: 1.1.0
-author: Hermes Agent
+author: Arachne Agent
 license: MIT
 metadata:
-  hermes:
-    tags: [Agent, Hermes, Multi-Agent, Orchestration, Subprocess, Interactive]
+  arachne:
+    tags: [Agent, Arachne, Multi-Agent, Orchestration, Subprocess, Interactive]
     homepage: https://github.com/NousResearch/hermes-agent
     related_skills: [claude-code, codex]
 ---
 
-# Spawning Hermes Agent Instances
+# Spawning Arachne Agent Instances
 
-Run additional Hermes Agent processes as autonomous subprocesses. Unlike `delegate_task` (which spawns lightweight subagents sharing the same process), this launches fully independent `hermes` CLI processes with their own sessions, tools, and terminal environments.
+Run additional Arachne Agent processes as autonomous subprocesses. Unlike `delegate_task` (which spawns lightweight subagents sharing the same process), this launches fully independent `arachne` CLI processes with their own sessions, tools, and terminal environments.
 
 ## When to Use This vs delegate_task
 
-| Feature | `delegate_task` | Spawning `hermes` process |
+| Feature | `delegate_task` | Spawning `arachne` process |
 |---------|-----------------|--------------------------|
 | Context isolation | Separate conversation, shared process | Fully independent process |
 | Tool access | Subset of parent's tools | Full tool access (all toolsets) |
@@ -29,7 +29,7 @@ Run additional Hermes Agent processes as autonomous subprocesses. Unlike `delega
 
 ## Prerequisites
 
-- `hermes` CLI installed and on PATH
+- `arachne` CLI installed and on PATH
 - API key configured in `~/.arachne/.env`
 
 ### Installation
@@ -48,10 +48,10 @@ Resume a prior CLI session instead of starting fresh. Useful for continuing long
 
 ```
 # Resume the most recent CLI session
-terminal(command="hermes --continue", background=true, pty=true)
+terminal(command="arachne --continue", background=true, pty=true)
 
 # Resume a specific session by ID (shown on exit)
-terminal(command="hermes --resume 20260225_143052_a1b2c3", background=true, pty=true)
+terminal(command="arachne --resume 20260225_143052_a1b2c3", background=true, pty=true)
 ```
 
 The full conversation history (messages, tool calls, responses) is restored from SQLite. The agent sees everything from the previous session.
@@ -61,24 +61,24 @@ The full conversation history (messages, tool calls, responses) is restored from
 Run a single query non-interactively. The agent executes, does its work, and exits:
 
 ```
-terminal(command="hermes chat -q 'Research the latest GRPO training papers and write a summary to ~/research/grpo.md'", timeout=300)
+terminal(command="arachne chat -q 'Research the latest GRPO training papers and write a summary to ~/research/grpo.md'", timeout=300)
 ```
 
 Background for long tasks:
 ```
-terminal(command="hermes chat -q 'Set up CI/CD for ~/myapp'", background=true)
+terminal(command="arachne chat -q 'Set up CI/CD for ~/myapp'", background=true)
 # Returns session_id, monitor with process tool
 ```
 
 ## Mode 2: Interactive PTY Session
 
-Launch a full interactive Hermes session with PTY for back-and-forth collaboration. You can send messages, review its work, give feedback, and steer it.
+Launch a full interactive Arachne session with PTY for back-and-forth collaboration. You can send messages, review its work, give feedback, and steer it.
 
-Note: Hermes uses prompt_toolkit for its CLI UI. Through a PTY, this works because ptyprocess provides a real terminal — input sent via `submit` arrives as keystrokes. The output log will contain ANSI escape sequences from the UI rendering — focus on the text content, not the formatting.
+Note: Arachne uses prompt_toolkit for its CLI UI. Through a PTY, this works because ptyprocess provides a real terminal — input sent via `submit` arrives as keystrokes. The output log will contain ANSI escape sequences from the UI rendering — focus on the text content, not the formatting.
 
 ```
-# Start interactive hermes in background with PTY
-terminal(command="hermes", workdir="~/project", background=true, pty=true)
+# Start interactive arachne in background with PTY
+terminal(command="arachne", workdir="~/project", background=true, pty=true)
 # Returns session_id
 
 # Send it a task
@@ -102,9 +102,9 @@ process(action="submit", session_id="<id>", data="/exit")
 
 ### Interactive Collaboration Patterns
 
-**Code review loop** — spawn hermes, send code for review, iterate on feedback:
+**Code review loop** — spawn arachne, send code for review, iterate on feedback:
 ```
-terminal(command="hermes", workdir="~/project", background=true, pty=true)
+terminal(command="arachne", workdir="~/project", background=true, pty=true)
 process(action="submit", session_id="<id>", data="Review the changes in src/auth.py and suggest improvements")
 # ... read its review ...
 process(action="submit", session_id="<id>", data="Good points. Go ahead and implement suggestions 1 and 3")
@@ -114,7 +114,7 @@ process(action="submit", session_id="<id>", data="Run the tests to make sure not
 
 **Research with steering** — start broad, narrow down based on findings:
 ```
-terminal(command="hermes", background=true, pty=true)
+terminal(command="arachne", background=true, pty=true)
 process(action="submit", session_id="<id>", data="Search for the latest papers on KV cache compression techniques")
 # ... read its findings ...
 process(action="submit", session_id="<id>", data="The MQA approach looks promising. Dig deeper into that one and compare with GQA")
@@ -125,11 +125,11 @@ process(action="submit", session_id="<id>", data="Write up everything you found 
 **Multi-agent coordination** — spawn two agents working on related tasks, pass context between them:
 ```
 # Agent A: backend
-terminal(command="hermes", workdir="~/project/backend", background=true, pty=true)
+terminal(command="arachne", workdir="~/project/backend", background=true, pty=true)
 process(action="submit", session_id="<agent-a>", data="Build a REST API for user management with CRUD endpoints")
 
 # Agent B: frontend
-terminal(command="hermes", workdir="~/project/frontend", background=true, pty=true)
+terminal(command="arachne", workdir="~/project/frontend", background=true, pty=true)
 process(action="submit", session_id="<agent-b>", data="Build a React dashboard that will connect to a REST API at localhost:8000/api/users")
 
 # Check Agent A's progress, relay API schema to Agent B
@@ -142,15 +142,15 @@ process(action="submit", session_id="<agent-b>", data="Here's the API schema Age
 Spawn multiple independent agents for unrelated tasks:
 
 ```
-terminal(command="hermes chat -q 'Research competitor landing pages and write a report to ~/research/competitors.md'", background=true)
-terminal(command="hermes chat -q 'Audit security of ~/myapp and write findings to ~/myapp/SECURITY_AUDIT.md'", background=true)
+terminal(command="arachne chat -q 'Research competitor landing pages and write a report to ~/research/competitors.md'", background=true)
+terminal(command="arachne chat -q 'Audit security of ~/myapp and write findings to ~/myapp/SECURITY_AUDIT.md'", background=true)
 process(action="list")
 ```
 
 ## With Custom Model
 
 ```
-terminal(command="hermes chat -q 'Summarize this codebase' --model google/gemini-2.5-pro", workdir="~/project", background=true)
+terminal(command="arachne chat -q 'Summarize this codebase' --model google/gemini-2.5-pro", workdir="~/project", background=true)
 ```
 
 ## Gateway Cron Integration
@@ -172,23 +172,23 @@ For scheduled autonomous tasks, use the `schedule_cronjob` tool instead of spawn
 - **Interactive PTY + prompt_toolkit**: The `submit` action sends `\n` (line feed) but prompt_toolkit in raw mode expects `\r` (carriage return) for Enter. Text appears in the prompt but never submits. **Workaround**: Use **tmux** instead of raw PTY mode. tmux's `send-keys Enter` sends the correct `\r`:
 
 ```
-# Start hermes inside tmux
-tmux new-session -d -s hermes-session -x 120 -y 40 "hermes"
+# Start arachne inside tmux
+tmux new-session -d -s arachne-session -x 120 -y 40 "arachne"
 sleep 10  # Wait for banner/startup
 
 # Send messages
-tmux send-keys -t hermes-session "your message here" Enter
+tmux send-keys -t arachne-session "your message here" Enter
 
 # Read output
 sleep 15  # Wait for LLM response
-tmux capture-pane -t hermes-session -p
+tmux capture-pane -t arachne-session -p
 
 # Multi-turn: just send more messages and capture again
-tmux send-keys -t hermes-session "follow-up message" Enter
+tmux send-keys -t arachne-session "follow-up message" Enter
 
 # Exit when done
-tmux send-keys -t hermes-session "/exit" Enter
-tmux kill-session -t hermes-session
+tmux send-keys -t arachne-session "/exit" Enter
+tmux kill-session -t arachne-session
 ```
 
 ## Rules

@@ -1,7 +1,7 @@
 ---
 sidebar_position: 3
 title: "Updating & Uninstalling"
-description: "How to update Hermes Agent to the latest version or uninstall it"
+description: "How to update Arachne Agent to the latest version or uninstall it"
 ---
 
 # Updating & Uninstalling
@@ -11,13 +11,13 @@ description: "How to update Hermes Agent to the latest version or uninstall it"
 Update to the latest version with a single command:
 
 ```bash
-hermes update
+arachne update
 ```
 
 This pulls the latest code, updates dependencies, and prompts you to configure any new options that were added since your last update.
 
 :::tip
-`hermes update` automatically detects new configuration options and prompts you to add them. If you skipped that prompt, you can manually run `hermes config check` to see missing options, then `hermes config migrate` to interactively add them.
+`arachne update` automatically detects new configuration options and prompts you to add them. If you skipped that prompt, you can manually run `arachne config check` to see missing options, then `arachne config migrate` to interactively add them.
 :::
 
 ### Updating from Messaging Platforms
@@ -48,8 +48,8 @@ uv pip install -e "./mini-swe-agent"
 uv pip install -e "./tinker-atropos"
 
 # Check for new config options
-hermes config check
-hermes config migrate   # Interactively add any missing options
+arachne config check
+arachne config migrate   # Interactively add any missing options
 ```
 
 ---
@@ -57,7 +57,7 @@ hermes config migrate   # Interactively add any missing options
 ## Uninstalling
 
 ```bash
-hermes uninstall
+arachne uninstall
 ```
 
 The uninstaller gives you the option to keep your configuration files (`~/.arachne/`) for a future reinstall.
@@ -65,7 +65,7 @@ The uninstaller gives you the option to keep your configuration files (`~/.arach
 ### Manual Uninstall
 
 ```bash
-rm -f ~/.local/bin/hermes
+rm -f ~/.local/bin/arachne
 rm -rf /path/to/arachne
 rm -rf ~/.arachne            # Optional — keep if you plan to reinstall
 ```
@@ -73,8 +73,8 @@ rm -rf ~/.arachne            # Optional — keep if you plan to reinstall
 :::info
 If you installed the gateway as a system service, stop and disable it first:
 ```bash
-hermes gateway stop
-# Linux: systemctl --user disable hermes-gateway
-# macOS: launchctl remove ai.hermes.gateway
+arachne gateway stop
+# Linux: systemctl --user disable arachne-gateway
+# macOS: launchctl remove ai.arachne.gateway
 ```
 :::

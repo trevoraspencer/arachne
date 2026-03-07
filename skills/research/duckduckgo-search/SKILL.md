@@ -5,7 +5,7 @@ version: 1.1.0
 author: gamedevCloudy
 license: MIT
 metadata:
-  hermes:
+  arachne:
     tags: [search, duckduckgo, web-search, free, fallback]
     related_skills: [arxiv]
 ---

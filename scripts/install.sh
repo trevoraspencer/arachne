@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Hermes Agent Installer
+# Arachne Agent Installer
 # ============================================================================
 # Installation script for Linux and macOS.
 # Uses uv for fast Python provisioning and package management.
@@ -28,7 +28,7 @@ BOLD='\033[1m'
 # Configuration
 REPO_URL_SSH="git@github.com:NousResearch/hermes-agent.git"
 REPO_URL_HTTPS="https://github.com/NousResearch/hermes-agent.git"
-ARACHNE_HOME="$HOME/.hermes"
+ARACHNE_HOME="$HOME/.arachne"
 INSTALL_DIR="${ARACHNE_INSTALL_DIR:-$ARACHNE_HOME/arachne}"
 PYTHON_VERSION="3.11"
 NODE_VERSION="22"
@@ -67,7 +67,7 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         -h|--help)
-            echo "Hermes Agent Installer"
+            echo "Arachne Agent Installer"
             echo ""
             echo "Usage: install.sh [OPTIONS]"
             echo ""
@@ -94,7 +94,7 @@ print_banner() {
     echo ""
     echo -e "${MAGENTA}${BOLD}"
     echo "┌─────────────────────────────────────────────────────────┐"
-    echo "│             ⚕ Hermes Agent Installer                   │"
+    echo "│             ⚕ Arachne Agent Installer                   │"
     echo "├─────────────────────────────────────────────────────────┤"
     echo "│  An open source AI agent by Nous Research.              │"
     echo "└─────────────────────────────────────────────────────────┘"
@@ -285,7 +285,7 @@ check_node() {
     if [ -x "$ARACHNE_HOME/node/bin/node" ]; then
         export PATH="$ARACHNE_HOME/node/bin:$PATH"
         local found_ver=$("$ARACHNE_HOME/node/bin/node" --version)
-        log_success "Node.js $found_ver found (Hermes-managed)"
+        log_success "Node.js $found_ver found (Arachne-managed)"
         HAS_NODE=true
         return 0
     fi
@@ -677,21 +677,21 @@ install_deps() {
 }
 
 setup_path() {
-    log_info "Setting up hermes command..."
+    log_info "Setting up arachne command..."
 
     if [ "$USE_VENV" = true ]; then
-        ARACHNE_BIN="$INSTALL_DIR/venv/bin/hermes"
+        ARACHNE_BIN="$INSTALL_DIR/venv/bin/arachne"
     else
-        ARACHNE_BIN="$(which hermes 2>/dev/null || echo "")"
+        ARACHNE_BIN="$(which arachne 2>/dev/null || echo "")"
         if [ -z "$ARACHNE_BIN" ]; then
-            log_warn "hermes not found on PATH after install"
+            log_warn "arachne not found on PATH after install"
             return 0
         fi
     fi
 
     # Verify the entry point script was actually generated
     if [ ! -x "$ARACHNE_BIN" ]; then
-        log_warn "hermes entry point not found at $ARACHNE_BIN"
+        log_warn "arachne entry point not found at $ARACHNE_BIN"
         log_info "This usually means the pip install didn't complete successfully."
         log_info "Try: cd $INSTALL_DIR && uv pip install -e '.[all]'"
         return 0
@@ -699,8 +699,8 @@ setup_path() {
 
     # Create symlink in ~/.local/bin (standard user binary location, usually on PATH)
     mkdir -p "$HOME/.local/bin"
-    ln -sf "$ARACHNE_BIN" "$HOME/.local/bin/hermes"
-    log_success "Symlinked hermes → ~/.local/bin/hermes"
+    ln -sf "$ARACHNE_BIN" "$HOME/.local/bin/arachne"
+    log_success "Symlinked arachne → ~/.local/bin/arachne"
 
     # Check if ~/.local/bin is on PATH; if not, add it to shell config.
     # Detect the user's actual login shell (not the shell running this script,
@@ -730,7 +730,7 @@ setup_path() {
         for SHELL_CONFIG in "${SHELL_CONFIGS[@]}"; do
             if ! grep -v '^[[:space:]]*#' "$SHELL_CONFIG" 2>/dev/null | grep -qE 'PATH=.*\.local/bin'; then
                 echo "" >> "$SHELL_CONFIG"
-                echo "# Hermes Agent — ensure ~/.local/bin is on PATH" >> "$SHELL_CONFIG"
+                echo "# Arachne Agent — ensure ~/.local/bin is on PATH" >> "$SHELL_CONFIG"
                 echo "$PATH_LINE" >> "$SHELL_CONFIG"
                 log_success "Added ~/.local/bin to PATH in $SHELL_CONFIG"
             fi
@@ -744,10 +744,10 @@ setup_path() {
         log_info "~/.local/bin already on PATH"
     fi
 
-    # Export for current session so hermes works immediately
+    # Export for current session so arachne works immediately
     export PATH="$HOME/.local/bin:$PATH"
 
-    log_success "hermes command ready"
+    log_success "arachne command ready"
 }
 
 copy_config_templates() {
@@ -782,12 +782,12 @@ copy_config_templates() {
     # Create SOUL.md if it doesn't exist (global persona file)
     if [ ! -f "$ARACHNE_HOME/SOUL.md" ]; then
         cat > "$ARACHNE_HOME/SOUL.md" << 'SOUL_EOF'
-# Hermes Agent Persona
+# Arachne Agent Persona
 
 <!--
 This file defines the agent's personality and tone.
 The agent will embody whatever you write here.
-Edit this to customize how Hermes communicates with you.
+Edit this to customize how Arachne communicates with you.
 
 Examples:
   - "You are a warm, playful assistant who uses kaomoji occasionally."
@@ -852,7 +852,7 @@ run_setup_wizard() {
     # install script itself is piped (curl | bash). Only skip if no
     # terminal is available at all (e.g. Docker build, CI).
     if ! [ -e /dev/tty ]; then
-        log_info "Setup wizard skipped (no terminal available). Run 'hermes setup' after install."
+        log_info "Setup wizard skipped (no terminal available). Run 'arachne setup' after install."
         return 0
     fi
 
@@ -862,7 +862,7 @@ run_setup_wizard() {
 
     cd "$INSTALL_DIR"
 
-    # Run hermes setup using the venv Python directly (no activation needed).
+    # Run arachne setup using the venv Python directly (no activation needed).
     # Redirect stdin from /dev/tty so interactive prompts work when piped from curl.
     if [ "$USE_VENV" = true ]; then
         "$INSTALL_DIR/venv/bin/python" -m arachne_cli.main setup < /dev/tty
@@ -893,7 +893,7 @@ maybe_start_gateway() {
 
     echo ""
     log_info "Messaging platform token detected!"
-    log_info "The gateway needs to be running for Hermes to send/receive messages."
+    log_info "The gateway needs to be running for Arachne to send/receive messages."
 
     # If WhatsApp is enabled and no session exists yet, run foreground first for QR scan
     WHATSAPP_VAL=$(grep "^WHATSAPP_ENABLED=" "$ENV_FILE" 2>/dev/null | cut -d'=' -f2-)
@@ -902,22 +902,22 @@ maybe_start_gateway() {
         if [ "$IS_INTERACTIVE" = true ]; then
             echo ""
             log_info "WhatsApp is enabled but not yet paired."
-            log_info "Running 'hermes whatsapp' to pair via QR code..."
+            log_info "Running 'arachne whatsapp' to pair via QR code..."
             echo ""
             read -p "Pair WhatsApp now? [Y/n] " -n 1 -r
             echo
             if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-                ARACHNE_CMD="$HOME/.local/bin/hermes"
-                [ ! -x "$ARACHNE_CMD" ] && ARACHNE_CMD="hermes"
+                ARACHNE_CMD="$HOME/.local/bin/arachne"
+                [ ! -x "$ARACHNE_CMD" ] && ARACHNE_CMD="arachne"
                 $ARACHNE_CMD whatsapp || true
             fi
         else
-            log_info "WhatsApp pairing skipped (non-interactive). Run 'hermes whatsapp' to pair."
+            log_info "WhatsApp pairing skipped (non-interactive). Run 'arachne whatsapp' to pair."
         fi
     fi
 
     if ! [ -e /dev/tty ]; then
-        log_info "Gateway setup skipped (no terminal available). Run 'hermes gateway install' later."
+        log_info "Gateway setup skipped (no terminal available). Run 'arachne gateway install' later."
         return 0
     fi
 
@@ -926,9 +926,9 @@ maybe_start_gateway() {
     echo
 
     if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-        ARACHNE_CMD="$HOME/.local/bin/hermes"
+        ARACHNE_CMD="$HOME/.local/bin/arachne"
         if [ ! -x "$ARACHNE_CMD" ]; then
-            ARACHNE_CMD="hermes"
+            ARACHNE_CMD="arachne"
         fi
 
         if command -v systemctl &> /dev/null; then
@@ -938,10 +938,10 @@ maybe_start_gateway() {
                 if $ARACHNE_CMD gateway start 2>/dev/null; then
                     log_success "Gateway started! Your bot is now online."
                 else
-                    log_warn "Service installed but failed to start. Try: hermes gateway start"
+                    log_warn "Service installed but failed to start. Try: arachne gateway start"
                 fi
             else
-                log_warn "Systemd install failed. You can start manually: hermes gateway"
+                log_warn "Systemd install failed. You can start manually: arachne gateway"
             fi
         else
             log_info "systemd not available — starting gateway in background..."
@@ -949,10 +949,10 @@ maybe_start_gateway() {
             GATEWAY_PID=$!
             log_success "Gateway started (PID $GATEWAY_PID). Logs: ~/.arachne/logs/gateway.log"
             log_info "To stop: kill $GATEWAY_PID"
-            log_info "To restart later: hermes gateway"
+            log_info "To restart later: arachne gateway"
         fi
     else
-        log_info "Skipped. Start the gateway later with: hermes gateway"
+        log_info "Skipped. Start the gateway later with: arachne gateway"
     fi
 }
 
@@ -978,17 +978,17 @@ print_success() {
     echo ""
     echo -e "${CYAN}${BOLD}🚀 Commands:${NC}"
     echo ""
-    echo -e "   ${GREEN}hermes${NC}              Start chatting"
-    echo -e "   ${GREEN}hermes setup${NC}        Configure API keys & settings"
-    echo -e "   ${GREEN}hermes config${NC}       View/edit configuration"
-    echo -e "   ${GREEN}hermes config edit${NC}  Open config in editor"
-    echo -e "   ${GREEN}hermes gateway install${NC} Install gateway service (messaging + cron)"
-    echo -e "   ${GREEN}hermes update${NC}       Update to latest version"
+    echo -e "   ${GREEN}arachne${NC}              Start chatting"
+    echo -e "   ${GREEN}arachne setup${NC}        Configure API keys & settings"
+    echo -e "   ${GREEN}arachne config${NC}       View/edit configuration"
+    echo -e "   ${GREEN}arachne config edit${NC}  Open config in editor"
+    echo -e "   ${GREEN}arachne gateway install${NC} Install gateway service (messaging + cron)"
+    echo -e "   ${GREEN}arachne update${NC}       Update to latest version"
     echo ""
 
     echo -e "${CYAN}─────────────────────────────────────────────────────────${NC}"
     echo ""
-    echo -e "${YELLOW}⚡ Reload your shell to use 'hermes' command:${NC}"
+    echo -e "${YELLOW}⚡ Reload your shell to use 'arachne' command:${NC}"
     echo ""
     echo "   source ~/.bashrc   # or ~/.zshrc"
     echo ""

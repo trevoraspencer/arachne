@@ -6,10 +6,10 @@ These skills ship with the arachne repository but are not copied to
 `~/.arachne/skills/` during setup. They are discoverable via the Skills Hub:
 
 ```bash
-hermes skills browse               # browse all skills, official shown first
-hermes skills browse --source official  # browse only official optional skills
-hermes skills search <query>       # finds optional skills labeled "official"
-hermes skills install <identifier> # copies to ~/.arachne/skills/ and activates
+arachne skills browse               # browse all skills, official shown first
+arachne skills browse --source official  # browse only official optional skills
+arachne skills search <query>       # finds optional skills labeled "official"
+arachne skills install <identifier> # copies to ~/.arachne/skills/ and activates
 ```
 
 ## Why optional?

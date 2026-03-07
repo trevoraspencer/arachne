@@ -44,7 +44,7 @@ _API_KEY_PROVIDER_AUX_MODELS: Dict[str, str] = {
 # OpenRouter app attribution headers
 _OR_HEADERS = {
     "HTTP-Referer": "https://github.com/NousResearch/hermes-agent",
-    "X-OpenRouter-Title": "Hermes Agent",
+    "X-OpenRouter-Title": "Arachne Agent",
     "X-OpenRouter-Categories": "productivity,cli-agent",
 }
 
@@ -60,7 +60,7 @@ auxiliary_is_nous: bool = False
 _OPENROUTER_MODEL = "google/gemini-3-flash-preview"
 _NOUS_MODEL = "gemini-3-flash"
 _NOUS_DEFAULT_BASE_URL = "https://inference-api.nousresearch.com/v1"
-_AUTH_JSON_PATH = Path.home() / ".hermes" / "auth.json"
+_AUTH_JSON_PATH = Path.home() / ".arachne" / "auth.json"
 
 # Codex fallback: uses the Responses API (the only endpoint the Codex
 # OAuth token can access) with a fast model for auxiliary tasks.
@@ -278,7 +278,7 @@ def _nous_base_url() -> str:
 
 
 def _read_codex_access_token() -> Optional[str]:
-    """Read a valid Codex OAuth access token from Hermes auth store (~/.arachne/auth.json)."""
+    """Read a valid Codex OAuth access token from Arachne auth store (~/.arachne/auth.json)."""
     try:
         from arachne_cli.auth import _read_codex_tokens
         data = _read_codex_tokens()
