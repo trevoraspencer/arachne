@@ -12,7 +12,7 @@ Connect Hermes Agent to Telegram so you can chat from your phone, send voice mem
 
 1. **Create a bot:** Message [@BotFather](https://t.me/BotFather) on Telegram, use `/newbot`
 2. **Get your user ID:** Message [@userinfobot](https://t.me/userinfobot) — it replies with your numeric ID
-3. **Configure:** Run `hermes gateway setup` and select Telegram, or add to `~/.hermes/.env` manually:
+3. **Configure:** Run `hermes gateway setup` and select Telegram, or add to `~/.arachne/.env` manually:
 
 ```bash
 TELEGRAM_BOT_TOKEN=123456:ABC-DEF...
@@ -38,7 +38,7 @@ Or use the `/sethome` command in any Telegram chat to set it dynamically.
 
 ## Voice Messages
 
-Voice messages sent on Telegram are automatically transcribed using OpenAI's Whisper API and injected as text into the conversation. Requires `VOICE_TOOLS_OPENAI_KEY` in `~/.hermes/.env`.
+Voice messages sent on Telegram are automatically transcribed using OpenAI's Whisper API and injected as text into the conversation. Requires `VOICE_TOOLS_OPENAI_KEY` in `~/.arachne/.env`.
 
 ### Voice Bubbles (TTS)
 

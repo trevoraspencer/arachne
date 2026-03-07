@@ -16,14 +16,14 @@ if str(PROJECT_ROOT) not in sys.path:
 
 @pytest.fixture(autouse=True)
 def _isolate_hermes_home(tmp_path, monkeypatch):
-    """Redirect HERMES_HOME to a temp dir so tests never write to ~/.hermes/."""
+    """Redirect ARACHNE_HOME to a temp dir so tests never write to ~/.arachne/."""
     fake_home = tmp_path / "hermes_test"
     fake_home.mkdir()
     (fake_home / "sessions").mkdir()
     (fake_home / "cron").mkdir()
     (fake_home / "memories").mkdir()
     (fake_home / "skills").mkdir()
-    monkeypatch.setenv("HERMES_HOME", str(fake_home))
+    monkeypatch.setenv("ARACHNE_HOME", str(fake_home))
 
 
 @pytest.fixture()

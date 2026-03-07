@@ -49,7 +49,7 @@ def _get_scratch_dir() -> Path:
       1. TERMINAL_SCRATCH_DIR (explicit override)
       2. TERMINAL_SANDBOX_DIR / singularity (shared sandbox root)
       3. /scratch (common on HPC clusters)
-      4. ~/.hermes/sandboxes/singularity (fallback)
+      4. ~/.arachne/sandboxes/singularity (fallback)
     """
     custom_scratch = os.getenv("TERMINAL_SCRATCH_DIR")
     if custom_scratch:

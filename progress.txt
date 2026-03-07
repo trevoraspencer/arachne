@@ -39,3 +39,16 @@ Started: Sat Mar  7 20:46:12 UTC 2026
   - The two-pass approach (replace all, then restore URLs) is clean and reliable
   - hermes_tools appears as substring in test names like hermes_toolsets — replacement to arachne_toolsets is correct
 ---
+
+## 2026-03-07 - US-003
+- What was implemented: Replaced class names, env var prefix, and config path in file content
+- Replacements: HermesAgent→ArachneAgent, HermesCLI→ArachneCLI, HermesState→ArachneState, HermesConstants→ArachneConstants, HERMES_→ARACHNE_, ~/.hermes→~/.arachne
+- All six replacements done in a single sed pass across all in-scope files
+- Compound class names like HermesAgentLoop→ArachneAgentLoop, HermesAgentBaseEnv→ArachneAgentBaseEnv handled correctly via prefix matching
+- Files changed: ~80+ files across tools/, arachne_cli/, environments/, tests/, gateway/, scripts/, website/, skills/, cli.py, run_agent.py, AGENTS.md, .env.example, etc.
+- **Learnings for future iterations:**
+  - HERMES_ prefix appears in env vars (HERMES_HOME, HERMES_GATEWAY_SESSION, HERMES_INTERACTIVE, etc.), internal markers (HERMES_EOF_, HERMES_FENCE), and config references
+  - HermesAgent is a prefix for many compound names (HermesAgentLoop, HermesAgentBaseEnv, HermesAgentEnvConfig) — simple prefix replacement handles all correctly
+  - No model name conflicts with these patterns since model names use hyphenated form (Hermes-3, NousResearch/Hermes-Agent-Thinking-*)
+  - ~/.hermes replacement is safe — never appears in external URLs
+---

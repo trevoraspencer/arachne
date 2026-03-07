@@ -72,11 +72,11 @@ from typing import Dict, Any, List, Optional, Tuple
 import yaml
 
 
-# All skills live in ~/.hermes/skills/ (seeded from bundled skills/ on install).
+# All skills live in ~/.arachne/skills/ (seeded from bundled skills/ on install).
 # This is the single source of truth -- agent edits, hub installs, and bundled
 # skills all coexist here without polluting the git repo.
-HERMES_HOME = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
-SKILLS_DIR = HERMES_HOME / "skills"
+ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+SKILLS_DIR = ARACHNE_HOME / "skills"
 
 # Anthropic-recommended limits for progressive disclosure efficiency
 MAX_NAME_LENGTH = 64
@@ -164,7 +164,7 @@ def _get_category_from_path(skill_path: Path) -> Optional[str]:
     """
     Extract category from skill path based on directory structure.
     
-    For paths like: ~/.hermes/skills/mlops/axolotl/SKILL.md -> "mlops"
+    For paths like: ~/.arachne/skills/mlops/axolotl/SKILL.md -> "mlops"
     """
     try:
         rel_path = skill_path.relative_to(SKILLS_DIR)
@@ -221,7 +221,7 @@ def _parse_tags(tags_value) -> List[str]:
 
 def _find_all_skills() -> List[Dict[str, Any]]:
     """
-    Recursively find all skills in ~/.hermes/skills/.
+    Recursively find all skills in ~/.arachne/skills/.
     
     Returns metadata for progressive disclosure (tier 1):
     - name, description, category
@@ -388,7 +388,7 @@ def skills_list(category: str = None, task_id: str = None) -> str:
                 "success": True,
                 "skills": [],
                 "categories": [],
-                "message": "No skills found. Skills directory created at ~/.hermes/skills/"
+                "message": "No skills found. Skills directory created at ~/.arachne/skills/"
             }, ensure_ascii=False)
         
         # Find all skills

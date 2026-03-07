@@ -182,7 +182,7 @@ def prompt_dangerous_approval(command: str, description: str,
         except Exception:
             return "deny"
 
-    os.environ["HERMES_SPINNER_PAUSE"] = "1"
+    os.environ["ARACHNE_SPINNER_PAUSE"] = "1"
     try:
         print()
         print(f"  ⚠️  DANGEROUS COMMAND: {description}")
@@ -226,8 +226,8 @@ def prompt_dangerous_approval(command: str, description: str,
         print("\n      ✗ Cancelled")
         return "deny"
     finally:
-        if "HERMES_SPINNER_PAUSE" in os.environ:
-            del os.environ["HERMES_SPINNER_PAUSE"]
+        if "ARACHNE_SPINNER_PAUSE" in os.environ:
+            del os.environ["ARACHNE_SPINNER_PAUSE"]
         print()
         sys.stdout.flush()
 
@@ -254,17 +254,17 @@ def check_dangerous_command(command: str, env_type: str,
     if not is_dangerous:
         return {"approved": True, "message": None}
 
-    session_key = os.getenv("HERMES_SESSION_KEY", "default")
+    session_key = os.getenv("ARACHNE_SESSION_KEY", "default")
     if is_approved(session_key, pattern_key):
         return {"approved": True, "message": None}
 
-    is_cli = os.getenv("HERMES_INTERACTIVE")
-    is_gateway = os.getenv("HERMES_GATEWAY_SESSION")
+    is_cli = os.getenv("ARACHNE_INTERACTIVE")
+    is_gateway = os.getenv("ARACHNE_GATEWAY_SESSION")
 
     if not is_cli and not is_gateway:
         return {"approved": True, "message": None}
 
-    if is_gateway or os.getenv("HERMES_EXEC_ASK"):
+    if is_gateway or os.getenv("ARACHNE_EXEC_ASK"):
         submit_pending(session_key, {
             "command": command,
             "pattern_key": pattern_key,

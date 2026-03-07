@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 # Suppress startup messages for clean CLI experience
 os.environ["MSWEA_SILENT_STARTUP"] = "1"  # mini-swe-agent
-os.environ["HERMES_QUIET"] = "1"  # Our own modules
+os.environ["ARACHNE_QUIET"] = "1"  # Our own modules
 
 import yaml
 
@@ -50,11 +50,11 @@ import threading
 import queue
 
 
-# Load .env from ~/.hermes/.env first, then project root as dev fallback
+# Load .env from ~/.arachne/.env first, then project root as dev fallback
 from dotenv import load_dotenv
 from arachne_constants import OPENROUTER_BASE_URL
 
-_hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
+_hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
 _user_env = _hermes_home / ".env"
 _project_env = Path(__file__).parent / '.env'
 if _user_env.exists():
@@ -68,7 +68,7 @@ elif _project_env.exists():
     except UnicodeDecodeError:
         load_dotenv(dotenv_path=_project_env, encoding="latin-1")
 
-# Point mini-swe-agent at ~/.hermes/ so it shares our config
+# Point mini-swe-agent at ~/.arachne/ so it shares our config
 os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(_hermes_home))
 
 # =============================================================================
@@ -81,7 +81,7 @@ def _load_prefill_messages(file_path: str) -> List[Dict[str, Any]]:
     The file should contain a JSON array of {role, content} dicts, e.g.:
         [{"role": "user", "content": "Hi"}, {"role": "assistant", "content": "Hello!"}]
     
-    Relative paths are resolved from ~/.hermes/.
+    Relative paths are resolved from ~/.arachne/.
     Returns an empty list if the path is empty or the file doesn't exist.
     """
     if not file_path:
@@ -127,13 +127,13 @@ def load_cli_config() -> Dict[str, Any]:
     Load CLI configuration from config files.
     
     Config lookup order:
-    1. ~/.hermes/config.yaml (user config - preferred)
+    1. ~/.arachne/config.yaml (user config - preferred)
     2. ./cli-config.yaml (project config - fallback)
     
     Environment variables take precedence over config file values.
     Returns default values if no config file exists.
     """
-    # Check user config first (~/.hermes/config.yaml)
+    # Check user config first (~/.arachne/config.yaml)
     user_config_path = Path.home() / '.hermes' / 'config.yaml'
     project_config_path = Path(__file__).parent / 'cli-config.yaml'
     
@@ -356,7 +356,7 @@ from model_tools import get_tool_definitions, get_toolset_for_tool
 # Extracted CLI modules (Phase 3)
 from arachne_cli.banner import (
     cprint as _cprint, _GOLD, _BOLD, _DIM, _RST,
-    VERSION, HERMES_AGENT_LOGO, HERMES_CADUCEUS, COMPACT_BANNER,
+    VERSION, ARACHNE_AGENT_LOGO, ARACHNE_CADUCEUS, COMPACT_BANNER,
     get_available_skills as _get_available_skills,
     build_welcome_banner,
 )
@@ -445,7 +445,7 @@ class ChatConsole:
             _cprint(line)
 
 # ASCII Art - HERMES-AGENT logo (full width, single line - requires ~95 char terminal)
-HERMES_AGENT_LOGO = """[bold #FFD700]██╗  ██╗███████╗██████╗ ███╗   ███╗███████╗███████╗       █████╗  ██████╗ ███████╗███╗   ██╗████████╗[/]
+ARACHNE_AGENT_LOGO = """[bold #FFD700]██╗  ██╗███████╗██████╗ ███╗   ███╗███████╗███████╗       █████╗  ██████╗ ███████╗███╗   ██╗████████╗[/]
 [bold #FFD700]██║  ██║██╔════╝██╔══██╗████╗ ████║██╔════╝██╔════╝      ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝[/]
 [#FFBF00]███████║█████╗  ██████╔╝██╔████╔██║█████╗  ███████╗█████╗███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║[/]
 [#FFBF00]██╔══██║██╔══╝  ██╔══██╗██║╚██╔╝██║██╔══╝  ╚════██║╚════╝██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║[/]
@@ -453,7 +453,7 @@ HERMES_AGENT_LOGO = """[bold #FFD700]██╗  ██╗███████�
 [#CD7F32]╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝      ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝[/]"""
 
 # ASCII Art - Hermes Caduceus (compact, fits in left panel)
-HERMES_CADUCEUS = """[#CD7F32]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⣀⣀⠀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+ARACHNE_CADUCEUS = """[#CD7F32]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⣀⣀⠀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
 [#CD7F32]⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣇⠸⣿⣿⠇⣸⣿⣿⣷⣦⣄⡀⠀⠀⠀⠀⠀⠀[/]
 [#FFBF00]⠀⢀⣠⣴⣶⠿⠋⣩⡿⣿⡿⠻⣿⡇⢠⡄⢸⣿⠟⢿⣿⢿⣍⠙⠿⣶⣦⣄⡀⠀[/]
 [#FFBF00]⠀⠀⠉⠉⠁⠶⠟⠋⠀⠉⠀⢀⣈⣁⡈⢁⣈⣁⡀⠀⠉⠀⠙⠻⠶⠈⠉⠉⠀⠀[/]
@@ -480,14 +480,14 @@ COMPACT_BANNER = """
 
 def _get_available_skills() -> Dict[str, List[str]]:
     """
-    Scan ~/.hermes/skills/ and return skills grouped by category.
+    Scan ~/.arachne/skills/ and return skills grouped by category.
     
     Returns:
         Dict mapping category name to list of skill names
     """
     import os
     
-    hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
+    hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
     skills_dir = hermes_home / "skills"
     skills_by_category = {}
     
@@ -551,7 +551,7 @@ def build_welcome_banner(console: Console, model: str, cwd: str, tools: List[dic
     layout_table.add_column("right", justify="left")
     
     # Build left content: caduceus + model info
-    left_lines = ["", HERMES_CADUCEUS, ""]
+    left_lines = ["", ARACHNE_CADUCEUS, ""]
     
     # Shorten model name for display
     model_short = model.split("/")[-1] if "/" in model else model
@@ -677,7 +677,7 @@ def build_welcome_banner(console: Console, model: str, cwd: str, tools: List[dic
     
     # Print the big HERMES-AGENT logo first (no panel wrapper for full width)
     console.print()
-    console.print(HERMES_AGENT_LOGO)
+    console.print(ARACHNE_AGENT_LOGO)
     console.print()
     
     # Print the panel with caduceus and info
@@ -758,7 +758,7 @@ def save_config_value(key_path: str, value: any) -> bool:
     Save a value to the active config file at the specified key path.
     
     Respects the same lookup order as load_cli_config():
-    1. ~/.hermes/config.yaml (user config - preferred, used if it exists)
+    1. ~/.arachne/config.yaml (user config - preferred, used if it exists)
     2. ./cli-config.yaml (project config - fallback)
     
     Args:
@@ -774,7 +774,7 @@ def save_config_value(key_path: str, value: any) -> bool:
     config_path = user_config_path if user_config_path.exists() else project_config_path
     
     try:
-        # Ensure parent directory exists (for ~/.hermes/config.yaml on first use)
+        # Ensure parent directory exists (for ~/.arachne/config.yaml on first use)
         config_path.parent.mkdir(parents=True, exist_ok=True)
         
         # Load existing config
@@ -804,10 +804,10 @@ def save_config_value(key_path: str, value: any) -> bool:
 
 
 # ============================================================================
-# HermesCLI Class
+# ArachneCLI Class
 # ============================================================================
 
-class HermesCLI:
+class ArachneCLI:
     """
     Interactive CLI for the Hermes Agent.
     
@@ -858,7 +858,7 @@ class HermesCLI:
         # Provider selection is resolved lazily at use-time via _ensure_runtime_credentials().
         self.requested_provider = (
             provider
-            or os.getenv("HERMES_INFERENCE_PROVIDER")
+            or os.getenv("ARACHNE_INFERENCE_PROVIDER")
             or CLI_CONFIG["model"].get("provider")
             or "auto"
         )
@@ -886,8 +886,8 @@ class HermesCLI:
             self.max_turns = CLI_CONFIG["agent"]["max_turns"]
         elif CLI_CONFIG.get("max_turns"):  # Backwards compat: root-level max_turns
             self.max_turns = CLI_CONFIG["max_turns"]
-        elif os.getenv("HERMES_MAX_ITERATIONS"):
-            self.max_turns = int(os.getenv("HERMES_MAX_ITERATIONS"))
+        elif os.getenv("ARACHNE_MAX_ITERATIONS"):
+            self.max_turns = int(os.getenv("ARACHNE_MAX_ITERATIONS"))
         else:
             self.max_turns = 90
         
@@ -901,7 +901,7 @@ class HermesCLI:
         
         # Ephemeral system prompt: env var takes precedence, then config
         self.system_prompt = (
-            os.getenv("HERMES_EPHEMERAL_SYSTEM_PROMPT", "")
+            os.getenv("ARACHNE_EPHEMERAL_SYSTEM_PROMPT", "")
             or CLI_CONFIG["agent"].get("system_prompt", "")
         )
         self.personalities = CLI_CONFIG["agent"].get("personalities", {})
@@ -1125,7 +1125,7 @@ class HermesCLI:
     def _try_attach_clipboard_image(self) -> bool:
         """Check clipboard for an image and attach it if found.
 
-        Saves the image to ~/.hermes/images/ and appends the path to
+        Saves the image to ~/.arachne/images/ and appends the path to
         ``_attached_images``.  Returns True if an image was attached.
         """
         from arachne_cli.clipboard import save_clipboard_image
@@ -1767,7 +1767,7 @@ class HermesCLI:
             print("  To start the gateway:")
             print("    python cli.py --gateway")
             print()
-            print("  Configuration file: ~/.hermes/gateway.json")
+            print("  Configuration file: ~/.arachne/gateway.json")
             print()
             
         except Exception as e:
@@ -1777,7 +1777,7 @@ class HermesCLI:
             print("    1. Set environment variables:")
             print("       TELEGRAM_BOT_TOKEN=your_token")
             print("       DISCORD_BOT_TOKEN=your_token")
-            print("    2. Or create ~/.hermes/gateway.json")
+            print("    2. Or create ~/.arachne/gateway.json")
             print()
     
     def process_command(self, command: str) -> bool:
@@ -2770,7 +2770,7 @@ class HermesCLI:
             if line_count >= 5 and chars_added > 1 and not text.startswith('/'):
                 _paste_counter[0] += 1
                 # Save to temp file
-                paste_dir = Path(os.path.expanduser("~/.hermes/pastes"))
+                paste_dir = Path(os.path.expanduser("~/.arachne/pastes"))
                 paste_dir.mkdir(parents=True, exist_ok=True)
                 paste_file = paste_dir / f"paste_{_paste_counter[0]}_{datetime.now().strftime('%H%M%S')}.txt"
                 paste_file.write_text(text, encoding="utf-8")
@@ -3248,7 +3248,7 @@ def main(
     """
     # Signal to terminal_tool that we're in interactive mode
     # This enables interactive sudo password prompts with timeout
-    os.environ["HERMES_INTERACTIVE"] = "1"
+    os.environ["ARACHNE_INTERACTIVE"] = "1"
     
     # Handle gateway mode (messaging + cron)
     if gateway:
@@ -3284,7 +3284,7 @@ def main(
             toolsets_list = ["hermes-cli"]
     
     # Create CLI instance
-    cli = HermesCLI(
+    cli = ArachneCLI(
         model=model,
         toolsets=toolsets_list,
         provider=provider,

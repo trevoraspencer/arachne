@@ -28,9 +28,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-HERMES_HOME = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
-TOKEN_PATH = HERMES_HOME / "google_token.json"
-CLIENT_SECRET_PATH = HERMES_HOME / "google_client_secret.json"
+ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+TOKEN_PATH = ARACHNE_HOME / "google_token.json"
+CLIENT_SECRET_PATH = ARACHNE_HOME / "google_client_secret.json"
 
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",

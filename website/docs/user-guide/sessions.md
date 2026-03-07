@@ -12,8 +12,8 @@ Hermes Agent automatically saves every conversation as a session. Sessions enabl
 
 Every conversation — whether from the CLI, Telegram, Discord, WhatsApp, or Slack — is stored as a session with full message history. Sessions are tracked in two complementary systems:
 
-1. **SQLite database** (`~/.hermes/state.db`) — structured session metadata with FTS5 full-text search
-2. **JSONL transcripts** (`~/.hermes/sessions/`) — raw conversation transcripts including tool calls (gateway)
+1. **SQLite database** (`~/.arachne/state.db`) — structured session metadata with FTS5 full-text search
+2. **JSONL transcripts** (`~/.arachne/sessions/`) — raw conversation transcripts including tool calls (gateway)
 
 The SQLite database stores:
 - Session ID, source platform, user ID
@@ -223,9 +223,9 @@ Sessions with **active background processes** are never auto-reset, regardless o
 
 | What | Path | Description |
 |------|------|-------------|
-| SQLite database | `~/.hermes/state.db` | All session metadata + messages with FTS5 |
-| Gateway transcripts | `~/.hermes/sessions/` | JSONL transcripts per session + sessions.json index |
-| Gateway index | `~/.hermes/sessions/sessions.json` | Maps session keys to active session IDs |
+| SQLite database | `~/.arachne/state.db` | All session metadata + messages with FTS5 |
+| Gateway transcripts | `~/.arachne/sessions/` | JSONL transcripts per session + sessions.json index |
+| Gateway index | `~/.arachne/sessions/sessions.json` | Maps session keys to active session IDs |
 
 The SQLite database uses WAL mode for concurrent readers and a single writer, which suits the gateway's multi-platform architecture well.
 

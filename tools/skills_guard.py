@@ -1031,7 +1031,7 @@ def _parse_llm_response(text: str, skill_name: str) -> List[Finding]:
 
 
 def _get_configured_model() -> str:
-    """Load the user's configured model from ~/.hermes/config.yaml."""
+    """Load the user's configured model from ~/.arachne/config.yaml."""
     try:
         from arachne_cli.config import load_config
         config = load_config()

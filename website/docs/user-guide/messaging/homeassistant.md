@@ -25,7 +25,7 @@ Hermes Agent integrates with [Home Assistant](https://www.home-assistant.io/) in
 ### 2. Configure Environment Variables
 
 ```bash
-# Add to ~/.hermes/.env
+# Add to ~/.arachne/.env
 
 # Required: your Long-Lived Access Token
 HASS_TOKEN=your-long-lived-access-token

@@ -17,7 +17,7 @@ Make it a **Tool** when it requires end-to-end integration with API keys, custom
 Adding a tool touches **3 files**:
 
 1. **`tools/your_tool.py`** — handler, schema, check function, `registry.register()` call
-2. **`toolsets.py`** — add tool name to `_HERMES_CORE_TOOLS` (or a specific toolset)
+2. **`toolsets.py`** — add tool name to `_ARACHNE_CORE_TOOLS` (or a specific toolset)
 3. **`model_tools.py`** — add `"tools.your_tool"` to the `_discover_tools()` list
 
 ## Step 1: Create the Tool File
@@ -111,7 +111,7 @@ In `toolsets.py`, add the tool name:
 
 ```python
 # If it should be available on all platforms (CLI + messaging):
-_HERMES_CORE_TOOLS = [
+_ARACHNE_CORE_TOOLS = [
     ...
     "weather",  # <-- add here
 ]

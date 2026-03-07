@@ -94,7 +94,7 @@ Sessions reset based on configurable policies:
 | Idle | 120 min | Reset after N minutes of inactivity |
 | Both | (combined) | Whichever triggers first |
 
-Configure per-platform overrides in `~/.hermes/gateway.json`:
+Configure per-platform overrides in `~/.arachne/gateway.json`:
 
 ```json
 {
@@ -148,7 +148,7 @@ Send any message while the agent is working to interrupt it. Key behaviors:
 
 ## Tool Progress Notifications
 
-Control how much tool activity is displayed in `~/.hermes/config.yaml`:
+Control how much tool activity is displayed in `~/.arachne/config.yaml`:
 
 ```yaml
 display:
@@ -185,7 +185,7 @@ sudo loginctl enable-linger $USER
 hermes gateway install
 launchctl start ai.hermes.gateway
 launchctl stop ai.hermes.gateway
-tail -f ~/.hermes/logs/gateway.log
+tail -f ~/.arachne/logs/gateway.log
 ```
 
 ## Platform-Specific Toolsets

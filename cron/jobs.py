@@ -1,8 +1,8 @@
 """
 Cron job storage and management.
 
-Jobs are stored in ~/.hermes/cron/jobs.json
-Output is saved to ~/.hermes/cron/output/{job_id}/{timestamp}.md
+Jobs are stored in ~/.arachne/cron/jobs.json
+Output is saved to ~/.arachne/cron/output/{job_id}/{timestamp}.md
 """
 
 import json
@@ -26,8 +26,8 @@ except ImportError:
 # Configuration
 # =============================================================================
 
-HERMES_DIR = Path.home() / ".hermes"
-CRON_DIR = HERMES_DIR / "cron"
+ARACHNE_DIR = Path.home() / ".hermes"
+CRON_DIR = ARACHNE_DIR / "cron"
 JOBS_FILE = CRON_DIR / "jobs.json"
 OUTPUT_DIR = CRON_DIR / "output"
 

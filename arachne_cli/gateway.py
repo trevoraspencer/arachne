@@ -328,7 +328,7 @@ def launchd_install(force: bool = False):
     print()
     print("Next steps:")
     print("  hermes gateway status             # Check status")
-    print("  tail -f ~/.hermes/logs/gateway.log  # View logs")
+    print("  tail -f ~/.arachne/logs/gateway.log  # View logs")
 
 def launchd_uninstall():
     plist_path = get_launchd_plist_path()

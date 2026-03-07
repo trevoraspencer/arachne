@@ -579,10 +579,10 @@ class TestToolsetIntegration:
             assert tool in gateway_tools
 
     def test_hermes_core_tools_includes_ha(self):
-        from toolsets import _HERMES_CORE_TOOLS
+        from toolsets import _ARACHNE_CORE_TOOLS
 
         for tool in ("ha_list_entities", "ha_get_state", "ha_call_service", "ha_list_services"):
-            assert tool in _HERMES_CORE_TOOLS
+            assert tool in _ARACHNE_CORE_TOOLS
 
 
 # ---------------------------------------------------------------------------

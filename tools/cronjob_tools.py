@@ -99,7 +99,7 @@ def schedule_cronjob(
                 - Set repeat=5 to run 5 times then auto-delete
         deliver: Where to send the output. Options:
                  - "origin": Back to where this job was created (default)
-                 - "local": Save to local files only (~/.hermes/cron/output/)
+                 - "local": Save to local files only (~/.arachne/cron/output/)
                  - "telegram": Send to Telegram home channel
                  - "discord": Send to Discord home channel
                  - "telegram:123456": Send to specific chat ID
@@ -114,13 +114,13 @@ def schedule_cronjob(
 
     # Get origin info from environment if available
     origin = None
-    origin_platform = os.getenv("HERMES_SESSION_PLATFORM")
-    origin_chat_id = os.getenv("HERMES_SESSION_CHAT_ID")
+    origin_platform = os.getenv("ARACHNE_SESSION_PLATFORM")
+    origin_chat_id = os.getenv("ARACHNE_SESSION_CHAT_ID")
     if origin_platform and origin_chat_id:
         origin = {
             "platform": origin_platform,
             "chat_id": origin_chat_id,
-            "chat_name": os.getenv("HERMES_SESSION_CHAT_NAME"),
+            "chat_name": os.getenv("ARACHNE_SESSION_CHAT_NAME"),
         }
     
     try:
@@ -388,9 +388,9 @@ def check_cronjob_requirements() -> bool:
     Cronjobs are server-side scheduled tasks so they work from any interface.
     """
     return bool(
-        os.getenv("HERMES_INTERACTIVE")
-        or os.getenv("HERMES_GATEWAY_SESSION")
-        or os.getenv("HERMES_EXEC_ASK")
+        os.getenv("ARACHNE_INTERACTIVE")
+        or os.getenv("ARACHNE_GATEWAY_SESSION")
+        or os.getenv("ARACHNE_EXEC_ASK")
     )
 
 

@@ -180,7 +180,7 @@ def _connect():
     global _sock
     if _sock is None:
         _sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        _sock.connect(os.environ["HERMES_RPC_SOCKET"])
+        _sock.connect(os.environ["ARACHNE_RPC_SOCKET"])
         _sock.settimeout(300)
     return _sock
 
@@ -433,11 +433,11 @@ def execute_code(
                 continue
             if any(k.startswith(p) for p in _SAFE_ENV_PREFIXES):
                 child_env[k] = v
-        child_env["HERMES_RPC_SOCKET"] = sock_path
+        child_env["ARACHNE_RPC_SOCKET"] = sock_path
         child_env["PYTHONDONTWRITEBYTECODE"] = "1"
         # Inject user's configured timezone so datetime.now() in sandboxed
         # code reflects the correct wall-clock time.
-        _tz_name = os.getenv("HERMES_TIMEZONE", "").strip()
+        _tz_name = os.getenv("ARACHNE_TIMEZONE", "").strip()
         if _tz_name:
             child_env["TZ"] = _tz_name
 

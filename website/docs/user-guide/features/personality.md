@@ -17,9 +17,9 @@ SOUL.md is a special context file that defines the agent's personality, tone, an
 | Location | Scope |
 |----------|-------|
 | `./SOUL.md` (project directory) | Per-project personality |
-| `~/.hermes/SOUL.md` | Global default personality |
+| `~/.arachne/SOUL.md` | Global default personality |
 
-The project-level file takes precedence. If no SOUL.md exists in the current directory, Hermes falls back to the global one in `~/.hermes/`.
+The project-level file takes precedence. If no SOUL.md exists in the current directory, Hermes falls back to the global one in `~/.arachne/`.
 
 ### How It Affects the System Prompt
 
@@ -104,7 +104,7 @@ Hermes ships with 14 built-in personalities defined in the CLI config. Switch be
 When you set a personality via `/personality`, it:
 1. Sets the system prompt to that personality's text
 2. Forces the agent to reinitialize
-3. Saves the choice to `agent.system_prompt` in `~/.hermes/config.yaml`
+3. Saves the choice to `agent.system_prompt` in `~/.arachne/config.yaml`
 
 The change persists across sessions until you set a different personality or clear it.
 
@@ -121,7 +121,7 @@ On messaging platforms (Telegram, Discord, etc.), the `/personality` command wor
 Set a personality directly in config:
 
 ```yaml
-# In ~/.hermes/config.yaml
+# In ~/.arachne/config.yaml
 agent:
   system_prompt: "You are a concise assistant. Keep responses brief and to the point."
 ```
@@ -129,19 +129,19 @@ agent:
 Or via environment variable:
 
 ```bash
-# In ~/.hermes/.env
-HERMES_EPHEMERAL_SYSTEM_PROMPT="You are a pragmatic engineer who gives direct answers."
+# In ~/.arachne/.env
+ARACHNE_EPHEMERAL_SYSTEM_PROMPT="You are a pragmatic engineer who gives direct answers."
 ```
 
 :::info
-The environment variable `HERMES_EPHEMERAL_SYSTEM_PROMPT` takes precedence over the config file's `agent.system_prompt` value.
+The environment variable `ARACHNE_EPHEMERAL_SYSTEM_PROMPT` takes precedence over the config file's `agent.system_prompt` value.
 :::
 
 ## Custom Personalities
 
 ### Defining Custom Personalities in Config
 
-Add your own personalities to `~/.hermes/config.yaml` under `agent.personalities`:
+Add your own personalities to `~/.arachne/config.yaml` under `agent.personalities`:
 
 ```yaml
 agent:
@@ -209,7 +209,7 @@ The system prompt is assembled in layers (from `agent/prompt_builder.py` and `ru
 3. **Memory**: MEMORY.md and USER.md contents
 4. **Skills index**: available skills listing
 5. **Context files**: AGENTS.md, .cursorrules, **SOUL.md** (personality lives here)
-6. **Ephemeral system prompt**: `agent.system_prompt` or `HERMES_EPHEMERAL_SYSTEM_PROMPT` (overlaid)
+6. **Ephemeral system prompt**: `agent.system_prompt` or `ARACHNE_EPHEMERAL_SYSTEM_PROMPT` (overlaid)
 7. **Session context**: platform, user info, connected platforms (gateway only)
 
 :::info

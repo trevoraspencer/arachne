@@ -15,7 +15,7 @@ The [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) is an open 
 What this means for you:
 
 - **Thousands of ready-made tools** — browse the [MCP server directory](https://github.com/modelcontextprotocol/servers) for servers covering GitHub, Slack, databases, file systems, web scraping, and more
-- **No code changes needed** — add a few lines to `~/.hermes/config.yaml` and the tools appear alongside built-in ones
+- **No code changes needed** — add a few lines to `~/.arachne/config.yaml` and the tools appear alongside built-in ones
 - **Mix and match** — run multiple MCP servers simultaneously, combining stdio-based and HTTP-based servers
 - **Secure by default** — environment variables are filtered and credentials are stripped from error messages
 
@@ -33,7 +33,7 @@ pip install arachne[mcp]
 
 ## Configuration
 
-MCP servers are configured in `~/.hermes/config.yaml` under the `mcp_servers` key.
+MCP servers are configured in `~/.arachne/config.yaml` under the `mcp_servers` key.
 
 ### Stdio Servers
 

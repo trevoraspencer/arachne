@@ -6,12 +6,12 @@ description: "Configure Hermes Agent — config.yaml, providers, models, API key
 
 # Configuration
 
-All settings are stored in the `~/.hermes/` directory for easy access.
+All settings are stored in the `~/.arachne/` directory for easy access.
 
 ## Directory Structure
 
 ```text
-~/.hermes/
+~/.arachne/
 ├── config.yaml     # Settings (model, terminal, TTS, compression, etc.)
 ├── .env            # API keys and secrets
 ├── auth.json       # OAuth provider credentials (Nous Portal, etc.)
@@ -47,8 +47,8 @@ The `hermes config set` command automatically routes values to the right file �
 Settings are resolved in this order (highest priority first):
 
 1. **CLI arguments** — e.g., `hermes chat --model anthropic/claude-sonnet-4` (per-invocation override)
-2. **`~/.hermes/config.yaml`** — the primary config file for all non-secret settings
-3. **`~/.hermes/.env`** — fallback for env vars; **required** for secrets (API keys, tokens, passwords)
+2. **`~/.arachne/config.yaml`** — the primary config file for all non-secret settings
+3. **`~/.arachne/.env`** — fallback for env vars; **required** for secrets (API keys, tokens, passwords)
 4. **Built-in defaults** — hardcoded safe defaults when nothing else is set
 
 :::info Rule of Thumb
@@ -63,12 +63,12 @@ You need at least one way to connect to an LLM. Use `hermes model` to switch pro
 |----------|-------|
 | **Nous Portal** | `hermes model` (OAuth, subscription-based) |
 | **OpenAI Codex** | `hermes model` (ChatGPT OAuth, uses Codex models) |
-| **OpenRouter** | `OPENROUTER_API_KEY` in `~/.hermes/.env` |
-| **z.ai / GLM** | `GLM_API_KEY` in `~/.hermes/.env` (provider: `zai`) |
-| **Kimi / Moonshot** | `KIMI_API_KEY` in `~/.hermes/.env` (provider: `kimi-coding`) |
-| **MiniMax** | `MINIMAX_API_KEY` in `~/.hermes/.env` (provider: `minimax`) |
-| **MiniMax China** | `MINIMAX_CN_API_KEY` in `~/.hermes/.env` (provider: `minimax-cn`) |
-| **Custom Endpoint** | `OPENAI_BASE_URL` + `OPENAI_API_KEY` in `~/.hermes/.env` |
+| **OpenRouter** | `OPENROUTER_API_KEY` in `~/.arachne/.env` |
+| **z.ai / GLM** | `GLM_API_KEY` in `~/.arachne/.env` (provider: `zai`) |
+| **Kimi / Moonshot** | `KIMI_API_KEY` in `~/.arachne/.env` (provider: `kimi-coding`) |
+| **MiniMax** | `MINIMAX_API_KEY` in `~/.arachne/.env` (provider: `minimax`) |
+| **MiniMax China** | `MINIMAX_CN_API_KEY` in `~/.arachne/.env` (provider: `minimax-cn`) |
+| **Custom Endpoint** | `OPENAI_BASE_URL` + `OPENAI_API_KEY` in `~/.arachne/.env` |
 
 :::info Codex Note
 The OpenAI Codex provider authenticates via device code (open a URL, enter a code). Credentials are stored at `~/.codex/auth.json` and auto-refresh. No Codex CLI installation required.
@@ -85,19 +85,19 @@ These providers have built-in support with dedicated provider IDs. Set the API k
 ```bash
 # z.ai / ZhipuAI GLM
 hermes chat --provider zai --model glm-4-plus
-# Requires: GLM_API_KEY in ~/.hermes/.env
+# Requires: GLM_API_KEY in ~/.arachne/.env
 
 # Kimi / Moonshot AI
 hermes chat --provider kimi-coding --model moonshot-v1-auto
-# Requires: KIMI_API_KEY in ~/.hermes/.env
+# Requires: KIMI_API_KEY in ~/.arachne/.env
 
 # MiniMax (global endpoint)
 hermes chat --provider minimax --model MiniMax-Text-01
-# Requires: MINIMAX_API_KEY in ~/.hermes/.env
+# Requires: MINIMAX_API_KEY in ~/.arachne/.env
 
 # MiniMax (China endpoint)
 hermes chat --provider minimax-cn --model MiniMax-Text-01
-# Requires: MINIMAX_CN_API_KEY in ~/.hermes/.env
+# Requires: MINIMAX_CN_API_KEY in ~/.arachne/.env
 ```
 
 Or set the provider permanently in `config.yaml`:
@@ -126,7 +126,7 @@ hermes model
 
 **Manual (`.env` file):**
 ```bash
-# Add to ~/.hermes/.env
+# Add to ~/.arachne/.env
 OPENAI_BASE_URL=http://localhost:8000/v1
 OPENAI_API_KEY=your-key-or-dummy
 LLM_MODEL=your-model-name
@@ -370,7 +370,7 @@ You can also set both `FIRECRAWL_API_KEY` and `FIRECRAWL_API_URL` if your self-h
 
 ## OpenRouter Provider Routing
 
-When using OpenRouter, you can control how requests are routed across providers. Add a `provider_routing` section to `~/.hermes/config.yaml`:
+When using OpenRouter, you can control how requests are routed across providers. Add a `provider_routing` section to `~/.arachne/config.yaml`:
 
 ```yaml
 provider_routing:
@@ -521,7 +521,7 @@ Drop these files in your project directory and the agent automatically picks the
 | `.cursor/rules/*.mdc` | Cursor rule files (also detected) |
 
 - **AGENTS.md** is hierarchical: if subdirectories also have AGENTS.md, all are combined.
-- **SOUL.md** checks cwd first, then `~/.hermes/SOUL.md` as a global fallback.
+- **SOUL.md** checks cwd first, then `~/.arachne/SOUL.md` as a global fallback.
 - All context files are capped at 20,000 characters with smart truncation.
 
 ## Working Directory
@@ -534,7 +534,7 @@ Drop these files in your project directory and the agent automatically picks the
 
 Override the working directory:
 ```bash
-# In ~/.hermes/.env or ~/.hermes/config.yaml:
+# In ~/.arachne/.env or ~/.arachne/config.yaml:
 MESSAGING_CWD=/home/myuser/projects    # Gateway sessions
 TERMINAL_CWD=/workspace                # All terminal sessions
 ```

@@ -4,7 +4,7 @@ Cron job scheduler - executes due jobs.
 Provides tick() which checks for due jobs and runs them. The gateway
 calls this every 60 seconds from a background thread.
 
-Uses a file-based lock (~/.hermes/cron/.tick.lock) so only one tick
+Uses a file-based lock (~/.arachne/cron/.tick.lock) so only one tick
 runs at a time if multiple processes overlap.
 """
 
@@ -36,8 +36,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from cron.jobs import get_due_jobs, mark_job_run, save_job_output
 
-# Resolve Hermes home directory (respects HERMES_HOME override)
-_hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
+# Resolve Hermes home directory (respects ARACHNE_HOME override)
+_hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
 
 # File-based lock prevents concurrent ticks from gateway + daemon + systemd timer
 _LOCK_DIR = _hermes_home / "cron"
@@ -160,10 +160,10 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
 
     # Inject origin context so the agent's send_message tool knows the chat
     if origin:
-        os.environ["HERMES_SESSION_PLATFORM"] = origin["platform"]
-        os.environ["HERMES_SESSION_CHAT_ID"] = str(origin["chat_id"])
+        os.environ["ARACHNE_SESSION_PLATFORM"] = origin["platform"]
+        os.environ["ARACHNE_SESSION_CHAT_ID"] = str(origin["chat_id"])
         if origin.get("chat_name"):
-            os.environ["HERMES_SESSION_CHAT_NAME"] = origin["chat_name"]
+            os.environ["ARACHNE_SESSION_CHAT_NAME"] = origin["chat_name"]
 
     try:
         # Re-read .env and config.yaml fresh every run so provider/key
@@ -174,7 +174,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
         except UnicodeDecodeError:
             load_dotenv(str(_hermes_home / ".env"), override=True, encoding="latin-1")
 
-        model = os.getenv("HERMES_MODEL") or os.getenv("LLM_MODEL") or "anthropic/claude-opus-4.6"
+        model = os.getenv("ARACHNE_MODEL") or os.getenv("LLM_MODEL") or "anthropic/claude-opus-4.6"
 
         # Load config.yaml for model, reasoning, prefill, toolsets, provider routing
         _cfg = {}
@@ -194,7 +194,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
 
         # Reasoning config from env or config.yaml
         reasoning_config = None
-        effort = os.getenv("HERMES_REASONING_EFFORT", "")
+        effort = os.getenv("ARACHNE_REASONING_EFFORT", "")
         if not effort:
             effort = str(_cfg.get("agent", {}).get("reasoning_effort", "")).strip()
         if effort and effort.lower() != "none":
@@ -206,7 +206,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
 
         # Prefill messages from env or config.yaml
         prefill_messages = None
-        prefill_file = os.getenv("HERMES_PREFILL_MESSAGES_FILE", "") or _cfg.get("prefill_messages_file", "")
+        prefill_file = os.getenv("ARACHNE_PREFILL_MESSAGES_FILE", "") or _cfg.get("prefill_messages_file", "")
         if prefill_file:
             import json as _json
             pfpath = Path(prefill_file).expanduser()
@@ -233,7 +233,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
         )
         try:
             runtime = resolve_runtime_provider(
-                requested=os.getenv("HERMES_INFERENCE_PROVIDER"),
+                requested=os.getenv("ARACHNE_INFERENCE_PROVIDER"),
             )
         except Exception as exc:
             message = format_runtime_provider_error(exc)
@@ -306,7 +306,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
 
     finally:
         # Clean up injected env vars so they don't leak to other jobs
-        for key in ("HERMES_SESSION_PLATFORM", "HERMES_SESSION_CHAT_ID", "HERMES_SESSION_CHAT_NAME"):
+        for key in ("ARACHNE_SESSION_PLATFORM", "ARACHNE_SESSION_CHAT_ID", "ARACHNE_SESSION_CHAT_NAME"):
             os.environ.pop(key, None)
 
 

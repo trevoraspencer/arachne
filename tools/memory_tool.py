@@ -34,7 +34,7 @@ from typing import Dict, Any, List, Optional
 logger = logging.getLogger(__name__)
 
 # Where memory files live
-MEMORY_DIR = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes")) / "memories"
+MEMORY_DIR = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes")) / "memories"
 
 ENTRY_DELIMITER = "\n§\n"
 

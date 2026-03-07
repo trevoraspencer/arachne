@@ -15,7 +15,7 @@ Hermes has two memory systems that work together:
 
 | Feature | Built-in Memory | Honcho Memory |
 |---------|----------------|---------------|
-| Storage | Local files (`~/.hermes/memories/`) | Cloud-hosted Honcho API |
+| Storage | Local files (`~/.arachne/memories/`) | Cloud-hosted Honcho API |
 | Scope | Agent-level notes and user profile | Deep user modeling via dialectic reasoning |
 | Persistence | Across sessions on same machine | Across sessions, machines, and platforms |
 | Query | Injected into system prompt automatically | On-demand via `query_user_context` tool |
@@ -55,7 +55,7 @@ Honcho reads its configuration from `~/.honcho/config.json` (the global Honcho c
 Alternatively, set the API key as an environment variable:
 
 ```bash
-# Add to ~/.hermes/.env
+# Add to ~/.arachne/.env
 HONCHO_API_KEY=your-honcho-api-key
 ```
 
@@ -103,7 +103,7 @@ Host-specific fields override global fields. Resolution order:
 2. Global/flat fields from config root
 3. Defaults (host name used as workspace/peer)
 
-### Hermes Config (`~/.hermes/config.yaml`)
+### Hermes Config (`~/.arachne/config.yaml`)
 
 The `honcho` section in Hermes config is intentionally minimal — most configuration comes from the global `~/.honcho/config.json`:
 

@@ -26,7 +26,7 @@ Key capabilities:
 ### Required Environment Variables
 
 ```bash
-# Add to ~/.hermes/.env
+# Add to ~/.arachne/.env
 BROWSERBASE_API_KEY=your-api-key-here
 BROWSERBASE_PROJECT_ID=your-project-id-here
 ```

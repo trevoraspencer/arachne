@@ -47,19 +47,19 @@ from atroposlib.envs.server_handling.server_manager import APIServerConfig
 from atroposlib.type_definitions import Item
 
 from environments.agent_loop import AgentResult
-from environments.hermes_base_env import HermesAgentBaseEnv, HermesAgentEnvConfig
+from environments.hermes_base_env import ArachneAgentBaseEnv, ArachneAgentEnvConfig
 from environments.tool_context import ToolContext
 
 logger = logging.getLogger(__name__)
 
 
-class HermesSweEnvConfig(HermesAgentEnvConfig):
+class HermesSweEnvConfig(ArachneAgentEnvConfig):
     """Config with defaults for SWE-bench style tasks."""
 
     pass  # Inherits all fields, overrides defaults in config_init
 
 
-class HermesSweEnv(HermesAgentBaseEnv):
+class HermesSweEnv(ArachneAgentBaseEnv):
     """
     SWE-bench style environment using Modal terminal backend.
 

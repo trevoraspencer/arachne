@@ -5,8 +5,8 @@ Provides a single ``now()`` helper that returns a timezone-aware datetime
 based on the user's configured IANA timezone (e.g. ``Asia/Kolkata``).
 
 Resolution order:
-  1. ``HERMES_TIMEZONE`` environment variable
-  2. ``timezone`` key in ``~/.hermes/config.yaml``
+  1. ``ARACHNE_TIMEZONE`` environment variable
+  2. ``timezone`` key in ``~/.arachne/config.yaml``
   3. Falls back to the server's local time (``datetime.now().astimezone()``)
 
 Invalid timezone values log a warning and fall back safely — Hermes never
@@ -41,14 +41,14 @@ def _resolve_timezone_name() -> str:
     should cache the result rather than calling on every ``now()``.
     """
     # 1. Environment variable (highest priority — set by Supervisor, etc.)
-    tz_env = os.getenv("HERMES_TIMEZONE", "").strip()
+    tz_env = os.getenv("ARACHNE_TIMEZONE", "").strip()
     if tz_env:
         return tz_env
 
     # 2. config.yaml ``timezone`` key
     try:
         import yaml
-        hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
+        hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
         config_path = hermes_home / "config.yaml"
         if config_path.exists():
             with open(config_path) as f:

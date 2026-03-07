@@ -6,7 +6,7 @@ the best available backend without duplicating fallback logic.
 
 Resolution order for text tasks:
   1. OpenRouter  (OPENROUTER_API_KEY)
-  2. Nous Portal (~/.hermes/auth.json active provider)
+  2. Nous Portal (~/.arachne/auth.json active provider)
   3. Custom endpoint (OPENAI_BASE_URL + OPENAI_API_KEY)
   4. Codex OAuth (Responses API via chatgpt.com with gpt-5.3-codex,
      wrapped to look like a chat.completions client)
@@ -246,7 +246,7 @@ class AsyncCodexAuxiliaryClient:
 
 
 def _read_nous_auth() -> Optional[dict]:
-    """Read and validate ~/.hermes/auth.json for an active Nous provider.
+    """Read and validate ~/.arachne/auth.json for an active Nous provider.
 
     Returns the provider state dict if Nous is active with tokens,
     otherwise None.
@@ -278,7 +278,7 @@ def _nous_base_url() -> str:
 
 
 def _read_codex_access_token() -> Optional[str]:
-    """Read a valid Codex OAuth access token from Hermes auth store (~/.hermes/auth.json)."""
+    """Read a valid Codex OAuth access token from Hermes auth store (~/.arachne/auth.json)."""
     try:
         from arachne_cli.auth import _read_codex_tokens
         data = _read_codex_tokens()

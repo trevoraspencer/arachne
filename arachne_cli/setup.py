@@ -8,7 +8,7 @@ Modular wizard with independently-runnable sections:
   4. Tools — configure TTS, web search, image generation, etc.
   5. Agent Settings — iterations, compression, session reset
 
-Config files are stored in ~/.hermes/ for easy access.
+Config files are stored in ~/.arachne/ for easy access.
 """
 
 import logging
@@ -376,7 +376,7 @@ def _print_setup_summary(config: dict, hermes_home):
     disabled_tools = [(name, var) for name, avail, var in tool_status if not avail]
     if disabled_tools:
         print_warning("Some tools are disabled. Run 'hermes setup tools' to configure them,")
-        print_warning("or edit ~/.hermes/.env directly to add the missing API keys.")
+        print_warning("or edit ~/.arachne/.env directly to add the missing API keys.")
         print()
     
     # Done banner
@@ -387,7 +387,7 @@ def _print_setup_summary(config: dict, hermes_home):
     print()
     
     # Show file locations prominently
-    print(color("📁 All your files are in ~/.hermes/:", Colors.CYAN, Colors.BOLD))
+    print(color("📁 All your files are in ~/.arachne/:", Colors.CYAN, Colors.BOLD))
     print()
     print(f"   {color('Settings:', Colors.YELLOW)}  {get_config_path()}")
     print(f"   {color('API Keys:', Colors.YELLOW)}  {get_env_path()}")
@@ -1255,7 +1255,7 @@ def setup_agent_settings(config: dict):
     # ── Max Iterations ──
     print_header("Agent Settings")
 
-    current_max = get_env_value('HERMES_MAX_ITERATIONS') or '60'
+    current_max = get_env_value('ARACHNE_MAX_ITERATIONS') or '60'
     print_info("Maximum tool-calling iterations per conversation.")
     print_info("Higher = more complex tasks, but costs more tokens.")
     print_info("Recommended: 30-60 for most tasks, 100+ for open exploration.")
@@ -1264,7 +1264,7 @@ def setup_agent_settings(config: dict):
     try:
         max_iter = int(max_iter_str)
         if max_iter > 0:
-            save_env_value("HERMES_MAX_ITERATIONS", str(max_iter))
+            save_env_value("ARACHNE_MAX_ITERATIONS", str(max_iter))
             config['max_turns'] = max_iter
             print_success(f"Max iterations set to {max_iter}")
     except ValueError:

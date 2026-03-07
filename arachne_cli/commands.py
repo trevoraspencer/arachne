@@ -1,7 +1,7 @@
 """Slash command definitions and autocomplete for the Hermes CLI.
 
 Contains the COMMANDS dict and the SlashCommandCompleter class.
-These are pure data/UI with no HermesCLI state dependency.
+These are pure data/UI with no ArachneCLI state dependency.
 """
 
 from prompt_toolkit.completion import Completer, Completion

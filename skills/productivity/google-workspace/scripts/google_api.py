@@ -28,8 +28,8 @@ from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
 from pathlib import Path
 
-HERMES_HOME = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
-TOKEN_PATH = HERMES_HOME / "google_token.json"
+ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
+TOKEN_PATH = ARACHNE_HOME / "google_token.json"
 
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",

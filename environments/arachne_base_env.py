@@ -1,10 +1,10 @@
 """
-HermesAgentBaseEnv -- Abstract Base Environment for Hermes-Agent + Atropos
+ArachneAgentBaseEnv -- Abstract Base Environment for Hermes-Agent + Atropos
 
 Provides the Atropos integration plumbing that all arachne environments share:
 - Two-mode operation (OpenAI server for Phase 1, VLLM ManagedServer for Phase 2)
 - Per-group toolset/distribution resolution
-- Agent loop orchestration via HermesAgentLoop
+- Agent loop orchestration via ArachneAgentLoop
 - ToolContext creation for reward functions
 - ScoredDataGroup construction from ManagedServer state
 
@@ -60,7 +60,7 @@ from atroposlib.envs.server_handling.server_manager import (
 )
 from atroposlib.type_definitions import Item
 
-from environments.agent_loop import AgentResult, HermesAgentLoop
+from environments.agent_loop import AgentResult, ArachneAgentLoop
 from environments.tool_context import ToolContext
 
 # Import arachne toolset infrastructure
@@ -70,7 +70,7 @@ from toolset_distributions import sample_toolsets_from_distribution
 logger = logging.getLogger(__name__)
 
 
-class HermesAgentEnvConfig(BaseEnvConfig):
+class ArachneAgentEnvConfig(BaseEnvConfig):
     """
     Configuration for arachne Atropos environments.
 
@@ -177,7 +177,7 @@ class HermesAgentEnvConfig(BaseEnvConfig):
     )
 
 
-class HermesAgentBaseEnv(BaseEnv):
+class ArachneAgentBaseEnv(BaseEnv):
     """
     Abstract base environment for arachne Atropos integration.
 
@@ -200,11 +200,11 @@ class HermesAgentBaseEnv(BaseEnv):
     """
 
     name: Optional[str] = "arachne"
-    env_config_cls = HermesAgentEnvConfig
+    env_config_cls = ArachneAgentEnvConfig
 
     def __init__(
         self,
-        config: HermesAgentEnvConfig,
+        config: ArachneAgentEnvConfig,
         server_configs: Union[ServerBaseline, List[APIServerConfig]],
         slurm=False,
         testing=False,
@@ -483,7 +483,7 @@ class HermesAgentBaseEnv(BaseEnv):
                     tokenizer=self.tokenizer,
                     tool_call_parser=tc_parser,
                 ) as managed:
-                    agent = HermesAgentLoop(
+                    agent = ArachneAgentLoop(
                         server=managed,
                         tool_schemas=tools,
                         valid_tool_names=valid_names,
@@ -500,7 +500,7 @@ class HermesAgentBaseEnv(BaseEnv):
                     "ManagedServer not available (OpenAI server?). "
                     "Falling back to direct server mode."
                 )
-                agent = HermesAgentLoop(
+                agent = ArachneAgentLoop(
                     server=self.server,
                     tool_schemas=tools,
                     valid_tool_names=valid_names,
@@ -513,7 +513,7 @@ class HermesAgentBaseEnv(BaseEnv):
                 result = await agent.run(messages)
         else:
             # Phase 1: OpenAI server -- native tool_calls, placeholder tokens
-            agent = HermesAgentLoop(
+            agent = ArachneAgentLoop(
                 server=self.server,
                 tool_schemas=tools,
                 valid_tool_names=valid_names,

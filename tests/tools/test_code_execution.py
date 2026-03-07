@@ -81,7 +81,7 @@ class TestHermesToolsGeneration(unittest.TestCase):
 
     def test_rpc_infrastructure_present(self):
         src = generate_arachne_tools_module(["terminal"])
-        self.assertIn("HERMES_RPC_SOCKET", src)
+        self.assertIn("ARACHNE_RPC_SOCKET", src)
         self.assertIn("AF_UNIX", src)
         self.assertIn("def _connect(", src)
         self.assertIn("def _call(", src)

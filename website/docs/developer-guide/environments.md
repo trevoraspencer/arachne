@@ -36,7 +36,7 @@ The environment system is built on a three-layer inheritance chain:
                  └───────────┬───────────┘
                              │ inherits
                  ┌───────────┴───────────┐
-                 │  HermesAgentBaseEnv    │  environments/hermes_base_env.py
+                 │  ArachneAgentBaseEnv    │  environments/hermes_base_env.py
                  │  - Terminal backend    │
                  │  - Tool resolution     │
                  │  - Agent loop engine   │
@@ -63,18 +63,18 @@ The foundation from `atroposlib`. Provides:
 - **CLI interface** — three subcommands: `serve`, `process`, `evaluate`
 - **Eval logging** — `evaluate_log()` saves results to JSON + JSONL
 
-### HermesAgentBaseEnv
+### ArachneAgentBaseEnv
 
 The arachne layer (`environments/hermes_base_env.py`). Adds:
 - **Terminal backend configuration** — sets `TERMINAL_ENV` for sandboxed execution (local, Docker, Modal, Daytona, SSH, Singularity)
 - **Tool resolution** — `_resolve_tools_for_group()` calls arachne's `get_tool_definitions()` to get the right tool schemas based on enabled/disabled toolsets
-- **Agent loop integration** — `collect_trajectory()` runs `HermesAgentLoop` and scores the result
+- **Agent loop integration** — `collect_trajectory()` runs `ArachneAgentLoop` and scores the result
 - **Two-phase operation** — Phase 1 (OpenAI server) for eval/SFT, Phase 2 (VLLM ManagedServer) for full RL with logprobs
 - **Async safety patches** — monkey-patches Modal backend to work inside Atropos's event loop
 
 ### Concrete Environments
 
-Your environment inherits from `HermesAgentBaseEnv` and implements five methods:
+Your environment inherits from `ArachneAgentBaseEnv` and implements five methods:
 
 | Method | Purpose |
 |--------|---------|
@@ -88,7 +88,7 @@ Your environment inherits from `HermesAgentBaseEnv` and implements five methods:
 
 ### Agent Loop
 
-`HermesAgentLoop` (`environments/agent_loop.py`) is the reusable multi-turn agent engine. It runs the same tool-calling pattern as arachne's main loop:
+`ArachneAgentLoop` (`environments/agent_loop.py`) is the reusable multi-turn agent engine. It runs the same tool-calling pattern as arachne's main loop:
 
 1. Send messages + tool schemas to the API via `server.chat_completion()`
 2. If the response contains `tool_calls`, dispatch each via `handle_function_call()`
@@ -331,13 +331,13 @@ Uses ManagedServer for exact token IDs + logprobs via `/generate`. A client-side
 ### Training Environment
 
 ```python
-from environments.hermes_base_env import HermesAgentBaseEnv, HermesAgentEnvConfig
+from environments.hermes_base_env import ArachneAgentBaseEnv, ArachneAgentEnvConfig
 from atroposlib.envs.server_handling.server_manager import APIServerConfig
 
-class MyEnvConfig(HermesAgentEnvConfig):
+class MyEnvConfig(ArachneAgentEnvConfig):
     my_custom_field: str = "default_value"
 
-class MyEnv(HermesAgentBaseEnv):
+class MyEnv(ArachneAgentBaseEnv):
     name = "my-env"
     env_config_cls = MyEnvConfig
 
@@ -398,7 +398,7 @@ See `environments/benchmarks/yc_bench/yc_bench_env.py` for a clean, well-documen
 
 ## Configuration Reference
 
-### HermesAgentEnvConfig Fields
+### ArachneAgentEnvConfig Fields
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
@@ -479,8 +479,8 @@ See [RL Training](/user-guide/features/rl-training) for the agent-driven RL work
 
 ```
 environments/
-├── hermes_base_env.py          # Abstract base class (HermesAgentBaseEnv)
-├── agent_loop.py               # Multi-turn agent engine (HermesAgentLoop)
+├── hermes_base_env.py          # Abstract base class (ArachneAgentBaseEnv)
+├── agent_loop.py               # Multi-turn agent engine (ArachneAgentLoop)
 ├── tool_context.py             # Per-rollout tool access for reward functions
 ├── patches.py                  # Async-safety patches for Modal backend
 │

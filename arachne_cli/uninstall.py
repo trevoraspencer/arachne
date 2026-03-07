@@ -3,7 +3,7 @@ Hermes Agent Uninstaller.
 
 Provides options for:
 - Full uninstall: Remove everything including configs and data
-- Keep data: Remove code but keep ~/.hermes/ (configs, sessions, logs)
+- Keep data: Remove code but keep ~/.arachne/ (configs, sessions, logs)
 """
 
 import os
@@ -34,8 +34,8 @@ def get_project_root() -> Path:
 
 
 def get_hermes_home() -> Path:
-    """Get the Hermes home directory (~/.hermes)."""
-    return Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
+    """Get the Hermes home directory (~/.arachne)."""
+    return Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
 
 
 def find_shell_configs() -> list:
@@ -175,8 +175,8 @@ def run_uninstall(args):
     Run the uninstall process.
     
     Options:
-    - Full uninstall: removes code + ~/.hermes/ (configs, data, logs)
-    - Keep data: removes code but keeps ~/.hermes/ for future reinstall
+    - Full uninstall: removes code + ~/.arachne/ (configs, data, logs)
+    - Keep data: removes code but keeps ~/.arachne/ for future reinstall
     """
     project_root = get_project_root()
     hermes_home = get_hermes_home()
@@ -278,7 +278,7 @@ def run_uninstall(args):
     # We need to be careful here
     try:
         if project_root.exists():
-            # If the install is inside ~/.hermes/, just remove the arachne subdir
+            # If the install is inside ~/.arachne/, just remove the arachne subdir
             if hermes_home in project_root.parents or project_root.parent == hermes_home:
                 shutil.rmtree(project_root)
                 log_success(f"Removed {project_root}")
@@ -290,7 +290,7 @@ def run_uninstall(args):
         log_warn(f"Could not fully remove {project_root}: {e}")
         log_info("You may need to manually remove it")
     
-    # 5. Optionally remove ~/.hermes/ data directory
+    # 5. Optionally remove ~/.arachne/ data directory
     if full_uninstall:
         log_info("Removing configuration and data...")
         try:

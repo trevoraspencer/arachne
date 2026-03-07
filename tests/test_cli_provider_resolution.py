@@ -91,12 +91,12 @@ def test_arachne_cli_init_does_not_eagerly_resolve_runtime_provider(monkeypatch)
 
     def _unexpected_runtime_resolve(**kwargs):
         calls["count"] += 1
-        raise AssertionError("resolve_runtime_provider should not be called in HermesCLI.__init__")
+        raise AssertionError("resolve_runtime_provider should not be called in ArachneCLI.__init__")
 
     monkeypatch.setattr("arachne_cli.runtime_provider.resolve_runtime_provider", _unexpected_runtime_resolve)
     monkeypatch.setattr("arachne_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
 
-    shell = cli.HermesCLI(model="gpt-5", compact=True, max_turns=1)
+    shell = cli.ArachneCLI(model="gpt-5", compact=True, max_turns=1)
 
     assert shell is not None
     assert calls["count"] == 0
@@ -126,7 +126,7 @@ def test_runtime_resolution_failure_is_not_sticky(monkeypatch):
     monkeypatch.setattr("arachne_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
     monkeypatch.setattr(cli, "AIAgent", _DummyAgent)
 
-    shell = cli.HermesCLI(model="gpt-5", compact=True, max_turns=1)
+    shell = cli.ArachneCLI(model="gpt-5", compact=True, max_turns=1)
 
     assert shell._init_agent() is False
     assert shell._init_agent() is True
@@ -149,7 +149,7 @@ def test_runtime_resolution_rebuilds_agent_on_routing_change(monkeypatch):
     monkeypatch.setattr("arachne_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
     monkeypatch.setattr("arachne_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
 
-    shell = cli.HermesCLI(model="gpt-5", compact=True, max_turns=1)
+    shell = cli.ArachneCLI(model="gpt-5", compact=True, max_turns=1)
     shell.provider = "openrouter"
     shell.api_mode = "chat_completions"
     shell.base_url = "https://same-endpoint.example/v1"

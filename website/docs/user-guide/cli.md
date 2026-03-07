@@ -124,7 +124,7 @@ Commands are case-insensitive — `/HELP` works the same as `/help`. Most comman
 
 ## Skill Slash Commands
 
-Every installed skill in `~/.hermes/skills/` is automatically registered as a slash command. The skill name becomes the command:
+Every installed skill in `~/.arachne/skills/` is automatically registered as a slash command. The skill name becomes the command:
 
 ```
 /gif-search funny cats
@@ -147,7 +147,7 @@ Set a predefined personality to change the agent's tone:
 
 Built-in personalities include: `helpful`, `concise`, `technical`, `creative`, `teacher`, `kawaii`, `catgirl`, `pirate`, `shakespeare`, `surfer`, `noir`, `uwu`, `philosopher`, `hype`.
 
-You can also define custom personalities in `~/.hermes/config.yaml`:
+You can also define custom personalities in `~/.arachne/config.yaml`:
 
 ```yaml
 agent:
@@ -234,7 +234,7 @@ Use `hermes sessions list` to browse past sessions.
 
 ### Session Logging
 
-Sessions are automatically logged to `~/.hermes/sessions/`:
+Sessions are automatically logged to `~/.arachne/sessions/`:
 
 ```
 sessions/
@@ -248,7 +248,7 @@ sessions/
 Long conversations are automatically summarized when approaching context limits:
 
 ```yaml
-# In ~/.hermes/config.yaml
+# In ~/.arachne/config.yaml
 compression:
   enabled: true
   threshold: 0.85    # Compress at 85% of context limit

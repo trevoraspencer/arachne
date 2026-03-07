@@ -13,7 +13,7 @@ Hermes Agent automatically discovers and loads project context files from your w
 | File | Purpose | Discovery |
 |------|---------|-----------|
 | **AGENTS.md** | Project instructions, conventions, architecture | Recursive (walks subdirectories) |
-| **SOUL.md** | Personality and tone customization | CWD → `~/.hermes/SOUL.md` fallback |
+| **SOUL.md** | Personality and tone customization | CWD → `~/.arachne/SOUL.md` fallback |
 | **.cursorrules** | Cursor IDE coding conventions | CWD only |
 | **.cursor/rules/*.mdc** | Cursor IDE rule modules | CWD only |
 
@@ -74,7 +74,7 @@ This is a Next.js 14 web application with a Python FastAPI backend.
 **Discovery order:**
 
 1. `SOUL.md` or `soul.md` in the current working directory
-2. `~/.hermes/SOUL.md` (global fallback)
+2. `~/.arachne/SOUL.md` (global fallback)
 
 When a SOUL.md is found, the agent is instructed:
 

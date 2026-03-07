@@ -317,7 +317,7 @@ def do_install(identifier: str, category: str = "", force: bool = False,
                 "[bold bright_cyan]This is an official optional skill maintained by Nous Research.[/]\n\n"
                 "It ships with arachne but is not activated by default.\n"
                 "Installing will copy it to your skills directory where the agent can use it.\n\n"
-                f"Files will be at: [cyan]~/.hermes/skills/{category + '/' if category else ''}{bundle.name}/[/]",
+                f"Files will be at: [cyan]~/.arachne/skills/{category + '/' if category else ''}{bundle.name}/[/]",
                 title="Official Skill",
                 border_style="bright_cyan",
             ))
@@ -327,7 +327,7 @@ def do_install(identifier: str, category: str = "", force: bool = False,
                 "External skills can contain instructions that influence agent behavior,\n"
                 "shell commands, and scripts. Even after automated scanning, you should\n"
                 "review the installed files before use.\n\n"
-                f"Files will be at: [cyan]~/.hermes/skills/{category + '/' if category else ''}{bundle.name}/[/]",
+                f"Files will be at: [cyan]~/.arachne/skills/{category + '/' if category else ''}{bundle.name}/[/]",
                 title="Disclaimer",
                 border_style="yellow",
             ))
@@ -598,7 +598,7 @@ def do_publish(skill_path: str, target: str = "github", repo: str = "",
         auth = GitHubAuth()
         if not auth.is_authenticated():
             c.print("[bold red]Error:[/] GitHub authentication required.\n"
-                    "Set GITHUB_TOKEN in ~/.hermes/.env or run 'gh auth login'.\n")
+                    "Set GITHUB_TOKEN in ~/.arachne/.env or run 'gh auth login'.\n")
             return
 
         c.print(f"[bold]Publishing '{name}' to {repo}...[/]")

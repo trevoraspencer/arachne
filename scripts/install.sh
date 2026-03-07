@@ -28,8 +28,8 @@ BOLD='\033[1m'
 # Configuration
 REPO_URL_SSH="git@github.com:NousResearch/hermes-agent.git"
 REPO_URL_HTTPS="https://github.com/NousResearch/hermes-agent.git"
-HERMES_HOME="$HOME/.hermes"
-INSTALL_DIR="${HERMES_INSTALL_DIR:-$HERMES_HOME/arachne}"
+ARACHNE_HOME="$HOME/.hermes"
+INSTALL_DIR="${ARACHNE_INSTALL_DIR:-$ARACHNE_HOME/arachne}"
 PYTHON_VERSION="3.11"
 NODE_VERSION="22"
 
@@ -75,7 +75,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --no-venv      Don't create virtual environment"
             echo "  --skip-setup   Skip interactive setup wizard"
             echo "  --branch NAME  Git branch to install (default: main)"
-            echo "  --dir PATH     Installation directory (default: ~/.hermes/arachne)"
+            echo "  --dir PATH     Installation directory (default: ~/.arachne/arachne)"
             echo "  -h, --help     Show this help"
             exit 0
             ;;
@@ -282,9 +282,9 @@ check_node() {
     fi
 
     # Check our own managed install from a previous run
-    if [ -x "$HERMES_HOME/node/bin/node" ]; then
-        export PATH="$HERMES_HOME/node/bin:$PATH"
-        local found_ver=$("$HERMES_HOME/node/bin/node" --version)
+    if [ -x "$ARACHNE_HOME/node/bin/node" ]; then
+        export PATH="$ARACHNE_HOME/node/bin:$PATH"
+        local found_ver=$("$ARACHNE_HOME/node/bin/node" --version)
         log_success "Node.js $found_ver found (Hermes-managed)"
         HAS_NODE=true
         return 0
@@ -353,7 +353,7 @@ install_node() {
         return 0
     fi
 
-    log_info "Extracting to ~/.hermes/node/..."
+    log_info "Extracting to ~/.arachne/node/..."
     if [[ "$tarball_name" == *.tar.xz ]]; then
         tar xf "$tmp_dir/$tarball_name" -C "$tmp_dir"
     else
@@ -370,22 +370,22 @@ install_node() {
         return 0
     fi
 
-    # Place into ~/.hermes/node/ and symlink binaries to ~/.local/bin/
-    rm -rf "$HERMES_HOME/node"
-    mkdir -p "$HERMES_HOME"
-    mv "$extracted_dir" "$HERMES_HOME/node"
+    # Place into ~/.arachne/node/ and symlink binaries to ~/.local/bin/
+    rm -rf "$ARACHNE_HOME/node"
+    mkdir -p "$ARACHNE_HOME"
+    mv "$extracted_dir" "$ARACHNE_HOME/node"
     rm -rf "$tmp_dir"
 
     mkdir -p "$HOME/.local/bin"
-    ln -sf "$HERMES_HOME/node/bin/node" "$HOME/.local/bin/node"
-    ln -sf "$HERMES_HOME/node/bin/npm"  "$HOME/.local/bin/npm"
-    ln -sf "$HERMES_HOME/node/bin/npx"  "$HOME/.local/bin/npx"
+    ln -sf "$ARACHNE_HOME/node/bin/node" "$HOME/.local/bin/node"
+    ln -sf "$ARACHNE_HOME/node/bin/npm"  "$HOME/.local/bin/npm"
+    ln -sf "$ARACHNE_HOME/node/bin/npx"  "$HOME/.local/bin/npx"
 
-    export PATH="$HERMES_HOME/node/bin:$PATH"
+    export PATH="$ARACHNE_HOME/node/bin:$PATH"
 
     local installed_ver
-    installed_ver=$("$HERMES_HOME/node/bin/node" --version 2>/dev/null)
-    log_success "Node.js $installed_ver installed to ~/.hermes/node/"
+    installed_ver=$("$ARACHNE_HOME/node/bin/node" --version 2>/dev/null)
+    log_success "Node.js $installed_ver installed to ~/.arachne/node/"
     HAS_NODE=true
 }
 
@@ -680,18 +680,18 @@ setup_path() {
     log_info "Setting up hermes command..."
 
     if [ "$USE_VENV" = true ]; then
-        HERMES_BIN="$INSTALL_DIR/venv/bin/hermes"
+        ARACHNE_BIN="$INSTALL_DIR/venv/bin/hermes"
     else
-        HERMES_BIN="$(which hermes 2>/dev/null || echo "")"
-        if [ -z "$HERMES_BIN" ]; then
+        ARACHNE_BIN="$(which hermes 2>/dev/null || echo "")"
+        if [ -z "$ARACHNE_BIN" ]; then
             log_warn "hermes not found on PATH after install"
             return 0
         fi
     fi
 
     # Verify the entry point script was actually generated
-    if [ ! -x "$HERMES_BIN" ]; then
-        log_warn "hermes entry point not found at $HERMES_BIN"
+    if [ ! -x "$ARACHNE_BIN" ]; then
+        log_warn "hermes entry point not found at $ARACHNE_BIN"
         log_info "This usually means the pip install didn't complete successfully."
         log_info "Try: cd $INSTALL_DIR && uv pip install -e '.[all]'"
         return 0
@@ -699,7 +699,7 @@ setup_path() {
 
     # Create symlink in ~/.local/bin (standard user binary location, usually on PATH)
     mkdir -p "$HOME/.local/bin"
-    ln -sf "$HERMES_BIN" "$HOME/.local/bin/hermes"
+    ln -sf "$ARACHNE_BIN" "$HOME/.local/bin/hermes"
     log_success "Symlinked hermes → ~/.local/bin/hermes"
 
     # Check if ~/.local/bin is on PATH; if not, add it to shell config.
@@ -753,35 +753,35 @@ setup_path() {
 copy_config_templates() {
     log_info "Setting up configuration files..."
 
-    # Create ~/.hermes directory structure (config at top level, code in subdir)
-    mkdir -p "$HERMES_HOME"/{cron,sessions,logs,pairing,hooks,image_cache,audio_cache,memories,skills,whatsapp/session}
+    # Create ~/.arachne directory structure (config at top level, code in subdir)
+    mkdir -p "$ARACHNE_HOME"/{cron,sessions,logs,pairing,hooks,image_cache,audio_cache,memories,skills,whatsapp/session}
 
-    # Create .env at ~/.hermes/.env (top level, easy to find)
-    if [ ! -f "$HERMES_HOME/.env" ]; then
+    # Create .env at ~/.arachne/.env (top level, easy to find)
+    if [ ! -f "$ARACHNE_HOME/.env" ]; then
         if [ -f "$INSTALL_DIR/.env.example" ]; then
-            cp "$INSTALL_DIR/.env.example" "$HERMES_HOME/.env"
-            log_success "Created ~/.hermes/.env from template"
+            cp "$INSTALL_DIR/.env.example" "$ARACHNE_HOME/.env"
+            log_success "Created ~/.arachne/.env from template"
         else
-            touch "$HERMES_HOME/.env"
-            log_success "Created ~/.hermes/.env"
+            touch "$ARACHNE_HOME/.env"
+            log_success "Created ~/.arachne/.env"
         fi
     else
-        log_info "~/.hermes/.env already exists, keeping it"
+        log_info "~/.arachne/.env already exists, keeping it"
     fi
 
-    # Create config.yaml at ~/.hermes/config.yaml (top level, easy to find)
-    if [ ! -f "$HERMES_HOME/config.yaml" ]; then
+    # Create config.yaml at ~/.arachne/config.yaml (top level, easy to find)
+    if [ ! -f "$ARACHNE_HOME/config.yaml" ]; then
         if [ -f "$INSTALL_DIR/cli-config.yaml.example" ]; then
-            cp "$INSTALL_DIR/cli-config.yaml.example" "$HERMES_HOME/config.yaml"
-            log_success "Created ~/.hermes/config.yaml from template"
+            cp "$INSTALL_DIR/cli-config.yaml.example" "$ARACHNE_HOME/config.yaml"
+            log_success "Created ~/.arachne/config.yaml from template"
         fi
     else
-        log_info "~/.hermes/config.yaml already exists, keeping it"
+        log_info "~/.arachne/config.yaml already exists, keeping it"
     fi
 
     # Create SOUL.md if it doesn't exist (global persona file)
-    if [ ! -f "$HERMES_HOME/SOUL.md" ]; then
-        cat > "$HERMES_HOME/SOUL.md" << 'SOUL_EOF'
+    if [ ! -f "$ARACHNE_HOME/SOUL.md" ]; then
+        cat > "$ARACHNE_HOME/SOUL.md" << 'SOUL_EOF'
 # Hermes Agent Persona
 
 <!--
@@ -798,20 +798,20 @@ This file is loaded fresh each message -- no restart needed.
 Delete the contents (or this file) to use the default personality.
 -->
 SOUL_EOF
-        log_success "Created ~/.hermes/SOUL.md (edit to customize personality)"
+        log_success "Created ~/.arachne/SOUL.md (edit to customize personality)"
     fi
 
-    log_success "Configuration directory ready: ~/.hermes/"
+    log_success "Configuration directory ready: ~/.arachne/"
 
-    # Seed bundled skills into ~/.hermes/skills/ (manifest-based, one-time per skill)
-    log_info "Syncing bundled skills to ~/.hermes/skills/ ..."
+    # Seed bundled skills into ~/.arachne/skills/ (manifest-based, one-time per skill)
+    log_info "Syncing bundled skills to ~/.arachne/skills/ ..."
     if "$INSTALL_DIR/venv/bin/python" "$INSTALL_DIR/tools/skills_sync.py" 2>/dev/null; then
-        log_success "Skills synced to ~/.hermes/skills/"
+        log_success "Skills synced to ~/.arachne/skills/"
     else
         # Fallback: simple directory copy if Python sync fails
-        if [ -d "$INSTALL_DIR/skills" ] && [ ! "$(ls -A "$HERMES_HOME/skills/" 2>/dev/null | grep -v '.bundled_manifest')" ]; then
-            cp -r "$INSTALL_DIR/skills/"* "$HERMES_HOME/skills/" 2>/dev/null || true
-            log_success "Skills copied to ~/.hermes/skills/"
+        if [ -d "$INSTALL_DIR/skills" ] && [ ! "$(ls -A "$ARACHNE_HOME/skills/" 2>/dev/null | grep -v '.bundled_manifest')" ]; then
+            cp -r "$INSTALL_DIR/skills/"* "$ARACHNE_HOME/skills/" 2>/dev/null || true
+            log_success "Skills copied to ~/.arachne/skills/"
         fi
     fi
 }
@@ -873,7 +873,7 @@ run_setup_wizard() {
 
 maybe_start_gateway() {
     # Check if any messaging platform tokens were configured
-    ENV_FILE="$HERMES_HOME/.env"
+    ENV_FILE="$ARACHNE_HOME/.env"
     if [ ! -f "$ENV_FILE" ]; then
         return 0
     fi
@@ -897,7 +897,7 @@ maybe_start_gateway() {
 
     # If WhatsApp is enabled and no session exists yet, run foreground first for QR scan
     WHATSAPP_VAL=$(grep "^WHATSAPP_ENABLED=" "$ENV_FILE" 2>/dev/null | cut -d'=' -f2-)
-    WHATSAPP_SESSION="$HERMES_HOME/whatsapp/session/creds.json"
+    WHATSAPP_SESSION="$ARACHNE_HOME/whatsapp/session/creds.json"
     if [ "$WHATSAPP_VAL" = "true" ] && [ ! -f "$WHATSAPP_SESSION" ]; then
         if [ "$IS_INTERACTIVE" = true ]; then
             echo ""
@@ -907,9 +907,9 @@ maybe_start_gateway() {
             read -p "Pair WhatsApp now? [Y/n] " -n 1 -r
             echo
             if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-                HERMES_CMD="$HOME/.local/bin/hermes"
-                [ ! -x "$HERMES_CMD" ] && HERMES_CMD="hermes"
-                $HERMES_CMD whatsapp || true
+                ARACHNE_CMD="$HOME/.local/bin/hermes"
+                [ ! -x "$ARACHNE_CMD" ] && ARACHNE_CMD="hermes"
+                $ARACHNE_CMD whatsapp || true
             fi
         else
             log_info "WhatsApp pairing skipped (non-interactive). Run 'hermes whatsapp' to pair."
@@ -926,16 +926,16 @@ maybe_start_gateway() {
     echo
 
     if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-        HERMES_CMD="$HOME/.local/bin/hermes"
-        if [ ! -x "$HERMES_CMD" ]; then
-            HERMES_CMD="hermes"
+        ARACHNE_CMD="$HOME/.local/bin/hermes"
+        if [ ! -x "$ARACHNE_CMD" ]; then
+            ARACHNE_CMD="hermes"
         fi
 
         if command -v systemctl &> /dev/null; then
             log_info "Installing systemd service..."
-            if $HERMES_CMD gateway install 2>/dev/null; then
+            if $ARACHNE_CMD gateway install 2>/dev/null; then
                 log_success "Gateway service installed"
-                if $HERMES_CMD gateway start 2>/dev/null; then
+                if $ARACHNE_CMD gateway start 2>/dev/null; then
                     log_success "Gateway started! Your bot is now online."
                 else
                     log_warn "Service installed but failed to start. Try: hermes gateway start"
@@ -945,9 +945,9 @@ maybe_start_gateway() {
             fi
         else
             log_info "systemd not available — starting gateway in background..."
-            nohup $HERMES_CMD gateway > "$HERMES_HOME/logs/gateway.log" 2>&1 &
+            nohup $ARACHNE_CMD gateway > "$ARACHNE_HOME/logs/gateway.log" 2>&1 &
             GATEWAY_PID=$!
-            log_success "Gateway started (PID $GATEWAY_PID). Logs: ~/.hermes/logs/gateway.log"
+            log_success "Gateway started (PID $GATEWAY_PID). Logs: ~/.arachne/logs/gateway.log"
             log_info "To stop: kill $GATEWAY_PID"
             log_info "To restart later: hermes gateway"
         fi
@@ -966,12 +966,12 @@ print_success() {
     echo ""
 
     # Show file locations
-    echo -e "${CYAN}${BOLD}📁 Your files (all in ~/.hermes/):${NC}"
+    echo -e "${CYAN}${BOLD}📁 Your files (all in ~/.arachne/):${NC}"
     echo ""
-    echo -e "   ${YELLOW}Config:${NC}    ~/.hermes/config.yaml"
-    echo -e "   ${YELLOW}API Keys:${NC}  ~/.hermes/.env"
-    echo -e "   ${YELLOW}Data:${NC}      ~/.hermes/cron/, sessions/, logs/"
-    echo -e "   ${YELLOW}Code:${NC}      ~/.hermes/arachne/"
+    echo -e "   ${YELLOW}Config:${NC}    ~/.arachne/config.yaml"
+    echo -e "   ${YELLOW}API Keys:${NC}  ~/.arachne/.env"
+    echo -e "   ${YELLOW}Data:${NC}      ~/.arachne/cron/, sessions/, logs/"
+    echo -e "   ${YELLOW}Code:${NC}      ~/.arachne/arachne/"
     echo ""
 
     echo -e "${CYAN}─────────────────────────────────────────────────────────${NC}"

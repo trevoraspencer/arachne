@@ -16,19 +16,19 @@ from arachne_cli.config import (
 class TestGetHermesHome:
     def test_default_path(self):
         with patch.dict(os.environ, {}, clear=False):
-            os.environ.pop("HERMES_HOME", None)
+            os.environ.pop("ARACHNE_HOME", None)
             home = get_hermes_home()
             assert home == Path.home() / ".hermes"
 
     def test_env_override(self):
-        with patch.dict(os.environ, {"HERMES_HOME": "/custom/path"}):
+        with patch.dict(os.environ, {"ARACHNE_HOME": "/custom/path"}):
             home = get_hermes_home()
             assert home == Path("/custom/path")
 
 
 class TestEnsureHermesHome:
     def test_creates_subdirs(self, tmp_path):
-        with patch.dict(os.environ, {"HERMES_HOME": str(tmp_path)}):
+        with patch.dict(os.environ, {"ARACHNE_HOME": str(tmp_path)}):
             ensure_hermes_home()
             assert (tmp_path / "cron").is_dir()
             assert (tmp_path / "sessions").is_dir()
@@ -38,7 +38,7 @@ class TestEnsureHermesHome:
 
 class TestLoadConfigDefaults:
     def test_returns_defaults_when_no_file(self, tmp_path):
-        with patch.dict(os.environ, {"HERMES_HOME": str(tmp_path)}):
+        with patch.dict(os.environ, {"ARACHNE_HOME": str(tmp_path)}):
             config = load_config()
             assert config["model"] == DEFAULT_CONFIG["model"]
             assert config["max_turns"] == DEFAULT_CONFIG["max_turns"]
@@ -48,7 +48,7 @@ class TestLoadConfigDefaults:
 
 class TestSaveAndLoadRoundtrip:
     def test_roundtrip(self, tmp_path):
-        with patch.dict(os.environ, {"HERMES_HOME": str(tmp_path)}):
+        with patch.dict(os.environ, {"ARACHNE_HOME": str(tmp_path)}):
             config = load_config()
             config["model"] = "test/custom-model"
             config["max_turns"] = 42
@@ -59,7 +59,7 @@ class TestSaveAndLoadRoundtrip:
             assert reloaded["max_turns"] == 42
 
     def test_nested_values_preserved(self, tmp_path):
-        with patch.dict(os.environ, {"HERMES_HOME": str(tmp_path)}):
+        with patch.dict(os.environ, {"ARACHNE_HOME": str(tmp_path)}):
             config = load_config()
             config["terminal"]["timeout"] = 999
             save_config(config)

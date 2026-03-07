@@ -33,7 +33,7 @@ def resolve_requested_provider(requested: Optional[str] = None) -> str:
     if requested and requested.strip():
         return requested.strip().lower()
 
-    env_provider = os.getenv("HERMES_INFERENCE_PROVIDER", "").strip().lower()
+    env_provider = os.getenv("ARACHNE_INFERENCE_PROVIDER", "").strip().lower()
     if env_provider:
         return env_provider
 
@@ -123,8 +123,8 @@ def resolve_runtime_provider(
 
     if provider == "nous":
         creds = resolve_nous_runtime_credentials(
-            min_key_ttl_seconds=max(60, int(os.getenv("HERMES_NOUS_MIN_KEY_TTL_SECONDS", "1800"))),
-            timeout_seconds=float(os.getenv("HERMES_NOUS_TIMEOUT_SECONDS", "15")),
+            min_key_ttl_seconds=max(60, int(os.getenv("ARACHNE_NOUS_MIN_KEY_TTL_SECONDS", "1800"))),
+            timeout_seconds=float(os.getenv("ARACHNE_NOUS_TIMEOUT_SECONDS", "15")),
         )
         return {
             "provider": "nous",

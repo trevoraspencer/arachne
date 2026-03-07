@@ -13,7 +13,7 @@ This guide covers the internal architecture of Hermes Agent for developers contr
 ```
 arachne/
 ├── run_agent.py              # AIAgent class — core conversation loop, tool dispatch
-├── cli.py                    # HermesCLI class — interactive TUI, prompt_toolkit
+├── cli.py                    # ArachneCLI class — interactive TUI, prompt_toolkit
 ├── model_tools.py            # Tool orchestration (thin layer over tools/registry.py)
 ├── toolsets.py               # Tool groupings and presets
 ├── arachne_state.py           # SQLite session database with FTS5 full-text search
@@ -69,7 +69,7 @@ arachne/
 │   ├── install.ps1               # Windows PowerShell installer
 │   └── whatsapp-bridge/          # Node.js WhatsApp bridge (Baileys)
 │
-├── skills/                   # Bundled skills (copied to ~/.hermes/skills/)
+├── skills/                   # Bundled skills (copied to ~/.arachne/skills/)
 ├── optional-skills/          # Official optional skills (discoverable via hub, not activated by default)
 ├── environments/             # RL training environments (Atropos integration)
 └── tests/                    # Test suite
@@ -160,7 +160,7 @@ Tools are grouped into toolsets (`web`, `terminal`, `file`, `browser`, etc.) tha
 
 ### Session Persistence
 
-All conversations are stored in SQLite (`arachne_state.py`) with full-text search. JSON logs go to `~/.hermes/sessions/`.
+All conversations are stored in SQLite (`arachne_state.py`) with full-text search. JSON logs go to `~/.arachne/sessions/`.
 
 ### Ephemeral Injection
 
@@ -213,6 +213,6 @@ Each platform adapter conforms to `BasePlatformAdapter`.
 
 ## Configuration System
 
-- `~/.hermes/config.yaml` — All settings
-- `~/.hermes/.env` — API keys and secrets
+- `~/.arachne/config.yaml` — All settings
+- `~/.arachne/.env` — API keys and secrets
 - `_config_version` in `DEFAULT_CONFIG` — Bumped when required fields are added, triggers migration prompts

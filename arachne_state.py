@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 
 
-DEFAULT_DB_PATH = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes")) / "state.db"
+DEFAULT_DB_PATH = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes")) / "state.db"
 
 SCHEMA_VERSION = 2
 

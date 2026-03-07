@@ -28,10 +28,10 @@ from typing import Dict, Optional, Any, List
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Resolve Hermes home directory (respects HERMES_HOME override)
-_hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
+# Resolve Hermes home directory (respects ARACHNE_HOME override)
+_hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
 
-# Load environment variables from ~/.hermes/.env first
+# Load environment variables from ~/.arachne/.env first
 from dotenv import load_dotenv
 _env_path = _hermes_home / '.env'
 if _env_path.exists():
@@ -92,20 +92,20 @@ if _config_path.exists():
         _agent_cfg = _cfg.get("agent", {})
         if _agent_cfg and isinstance(_agent_cfg, dict):
             if "max_turns" in _agent_cfg:
-                os.environ["HERMES_MAX_ITERATIONS"] = str(_agent_cfg["max_turns"])
-        # Timezone: bridge config.yaml → HERMES_TIMEZONE env var.
-        # HERMES_TIMEZONE from .env takes precedence (already in os.environ).
+                os.environ["ARACHNE_MAX_ITERATIONS"] = str(_agent_cfg["max_turns"])
+        # Timezone: bridge config.yaml → ARACHNE_TIMEZONE env var.
+        # ARACHNE_TIMEZONE from .env takes precedence (already in os.environ).
         _tz_cfg = _cfg.get("timezone", "")
-        if _tz_cfg and isinstance(_tz_cfg, str) and "HERMES_TIMEZONE" not in os.environ:
-            os.environ["HERMES_TIMEZONE"] = _tz_cfg.strip()
+        if _tz_cfg and isinstance(_tz_cfg, str) and "ARACHNE_TIMEZONE" not in os.environ:
+            os.environ["ARACHNE_TIMEZONE"] = _tz_cfg.strip()
     except Exception:
         pass  # Non-fatal; gateway can still run with .env values
 
 # Gateway runs in quiet mode - suppress debug output and use cwd directly (no temp dirs)
-os.environ["HERMES_QUIET"] = "1"
+os.environ["ARACHNE_QUIET"] = "1"
 
 # Enable interactive exec approval for dangerous commands on messaging platforms
-os.environ["HERMES_EXEC_ASK"] = "1"
+os.environ["ARACHNE_EXEC_ASK"] = "1"
 
 # Set terminal working directory for messaging platforms
 # Uses MESSAGING_CWD if set, otherwise defaults to home directory
@@ -141,7 +141,7 @@ def _resolve_runtime_agent_kwargs() -> dict:
 
     try:
         runtime = resolve_runtime_provider(
-            requested=os.getenv("HERMES_INFERENCE_PROVIDER"),
+            requested=os.getenv("ARACHNE_INFERENCE_PROVIDER"),
         )
     except Exception as exc:
         raise RuntimeError(format_runtime_provider_error(exc)) from exc
@@ -271,12 +271,12 @@ class GatewayRunner:
     def _load_prefill_messages() -> List[Dict[str, Any]]:
         """Load ephemeral prefill messages from config or env var.
         
-        Checks HERMES_PREFILL_MESSAGES_FILE env var first, then falls back to
-        the prefill_messages_file key in ~/.hermes/config.yaml.
-        Relative paths are resolved from ~/.hermes/.
+        Checks ARACHNE_PREFILL_MESSAGES_FILE env var first, then falls back to
+        the prefill_messages_file key in ~/.arachne/config.yaml.
+        Relative paths are resolved from ~/.arachne/.
         """
         import json as _json
-        file_path = os.getenv("HERMES_PREFILL_MESSAGES_FILE", "")
+        file_path = os.getenv("ARACHNE_PREFILL_MESSAGES_FILE", "")
         if not file_path:
             try:
                 import yaml as _y
@@ -310,10 +310,10 @@ class GatewayRunner:
     def _load_ephemeral_system_prompt() -> str:
         """Load ephemeral system prompt from config or env var.
         
-        Checks HERMES_EPHEMERAL_SYSTEM_PROMPT env var first, then falls back to
-        agent.system_prompt in ~/.hermes/config.yaml.
+        Checks ARACHNE_EPHEMERAL_SYSTEM_PROMPT env var first, then falls back to
+        agent.system_prompt in ~/.arachne/config.yaml.
         """
-        prompt = os.getenv("HERMES_EPHEMERAL_SYSTEM_PROMPT", "")
+        prompt = os.getenv("ARACHNE_EPHEMERAL_SYSTEM_PROMPT", "")
         if prompt:
             return prompt
         try:
@@ -331,11 +331,11 @@ class GatewayRunner:
     def _load_reasoning_config() -> dict | None:
         """Load reasoning effort from config or env var.
         
-        Checks HERMES_REASONING_EFFORT env var first, then agent.reasoning_effort
+        Checks ARACHNE_REASONING_EFFORT env var first, then agent.reasoning_effort
         in config.yaml. Valid: "xhigh", "high", "medium", "low", "minimal", "none".
         Returns None to use default (medium).
         """
-        effort = os.getenv("HERMES_REASONING_EFFORT", "")
+        effort = os.getenv("ARACHNE_REASONING_EFFORT", "")
         if not effort:
             try:
                 import yaml as _y
@@ -391,7 +391,7 @@ class GatewayRunner:
         if not _any_allowlist and not _allow_all:
             logger.warning(
                 "No user allowlists configured. All unauthorized users will be denied. "
-                "Set GATEWAY_ALLOW_ALL_USERS=true in ~/.hermes/.env to allow open access, "
+                "Set GATEWAY_ALLOW_ALL_USERS=true in ~/.arachne/.env to allow open access, "
                 "or configure platform allowlists (e.g., TELEGRAM_ALLOWED_USERS=your_id)."
             )
         
@@ -997,7 +997,7 @@ class GatewayRunner:
                     {
                         "role": "session_meta",
                         "tools": tool_defs or [],
-                        "model": os.getenv("HERMES_MODEL", ""),
+                        "model": os.getenv("ARACHNE_MODEL", ""),
                         "platform": source.platform.value if source.platform else "",
                         "timestamp": ts,
                     }
@@ -1159,7 +1159,7 @@ class GatewayRunner:
 
         # Resolve current model the same way the agent init does:
         # env vars first, then config.yaml always overrides.
-        current = os.getenv("HERMES_MODEL") or os.getenv("LLM_MODEL") or "anthropic/claude-opus-4.6"
+        current = os.getenv("ARACHNE_MODEL") or os.getenv("LLM_MODEL") or "anthropic/claude-opus-4.6"
         try:
             if config_path.exists():
                 with open(config_path) as f:
@@ -1199,7 +1199,7 @@ class GatewayRunner:
             return f"⚠️ Failed to save model change: {e}"
 
         # Also set env var so code reading it before the next agent init sees the update.
-        os.environ["HERMES_MODEL"] = args
+        os.environ["ARACHNE_MODEL"] = args
 
         return f"🤖 Model changed to `{args}`\n_(takes effect on next message)_"
     
@@ -1223,7 +1223,7 @@ class GatewayRunner:
             personalities = {}
 
         if not personalities:
-            return "No personalities configured in `~/.hermes/config.yaml`"
+            return "No personalities configured in `~/.arachne/config.yaml`"
 
         if not args:
             lines = ["🎭 **Available Personalities**\n"]
@@ -1652,14 +1652,14 @@ class GatewayRunner:
 
     def _set_session_env(self, context: SessionContext) -> None:
         """Set environment variables for the current session."""
-        os.environ["HERMES_SESSION_PLATFORM"] = context.source.platform.value
-        os.environ["HERMES_SESSION_CHAT_ID"] = context.source.chat_id
+        os.environ["ARACHNE_SESSION_PLATFORM"] = context.source.platform.value
+        os.environ["ARACHNE_SESSION_CHAT_ID"] = context.source.chat_id
         if context.source.chat_name:
-            os.environ["HERMES_SESSION_CHAT_NAME"] = context.source.chat_name
+            os.environ["ARACHNE_SESSION_CHAT_NAME"] = context.source.chat_name
     
     def _clear_session_env(self) -> None:
         """Clear session environment variables."""
-        for var in ["HERMES_SESSION_PLATFORM", "HERMES_SESSION_CHAT_ID", "HERMES_SESSION_CHAT_NAME"]:
+        for var in ["ARACHNE_SESSION_PLATFORM", "ARACHNE_SESSION_CHAT_ID", "ARACHNE_SESSION_CHAT_NAME"]:
             if var in os.environ:
                 del os.environ[var]
     
@@ -1934,7 +1934,7 @@ class GatewayRunner:
             pass
         progress_mode = (
             _progress_cfg.get("tool_progress")
-            or os.getenv("HERMES_TOOL_PROGRESS_MODE")
+            or os.getenv("ARACHNE_TOOL_PROGRESS_MODE")
             or "all"
         )
         tool_progress_enabled = progress_mode != "off"
@@ -2116,10 +2116,10 @@ class GatewayRunner:
         def run_sync():
             # Pass session_key to process registry via env var so background
             # processes can be mapped back to this gateway session
-            os.environ["HERMES_SESSION_KEY"] = session_key or ""
+            os.environ["ARACHNE_SESSION_KEY"] = session_key or ""
 
             # Read from env var or use default (same as CLI)
-            max_iterations = int(os.getenv("HERMES_MAX_ITERATIONS", "90"))
+            max_iterations = int(os.getenv("ARACHNE_MAX_ITERATIONS", "90"))
             
             # Map platform enum to the platform hint key the agent understands.
             # Platform.LOCAL ("local") maps to "cli"; others pass through as-is.
@@ -2139,7 +2139,7 @@ class GatewayRunner:
             except Exception:
                 pass
 
-            model = os.getenv("HERMES_MODEL") or os.getenv("LLM_MODEL") or "anthropic/claude-opus-4.6"
+            model = os.getenv("ARACHNE_MODEL") or os.getenv("LLM_MODEL") or "anthropic/claude-opus-4.6"
 
             try:
                 import yaml as _y
@@ -2468,16 +2468,16 @@ async def start_gateway(config: Optional[GatewayConfig] = None) -> bool:
     A False return causes a non-zero exit code so systemd can auto-restart.
     """
     # ── Duplicate-instance guard ──────────────────────────────────────
-    # Prevent two gateways from running under the same HERMES_HOME.
-    # The PID file is scoped to HERMES_HOME, so future multi-profile
-    # setups (each profile using a distinct HERMES_HOME) will naturally
+    # Prevent two gateways from running under the same ARACHNE_HOME.
+    # The PID file is scoped to ARACHNE_HOME, so future multi-profile
+    # setups (each profile using a distinct ARACHNE_HOME) will naturally
     # allow concurrent instances without tripping this guard.
     from gateway.status import get_running_pid
     existing_pid = get_running_pid()
     if existing_pid is not None and existing_pid != os.getpid():
-        hermes_home = os.getenv("HERMES_HOME", "~/.hermes")
+        hermes_home = os.getenv("ARACHNE_HOME", "~/.arachne")
         logger.error(
-            "Another gateway instance is already running (PID %d, HERMES_HOME=%s). "
+            "Another gateway instance is already running (PID %d, ARACHNE_HOME=%s). "
             "Use 'hermes gateway restart' to replace it, or 'hermes gateway stop' first.",
             existing_pid, hermes_home,
         )

@@ -39,10 +39,10 @@ import fire
 from datetime import datetime
 from pathlib import Path
 
-# Load .env from ~/.hermes/.env first, then project root as dev fallback
+# Load .env from ~/.arachne/.env first, then project root as dev fallback
 from dotenv import load_dotenv
 
-_hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
+_hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
 _user_env = _hermes_home / ".env"
 _project_env = Path(__file__).parent / '.env'
 if _user_env.exists():
@@ -60,7 +60,7 @@ elif _project_env.exists():
 else:
     logger.info("No .env file found. Using system environment variables.")
 
-# Point mini-swe-agent at ~/.hermes/ so it shares our config
+# Point mini-swe-agent at ~/.arachne/ so it shares our config
 os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(_hermes_home))
 os.environ.setdefault("MSWEA_SILENT_STARTUP", "1")
 
@@ -298,7 +298,7 @@ class AIAgent:
         self._use_prompt_caching = is_openrouter and is_claude
         self._cache_ttl = "5m"  # Default 5-minute TTL (1.25x write cost)
         
-        # Persistent error log -- always writes WARNING+ to ~/.hermes/logs/errors.log
+        # Persistent error log -- always writes WARNING+ to ~/.arachne/logs/errors.log
         # so tool failures, API errors, etc. are inspectable after the fact.
         from agent.redact import RedactingFormatter
         _error_log_dir = Path.home() / ".hermes" / "logs"
@@ -460,8 +460,8 @@ class AIAgent:
             short_uuid = uuid.uuid4().hex[:6]
             self.session_id = f"{timestamp_str}_{short_uuid}"
         
-        # Session logs go into ~/.hermes/sessions/ alongside gateway sessions
-        hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
+        # Session logs go into ~/.arachne/sessions/ alongside gateway sessions
+        hermes_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
         self.logs_dir = hermes_home / "sessions"
         self.logs_dir.mkdir(parents=True, exist_ok=True)
         self.session_log_file = self.logs_dir / f"session_{self.session_id}.json"
@@ -1148,7 +1148,7 @@ class AIAgent:
 
             print(f"{self.log_prefix}🧾 Request debug dump written to: {dump_file}")
 
-            if os.getenv("HERMES_DUMP_REQUEST_STDOUT", "").strip().lower() in {"1", "true", "yes", "on"}:
+            if os.getenv("ARACHNE_DUMP_REQUEST_STDOUT", "").strip().lower() in {"1", "true", "yes", "on"}:
                 print(json.dumps(dump_payload, ensure_ascii=False, indent=2, default=str))
 
             return dump_file
@@ -2071,8 +2071,8 @@ class AIAgent:
             from arachne_cli.auth import resolve_nous_runtime_credentials
 
             creds = resolve_nous_runtime_credentials(
-                min_key_ttl_seconds=max(60, int(os.getenv("HERMES_NOUS_MIN_KEY_TTL_SECONDS", "1800"))),
-                timeout_seconds=float(os.getenv("HERMES_NOUS_TIMEOUT_SECONDS", "15")),
+                min_key_ttl_seconds=max(60, int(os.getenv("ARACHNE_NOUS_MIN_KEY_TTL_SECONDS", "1800"))),
+                timeout_seconds=float(os.getenv("ARACHNE_NOUS_TIMEOUT_SECONDS", "15")),
                 force_mint=force,
             )
         except Exception as exc:
@@ -3157,7 +3157,7 @@ class AIAgent:
                     if self.api_mode == "codex_responses":
                         api_kwargs = self._preflight_codex_api_kwargs(api_kwargs, allow_stream=False)
 
-                    if os.getenv("HERMES_DUMP_REQUESTS", "").strip().lower() in {"1", "true", "yes", "on"}:
+                    if os.getenv("ARACHNE_DUMP_REQUESTS", "").strip().lower() in {"1", "true", "yes", "on"}:
                         self._dump_api_request_debug(api_kwargs, reason="preflight")
 
                     response = self._interruptible_api_call(api_kwargs)

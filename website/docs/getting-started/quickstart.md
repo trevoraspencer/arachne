@@ -144,7 +144,7 @@ Or use the `/skills` slash command inside chat.
 Connect to external tools via the Model Context Protocol:
 
 ```yaml
-# Add to ~/.hermes/config.yaml
+# Add to ~/.arachne/config.yaml
 mcp_servers:
   github:
     command: npx

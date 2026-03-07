@@ -3,7 +3,7 @@ Multi-provider authentication system for Hermes Agent.
 
 Supports OAuth device code flows (Nous Portal, future: OpenAI Codex) and
 traditional API key providers (OpenRouter, custom endpoints). Auth state
-is persisted in ~/.hermes/auth.json with cross-process file locking.
+is persisted in ~/.arachne/auth.json with cross-process file locking.
 
 Architecture:
 - ProviderConfig registry defines known OAuth providers
@@ -249,7 +249,7 @@ def _token_fingerprint(token: Any) -> Optional[str]:
 
 
 def _oauth_trace_enabled() -> bool:
-    raw = os.getenv("HERMES_OAUTH_TRACE", "").strip().lower()
+    raw = os.getenv("ARACHNE_OAUTH_TRACE", "").strip().lower()
     return raw in {"1", "true", "yes", "on"}
 
 
@@ -264,7 +264,7 @@ def _oauth_trace(event: str, *, sequence_id: Optional[str] = None, **fields: Any
 
 
 # =============================================================================
-# Auth Store — persistence layer for ~/.hermes/auth.json
+# Auth Store — persistence layer for ~/.arachne/auth.json
 # =============================================================================
 
 def _auth_file_path() -> Path:
@@ -570,7 +570,7 @@ def _is_remote_session() -> bool:
 
 
 # =============================================================================
-# OpenAI Codex auth — tokens stored in ~/.hermes/auth.json (not ~/.codex/)
+# OpenAI Codex auth — tokens stored in ~/.arachne/auth.json (not ~/.codex/)
 #
 # Hermes maintains its own Codex OAuth session separate from the Codex CLI
 # and VS Code extension. This prevents refresh token rotation conflicts
@@ -578,7 +578,7 @@ def _is_remote_session() -> bool:
 # =============================================================================
 
 def _read_codex_tokens(*, _lock: bool = True) -> Dict[str, Any]:
-    """Read Codex OAuth tokens from Hermes auth store (~/.hermes/auth.json).
+    """Read Codex OAuth tokens from Hermes auth store (~/.arachne/auth.json).
     
     Returns dict with 'tokens' (access_token, refresh_token) and 'last_refresh'.
     Raises AuthError if no Codex tokens are stored.
@@ -627,7 +627,7 @@ def _read_codex_tokens(*, _lock: bool = True) -> Dict[str, Any]:
 
 
 def _save_codex_tokens(tokens: Dict[str, str], last_refresh: str = None) -> None:
-    """Save Codex OAuth tokens to Hermes auth store (~/.hermes/auth.json)."""
+    """Save Codex OAuth tokens to Hermes auth store (~/.arachne/auth.json)."""
     if last_refresh is None:
         last_refresh = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     with _auth_store_lock():
@@ -773,7 +773,7 @@ def resolve_codex_runtime_credentials(
             raise
     tokens = dict(data["tokens"])
     access_token = str(tokens.get("access_token", "") or "").strip()
-    refresh_timeout_seconds = float(os.getenv("HERMES_CODEX_REFRESH_TIMEOUT_SECONDS", "20"))
+    refresh_timeout_seconds = float(os.getenv("ARACHNE_CODEX_REFRESH_TIMEOUT_SECONDS", "20"))
 
     should_refresh = bool(force_refresh)
     if (not should_refresh) and refresh_if_expiring:
@@ -794,7 +794,7 @@ def resolve_codex_runtime_credentials(
                 access_token = str(tokens.get("access_token", "") or "").strip()
 
     base_url = (
-        os.getenv("HERMES_CODEX_BASE_URL", "").strip().rstrip("/")
+        os.getenv("ARACHNE_CODEX_BASE_URL", "").strip().rstrip("/")
         or DEFAULT_CODEX_BASE_URL
     )
 
@@ -828,7 +828,7 @@ def _resolve_verify(
     effective_ca = (
         ca_bundle
         or tls_state.get("ca_bundle")
-        or os.getenv("HERMES_CA_BUNDLE")
+        or os.getenv("ARACHNE_CA_BUNDLE")
         or os.getenv("SSL_CERT_FILE")
     )
 
@@ -1073,7 +1073,7 @@ def resolve_nous_runtime_credentials(
 
         portal_base_url = (
             _optional_base_url(state.get("portal_base_url"))
-            or os.getenv("HERMES_PORTAL_BASE_URL")
+            or os.getenv("ARACHNE_PORTAL_BASE_URL")
             or os.getenv("NOUS_PORTAL_BASE_URL")
             or DEFAULT_NOUS_PORTAL_URL
         ).rstrip("/")
@@ -1608,7 +1608,7 @@ def login_command(args) -> None:
 
 
 def _login_openai_codex(args, pconfig: ProviderConfig) -> None:
-    """OpenAI Codex login via device code flow. Tokens stored in ~/.hermes/auth.json."""
+    """OpenAI Codex login via device code flow. Tokens stored in ~/.arachne/auth.json."""
 
     # Check for existing Hermes-owned credentials
     try:
@@ -1638,7 +1638,7 @@ def _login_openai_codex(args, pconfig: ProviderConfig) -> None:
             do_import = "n"
         if do_import in ("y", "yes"):
             _save_codex_tokens(cli_tokens)
-            base_url = os.getenv("HERMES_CODEX_BASE_URL", "").strip().rstrip("/") or DEFAULT_CODEX_BASE_URL
+            base_url = os.getenv("ARACHNE_CODEX_BASE_URL", "").strip().rstrip("/") or DEFAULT_CODEX_BASE_URL
             config_path = _update_config_for_provider("openai-codex", base_url)
             print()
             print("Credentials imported. Note: if Codex CLI refreshes its token,")
@@ -1659,7 +1659,7 @@ def _login_openai_codex(args, pconfig: ProviderConfig) -> None:
     config_path = _update_config_for_provider("openai-codex", creds.get("base_url", DEFAULT_CODEX_BASE_URL))
     print()
     print("Login successful!")
-    print(f"  Auth state: ~/.hermes/auth.json")
+    print(f"  Auth state: ~/.arachne/auth.json")
     print(f"  Config updated: {config_path} (model.provider=openai-codex)")
 
 
@@ -1792,7 +1792,7 @@ def _codex_device_code_login() -> Dict[str, Any]:
 
     # Return tokens for the caller to persist (no longer writes to ~/.codex/)
     base_url = (
-        os.getenv("HERMES_CODEX_BASE_URL", "").strip().rstrip("/")
+        os.getenv("ARACHNE_CODEX_BASE_URL", "").strip().rstrip("/")
         or DEFAULT_CODEX_BASE_URL
     )
 
@@ -1812,7 +1812,7 @@ def _login_nous(args, pconfig: ProviderConfig) -> None:
     """Nous Portal device authorization flow."""
     portal_base_url = (
         getattr(args, "portal_url", None)
-        or os.getenv("HERMES_PORTAL_BASE_URL")
+        or os.getenv("ARACHNE_PORTAL_BASE_URL")
         or os.getenv("NOUS_PORTAL_BASE_URL")
         or pconfig.portal_base_url
     ).rstrip("/")
@@ -1830,7 +1830,7 @@ def _login_nous(args, pconfig: ProviderConfig) -> None:
     insecure = bool(getattr(args, "insecure", False))
     ca_bundle = (
         getattr(args, "ca_bundle", None)
-        or os.getenv("HERMES_CA_BUNDLE")
+        or os.getenv("ARACHNE_CA_BUNDLE")
         or os.getenv("SSL_CERT_FILE")
     )
     verify: bool | str = False if insecure else (ca_bundle if ca_bundle else True)

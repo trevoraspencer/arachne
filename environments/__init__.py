@@ -18,14 +18,14 @@ Benchmarks (eval-only):
     - benchmarks/terminalbench_2/: Terminal-Bench 2.0 evaluation
 """
 
-from environments.agent_loop import AgentResult, HermesAgentLoop
+from environments.agent_loop import AgentResult, ArachneAgentLoop
 from environments.tool_context import ToolContext
-from environments.hermes_base_env import HermesAgentBaseEnv, HermesAgentEnvConfig
+from environments.hermes_base_env import ArachneAgentBaseEnv, ArachneAgentEnvConfig
 
 __all__ = [
     "AgentResult",
-    "HermesAgentLoop",
+    "ArachneAgentLoop",
     "ToolContext",
-    "HermesAgentBaseEnv",
-    "HermesAgentEnvConfig",
+    "ArachneAgentBaseEnv",
+    "ArachneAgentEnvConfig",
 ]

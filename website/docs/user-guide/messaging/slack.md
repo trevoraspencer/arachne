@@ -15,7 +15,7 @@ Connect Hermes Agent to Slack using Socket Mode for real-time communication.
 3. **Get tokens:**
    - Bot Token (`xoxb-...`): OAuth & Permissions → Install to Workspace
    - App Token (`xapp-...`): Basic Information → App-Level Tokens → Generate (with `connections:write` scope)
-4. **Configure:** Run `hermes gateway setup` and select Slack, or add to `~/.hermes/.env` manually:
+4. **Configure:** Run `hermes gateway setup` and select Slack, or add to `~/.arachne/.env` manually:
 
 ```bash
 SLACK_BOT_TOKEN=xoxb-...

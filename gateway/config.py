@@ -250,13 +250,13 @@ def load_gateway_config() -> GatewayConfig:
     
     Priority (highest to lowest):
     1. Environment variables
-    2. ~/.hermes/gateway.json
+    2. ~/.arachne/gateway.json
     3. cli-config.yaml gateway section
     4. Defaults
     """
     config = GatewayConfig()
     
-    # Try loading from ~/.hermes/gateway.json
+    # Try loading from ~/.arachne/gateway.json
     gateway_config_path = Path.home() / ".hermes" / "gateway.json"
     if gateway_config_path.exists():
         try:
@@ -407,7 +407,7 @@ def _apply_env_overrides(config: GatewayConfig) -> None:
 
 
 def save_gateway_config(config: GatewayConfig) -> None:
-    """Save gateway configuration to ~/.hermes/gateway.json."""
+    """Save gateway configuration to ~/.arachne/gateway.json."""
     gateway_config_path = Path.home() / ".hermes" / "gateway.json"
     gateway_config_path.parent.mkdir(parents=True, exist_ok=True)
     

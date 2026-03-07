@@ -60,14 +60,14 @@ hermes config migrate   # Interactively add any missing options
 hermes uninstall
 ```
 
-The uninstaller gives you the option to keep your configuration files (`~/.hermes/`) for a future reinstall.
+The uninstaller gives you the option to keep your configuration files (`~/.arachne/`) for a future reinstall.
 
 ### Manual Uninstall
 
 ```bash
 rm -f ~/.local/bin/hermes
 rm -rf /path/to/arachne
-rm -rf ~/.hermes            # Optional — keep if you plan to reinstall
+rm -rf ~/.arachne            # Optional — keep if you plan to reinstall
 ```
 
 :::info

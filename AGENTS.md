@@ -57,7 +57,7 @@ arachne/
 ├── environments/         # RL training environments (Atropos integration)
 ├── skills/               # Bundled skill sources
 ├── optional-skills/      # Official optional skills (not activated by default)
-├── cli.py                # Interactive CLI orchestrator (HermesCLI class)
+├── cli.py                # Interactive CLI orchestrator (ArachneCLI class)
 ├── run_agent.py          # AIAgent class (core conversation loop)
 ├── model_tools.py        # Tool orchestration (thin layer over tools/registry.py)
 ├── toolsets.py           # Tool groupings
@@ -65,14 +65,14 @@ arachne/
 └── batch_runner.py       # Parallel batch processing
 ```
 
-**User Configuration** (stored in `~/.hermes/`):
-- `~/.hermes/config.yaml` - Settings (model, terminal, toolsets, etc.)
-- `~/.hermes/.env` - API keys and secrets
-- `~/.hermes/pairing/` - DM pairing data
-- `~/.hermes/hooks/` - Custom event hooks
-- `~/.hermes/image_cache/` - Cached user images
-- `~/.hermes/audio_cache/` - Cached user voice messages
-- `~/.hermes/sticker_cache.json` - Telegram sticker descriptions
+**User Configuration** (stored in `~/.arachne/`):
+- `~/.arachne/config.yaml` - Settings (model, terminal, toolsets, etc.)
+- `~/.arachne/.env` - API keys and secrets
+- `~/.arachne/pairing/` - DM pairing data
+- `~/.arachne/hooks/` - Custom event hooks
+- `~/.arachne/image_cache/` - Cached user images
+- `~/.arachne/audio_cache/` - Cached user voice messages
+- `~/.arachne/sticker_cache.json` - Telegram sticker descriptions
 
 ## File Dependency Chain
 
@@ -179,7 +179,7 @@ The interactive CLI uses:
 - **KawaiiSpinner** (in run_agent.py) - Animated kawaii faces during API calls; clean `┊` activity feed for tool execution results
 
 Key components:
-- `HermesCLI` class - Main CLI controller with commands and conversation loop
+- `ArachneCLI` class - Main CLI controller with commands and conversation loop
 - `SlashCommandCompleter` - Autocomplete dropdown for `/commands` (type `/` to see all)
 - `agent/skill_commands.py` - Scans skills and builds invocation messages (shared with gateway)
 - `load_cli_config()` - Loads config, sets environment variables for terminal
@@ -191,7 +191,7 @@ CLI UX notes:
 - Tool execution results appear as a clean activity feed: `┊ {emoji} {verb} {detail} {duration}`
 - "got it!" only appears when the LLM returns a final text response (`⚕ ready`)
 - The prompt shows `⚕ ❯` when the agent is working, `❯` when idle
-- Pasting 5+ lines auto-saves to `~/.hermes/pastes/` and collapses to a reference
+- Pasting 5+ lines auto-saves to `~/.arachne/pastes/` and collapses to a reference
 - Multi-line input via Alt+Enter or Ctrl+J
 - `/commands` - Process user commands like `/help`, `/clear`, `/personality`, etc.
 - `/skill-name` - Invoke installed skills directly (e.g., `/axolotl`, `/gif-search`)
@@ -200,7 +200,7 @@ CLI uses `quiet_mode=True` when creating AIAgent to suppress verbose logging.
 
 ### Skill Slash Commands
 
-Every installed skill in `~/.hermes/skills/` is automatically registered as a slash command.
+Every installed skill in `~/.arachne/skills/` is automatically registered as a slash command.
 The skill name (from frontmatter or folder name) becomes the command: `axolotl` → `/axolotl`.
 
 Implementation (`agent/skill_commands.py`, shared between CLI and gateway):
@@ -260,9 +260,9 @@ hermes gateway setup      # Arrow-key menu of all platforms, configure tokens/al
 
 This is the recommended way to configure messaging. It shows which platforms are already set up, walks through each one interactively, and offers to start/restart the gateway service at the end.
 
-Platforms can also be configured manually in `~/.hermes/.env`:
+Platforms can also be configured manually in `~/.arachne/.env`:
 
-### Configuration (in `~/.hermes/.env`):
+### Configuration (in `~/.arachne/.env`):
 
 ```bash
 # Telegram
@@ -274,7 +274,7 @@ DISCORD_BOT_TOKEN=MTIz...                 # From Developer Portal
 DISCORD_ALLOWED_USERS=123456789012345678  # Comma-separated user IDs
 
 # Agent Behavior
-HERMES_MAX_ITERATIONS=60                  # Max tool-calling iterations
+ARACHNE_MAX_ITERATIONS=60                  # Max tool-calling iterations
 MESSAGING_CWD=/home/myuser                # Terminal working directory for messaging
 
 # Tool progress is configured in config.yaml (display.tool_progress: off|new|all|verbose)
@@ -312,10 +312,10 @@ Files: `gateway/pairing.py`, `arachne_cli/pairing.py`
 
 ### Event Hooks
 
-Hooks fire at lifecycle points. Place hook directories in `~/.hermes/hooks/`:
+Hooks fire at lifecycle points. Place hook directories in `~/.arachne/hooks/`:
 
 ```
-~/.hermes/hooks/my-hook/
+~/.arachne/hooks/my-hook/
 ├── HOOK.yaml    # name, description, events list
 └── handler.py   # async def handle(event_type, context): ...
 ```
@@ -355,9 +355,9 @@ Each platform has a dedicated toolset in `toolsets.py`:
 
 ## Configuration System
 
-Configuration files are stored in `~/.hermes/` for easy user access:
-- `~/.hermes/config.yaml` - All settings (model, terminal, compression, etc.)
-- `~/.hermes/.env` - API keys and secrets
+Configuration files are stored in `~/.arachne/` for easy user access:
+- `~/.arachne/config.yaml` - All settings (model, terminal, compression, etc.)
+- `~/.arachne/.env` - API keys and secrets
 
 ### Adding New Configuration Options
 
@@ -420,7 +420,7 @@ The system uses `_config_version` to detect outdated configs:
 
 ## Environment Variables
 
-API keys are loaded from `~/.hermes/.env`:
+API keys are loaded from `~/.arachne/.env`:
 - `OPENROUTER_API_KEY` - Main LLM API access (primary provider)
 - `FIRECRAWL_API_KEY` - Web search/extract tools
 - `FIRECRAWL_API_URL` - Self-hosted Firecrawl endpoint (optional)
@@ -428,7 +428,7 @@ API keys are loaded from `~/.hermes/.env`:
 - `FAL_KEY` - Image generation (FLUX model)
 - `NOUS_API_KEY` - Vision and Mixture-of-Agents tools
 
-Terminal tool configuration (in `~/.hermes/config.yaml`):
+Terminal tool configuration (in `~/.arachne/config.yaml`):
 - `terminal.backend` - Backend: local, docker, singularity, modal, daytona, or ssh
 - `terminal.cwd` - Working directory ("." = host CWD for local only; for remote backends set an absolute path inside the target, or omit to use the backend's default)
 - `terminal.docker_image` - Image for Docker backend
@@ -438,15 +438,15 @@ Terminal tool configuration (in `~/.hermes/config.yaml`):
 - `DAYTONA_API_KEY` - API key for Daytona backend (in .env)
 - SSH: `TERMINAL_SSH_HOST`, `TERMINAL_SSH_USER`, `TERMINAL_SSH_KEY` in .env
 
-Agent behavior (in `~/.hermes/.env`):
-- `HERMES_MAX_ITERATIONS` - Max tool-calling iterations (default: 60)
+Agent behavior (in `~/.arachne/.env`):
+- `ARACHNE_MAX_ITERATIONS` - Max tool-calling iterations (default: 60)
 - `MESSAGING_CWD` - Working directory for messaging platforms (default: ~)
 - `display.tool_progress` in config.yaml - Tool progress: `off`, `new`, `all`, `verbose`
 - `OPENAI_API_KEY` - Voice transcription (Whisper STT)
 - `SLACK_BOT_TOKEN` / `SLACK_APP_TOKEN` - Slack integration (Socket Mode)
 - `SLACK_ALLOWED_USERS` - Comma-separated Slack user IDs
-- `HERMES_HUMAN_DELAY_MODE` - Response pacing: off/natural/custom
-- `HERMES_HUMAN_DELAY_MIN_MS` / `HERMES_HUMAN_DELAY_MAX_MS` - Custom delay range
+- `ARACHNE_HUMAN_DELAY_MODE` - Response pacing: off/natural/custom
+- `ARACHNE_HUMAN_DELAY_MIN_MS` / `ARACHNE_HUMAN_DELAY_MAX_MS` - Custom delay range
 
 ### Dangerous Command Approval
 
@@ -471,11 +471,11 @@ The terminal tool includes safety checks for potentially destructive commands (e
 - User must add the pattern to their allowlist via `hermes config edit` or run the command directly on their machine
 
 **Configuration:**
-- `command_allowlist` in `~/.hermes/config.yaml` stores permanently allowed patterns
+- `command_allowlist` in `~/.arachne/config.yaml` stores permanently allowed patterns
 - Add patterns via "always" approval or edit directly
 
 **Sudo Handling (Messaging):**
-- If sudo fails over messaging, output includes tip to add `SUDO_PASSWORD` to `~/.hermes/.env`
+- If sudo fails over messaging, output includes tip to add `SUDO_PASSWORD` to `~/.arachne/.env`
 
 ---
 
@@ -504,7 +504,7 @@ terminal(command="pytest -v tests/", background=true)
 - PTY mode (`pty=true` on terminal) enables interactive CLI tools (Codex, Claude Code)
 - In RL training, background processes are auto-killed when the episode ends (`tool_context.cleanup()`)
 - In the gateway, sessions with active background processes are exempt from idle reset
-- The process registry checkpoints to `~/.hermes/processes.json` for crash recovery
+- The process registry checkpoints to `~/.arachne/processes.json` for crash recovery
 
 Files: `tools/process_registry.py` (registry + handler), `tools/terminal_tool.py` (spawn integration)
 
@@ -557,7 +557,7 @@ registry.register(
 )
 ```
 
-2. **Add to `toolsets.py`**: Add `"example_tool"` to `_HERMES_CORE_TOOLS` if it should be in all platform toolsets, or create a new toolset entry.
+2. **Add to `toolsets.py`**: Add `"example_tool"` to `_ARACHNE_CORE_TOOLS` if it should be in all platform toolsets, or create a new toolset entry.
 
 3. **Add discovery import** in `model_tools.py`'s `_discover_tools()` list: `"tools.example_tool"`.
 
@@ -685,4 +685,4 @@ After making changes:
 1. Run `hermes doctor` to check setup
 2. Run `hermes config check` to verify config
 3. Test with `hermes chat -q "test message"`
-4. For new config options, test fresh install: `rm -rf ~/.hermes && hermes setup`
+4. For new config options, test fresh install: `rm -rf ~/.arachne && hermes setup`

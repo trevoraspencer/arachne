@@ -5,7 +5,7 @@ Unified tool configuration for Hermes Agent.
 Select a platform → toggle toolsets on/off → for newly enabled tools
 that need API keys, run through provider-aware configuration.
 
-Saves per-platform tool configuration to ~/.hermes/config.yaml under
+Saves per-platform tool configuration to ~/.arachne/config.yaml under
 the `platform_toolsets` key.
 """
 
@@ -251,7 +251,7 @@ def _run_post_setup(post_setup_key: str):
             if result.returncode == 0:
                 _print_success("    Node.js dependencies installed")
             else:
-                _print_warning("    npm install failed - run manually: cd ~/.hermes/arachne && npm install")
+                _print_warning("    npm install failed - run manually: cd ~/.arachne/arachne && npm install")
         elif not node_modules.exists():
             _print_warning("    Node.js not found - browser tools require: npm install (in arachne directory)")
 
@@ -914,6 +914,6 @@ def tools_command(args=None):
         platform_choices[idx] = f"Configure {pinfo['label']}  ({new_count}/{total} enabled)"
 
     print()
-    print(color("  Tool configuration saved to ~/.hermes/config.yaml", Colors.DIM))
+    print(color("  Tool configuration saved to ~/.arachne/config.yaml", Colors.DIM))
     print(color("  Changes take effect on next 'hermes' or gateway restart.", Colors.DIM))
     print()

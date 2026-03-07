@@ -159,6 +159,6 @@ def test_custom_endpoint_auto_provider_prefers_openai_key(monkeypatch):
 
 
 def test_resolve_requested_provider_precedence(monkeypatch):
-    monkeypatch.setenv("HERMES_INFERENCE_PROVIDER", "nous")
+    monkeypatch.setenv("ARACHNE_INFERENCE_PROVIDER", "nous")
     monkeypatch.setattr(rp, "_get_model_config", lambda: {"provider": "openai-codex"})
     assert rp.resolve_requested_provider("openrouter") == "openrouter"

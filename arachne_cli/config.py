@@ -1,9 +1,9 @@
 """
 Configuration management for Hermes Agent.
 
-Config files are stored in ~/.hermes/ for easy access:
-- ~/.hermes/config.yaml  - All settings (model, toolsets, terminal, etc.)
-- ~/.hermes/.env         - API keys and secrets
+Config files are stored in ~/.arachne/ for easy access:
+- ~/.arachne/config.yaml  - All settings (model, toolsets, terminal, etc.)
+- ~/.arachne/.env         - API keys and secrets
 
 This module provides:
 - hermes config          - Show current configuration
@@ -31,8 +31,8 @@ from arachne_cli.colors import Colors, color
 # =============================================================================
 
 def get_hermes_home() -> Path:
-    """Get the Hermes home directory (~/.hermes)."""
-    return Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
+    """Get the Hermes home directory (~/.arachne)."""
+    return Path(os.getenv("ARACHNE_HOME", Path.home() / ".hermes"))
 
 def get_config_path() -> Path:
     """Get the main config file path."""
@@ -47,7 +47,7 @@ def get_project_root() -> Path:
     return Path(__file__).parent.parent.resolve()
 
 def ensure_hermes_home():
-    """Ensure ~/.hermes directory structure exists."""
+    """Ensure ~/.arachne directory structure exists."""
     home = get_hermes_home()
     (home / "cron").mkdir(parents=True, exist_ok=True)
     (home / "sessions").mkdir(parents=True, exist_ok=True)
@@ -412,38 +412,38 @@ OPTIONAL_ENV_VARS = {
         "password": True,
         "category": "setting",
     },
-    "HERMES_MAX_ITERATIONS": {
+    "ARACHNE_MAX_ITERATIONS": {
         "description": "Maximum tool-calling iterations per conversation (default: 60)",
         "prompt": "Max iterations",
         "url": None,
         "password": False,
         "category": "setting",
     },
-    # HERMES_TOOL_PROGRESS and HERMES_TOOL_PROGRESS_MODE are deprecated —
+    # ARACHNE_TOOL_PROGRESS and ARACHNE_TOOL_PROGRESS_MODE are deprecated —
     # now configured via display.tool_progress in config.yaml (off|new|all|verbose).
     # Gateway falls back to these env vars for backward compatibility.
-    "HERMES_TOOL_PROGRESS": {
+    "ARACHNE_TOOL_PROGRESS": {
         "description": "(deprecated) Use display.tool_progress in config.yaml instead",
         "prompt": "Tool progress (deprecated — use config.yaml)",
         "url": None,
         "password": False,
         "category": "setting",
     },
-    "HERMES_TOOL_PROGRESS_MODE": {
+    "ARACHNE_TOOL_PROGRESS_MODE": {
         "description": "(deprecated) Use display.tool_progress in config.yaml instead",
         "prompt": "Progress mode (deprecated — use config.yaml)",
         "url": None,
         "password": False,
         "category": "setting",
     },
-    "HERMES_PREFILL_MESSAGES_FILE": {
+    "ARACHNE_PREFILL_MESSAGES_FILE": {
         "description": "Path to JSON file with ephemeral prefill messages for few-shot priming",
         "prompt": "Prefill messages file path",
         "url": None,
         "password": False,
         "category": "setting",
     },
-    "HERMES_EPHEMERAL_SYSTEM_PROMPT": {
+    "ARACHNE_EPHEMERAL_SYSTEM_PROMPT": {
         "description": "Ephemeral system prompt injected at API-call time (never persisted to sessions)",
         "prompt": "Ephemeral system prompt",
         "url": None,
@@ -553,14 +553,14 @@ def migrate_config(interactive: bool = True, quiet: bool = False) -> Dict[str, A
         if not isinstance(display, dict):
             display = {}
         if "tool_progress" not in display:
-            old_enabled = get_env_value("HERMES_TOOL_PROGRESS")
-            old_mode = get_env_value("HERMES_TOOL_PROGRESS_MODE")
+            old_enabled = get_env_value("ARACHNE_TOOL_PROGRESS")
+            old_mode = get_env_value("ARACHNE_TOOL_PROGRESS_MODE")
             if old_enabled and old_enabled.lower() in ("false", "0", "no"):
                 display["tool_progress"] = "off"
-                results["config_added"].append("display.tool_progress=off (from HERMES_TOOL_PROGRESS=false)")
+                results["config_added"].append("display.tool_progress=off (from ARACHNE_TOOL_PROGRESS=false)")
             elif old_mode and old_mode.lower() in ("new", "all"):
                 display["tool_progress"] = old_mode.lower()
-                results["config_added"].append(f"display.tool_progress={old_mode.lower()} (from HERMES_TOOL_PROGRESS_MODE)")
+                results["config_added"].append(f"display.tool_progress={old_mode.lower()} (from ARACHNE_TOOL_PROGRESS_MODE)")
             else:
                 display["tool_progress"] = "all"
                 results["config_added"].append("display.tool_progress=all (default)")
@@ -573,10 +573,10 @@ def migrate_config(interactive: bool = True, quiet: bool = False) -> Dict[str, A
     if current_ver < 5:
         config = load_config()
         if "timezone" not in config:
-            old_tz = os.getenv("HERMES_TIMEZONE", "")
+            old_tz = os.getenv("ARACHNE_TIMEZONE", "")
             if old_tz and old_tz.strip():
                 config["timezone"] = old_tz.strip()
-                results["config_added"].append(f"timezone={old_tz.strip()} (from HERMES_TIMEZONE)")
+                results["config_added"].append(f"timezone={old_tz.strip()} (from ARACHNE_TIMEZONE)")
             else:
                 config["timezone"] = ""
                 results["config_added"].append("timezone= (empty, uses server-local)")
@@ -702,7 +702,7 @@ def _deep_merge(base: dict, override: dict) -> dict:
 
 
 def load_config() -> Dict[str, Any]:
-    """Load configuration from ~/.hermes/config.yaml."""
+    """Load configuration from ~/.arachne/config.yaml."""
     import copy
     config_path = get_config_path()
     
@@ -721,7 +721,7 @@ def load_config() -> Dict[str, Any]:
 
 
 def save_config(config: Dict[str, Any]):
-    """Save configuration to ~/.hermes/config.yaml."""
+    """Save configuration to ~/.arachne/config.yaml."""
     ensure_hermes_home()
     config_path = get_config_path()
     
@@ -730,7 +730,7 @@ def save_config(config: Dict[str, Any]):
 
 
 def load_env() -> Dict[str, str]:
-    """Load environment variables from ~/.hermes/.env."""
+    """Load environment variables from ~/.arachne/.env."""
     env_path = get_env_path()
     env_vars = {}
     
@@ -749,7 +749,7 @@ def load_env() -> Dict[str, str]:
 
 
 def save_env_value(key: str, value: str):
-    """Save or update a value in ~/.hermes/.env."""
+    """Save or update a value in ~/.arachne/.env."""
     ensure_hermes_home()
     env_path = get_env_path()
     
@@ -782,7 +782,7 @@ def save_env_value(key: str, value: str):
 
 
 def get_env_value(key: str) -> Optional[str]:
-    """Get a value from ~/.hermes/.env or environment."""
+    """Get a value from ~/.arachne/.env or environment."""
     # Check environment first
     if key in os.environ:
         return os.environ[key]

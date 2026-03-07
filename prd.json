@@ -55,7 +55,7 @@
         "Verification: grep for ~/.hermes returns empty"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Case-sensitive replacements. Same file type scope and exclusions as US-002."
     },
     {
