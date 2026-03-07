@@ -62,7 +62,7 @@ Clone with `--recurse-submodules` to pull the required submodules:
 
 ```bash
 git clone --recurse-submodules https://github.com/NousResearch/hermes-agent.git
-cd hermes-agent
+cd arachne
 ```
 
 If you already cloned without `--recurse-submodules`:
@@ -219,7 +219,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Clone & enter
 git clone --recurse-submodules https://github.com/NousResearch/hermes-agent.git
-cd hermes-agent
+cd arachne
 
 # Create venv with Python 3.11
 uv venv venv --python 3.11

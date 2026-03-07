@@ -72,7 +72,7 @@ from tools.browser_tool import cleanup_browser
 
 import requests
 
-from hermes_constants import OPENROUTER_BASE_URL, OPENROUTER_MODELS_URL
+from arachne_constants import OPENROUTER_BASE_URL, OPENROUTER_MODELS_URL
 
 # Agent internals extracted to agent/ package for modularity
 from agent.prompt_builder import (
@@ -361,7 +361,7 @@ class AIAgent:
                     'run_agent',            # agent runner internals
                     'trajectory_compressor',
                     'cron',                 # scheduler (only relevant in daemon mode)
-                    'hermes_cli',           # CLI helpers
+                    'arachne_cli',           # CLI helpers
                 ]:
                     logging.getLogger(quiet_logger).setLevel(logging.ERROR)
         
@@ -381,7 +381,7 @@ class AIAgent:
             # Primary: OPENROUTER_API_KEY, fallback to direct provider keys
             client_kwargs["api_key"] = os.getenv("OPENROUTER_API_KEY", "")
         
-        # OpenRouter app attribution — shows hermes-agent in rankings/analytics
+        # OpenRouter app attribution — shows arachne in rankings/analytics
         effective_base = client_kwargs.get("base_url", "")
         if "openrouter" in effective_base.lower():
             client_kwargs["default_headers"] = {
@@ -502,7 +502,7 @@ class AIAgent:
         self._memory_flush_min_turns = 6
         if not skip_memory:
             try:
-                from hermes_cli.config import load_config as _load_mem_config
+                from arachne_cli.config import load_config as _load_mem_config
                 mem_config = _load_mem_config().get("memory", {})
                 self._memory_enabled = mem_config.get("memory_enabled", False)
                 self._user_profile_enabled = mem_config.get("user_profile_enabled", False)
@@ -561,7 +561,7 @@ class AIAgent:
         # Skills config: nudge interval for skill creation reminders
         self._skill_nudge_interval = 15
         try:
-            from hermes_cli.config import load_config as _load_skills_config
+            from arachne_cli.config import load_config as _load_skills_config
             skills_config = _load_skills_config().get("skills", {})
             self._skill_nudge_interval = int(skills_config.get("creation_nudge_interval", 15))
         except Exception:
@@ -2031,7 +2031,7 @@ class AIAgent:
             return False
 
         try:
-            from hermes_cli.auth import resolve_codex_runtime_credentials
+            from arachne_cli.auth import resolve_codex_runtime_credentials
 
             creds = resolve_codex_runtime_credentials(force_refresh=force)
         except Exception as exc:
@@ -2068,7 +2068,7 @@ class AIAgent:
             return False
 
         try:
-            from hermes_cli.auth import resolve_nous_runtime_credentials
+            from arachne_cli.auth import resolve_nous_runtime_credentials
 
             creds = resolve_nous_runtime_credentials(
                 min_key_ttl_seconds=max(60, int(os.getenv("HERMES_NOUS_MIN_KEY_TTL_SECONDS", "1800"))),
@@ -2229,7 +2229,7 @@ class AIAgent:
 
         # Nous Portal product attribution
         if _is_nous:
-            extra_body["tags"] = ["product=hermes-agent"]
+            extra_body["tags"] = ["product=arachne"]
 
         if extra_body:
             api_kwargs["extra_body"] = extra_body
@@ -2770,7 +2770,7 @@ class AIAgent:
                         "effort": "medium"
                     }
             if _is_nous:
-                summary_extra_body["tags"] = ["product=hermes-agent"]
+                summary_extra_body["tags"] = ["product=arachne"]
 
             if self.api_mode == "codex_responses":
                 codex_kwargs = self._build_api_kwargs(api_messages)

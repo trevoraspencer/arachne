@@ -17,7 +17,7 @@ param(
     [switch]$SkipSetup,
     [string]$Branch = "main",
     [string]$HermesHome = "$env:LOCALAPPDATA\hermes",
-    [string]$InstallDir = "$env:LOCALAPPDATA\hermes\hermes-agent"
+    [string]$InstallDir = "$env:LOCALAPPDATA\hermes\arachne"
 )
 
 $ErrorActionPreference = "Stop"
@@ -462,8 +462,8 @@ function Install-Repository {
             Write-Warn "Git clone failed — downloading ZIP archive instead..."
             try {
                 $zipUrl = "https://github.com/NousResearch/hermes-agent/archive/refs/heads/$Branch.zip"
-                $zipPath = "$env:TEMP\hermes-agent-$Branch.zip"
-                $extractPath = "$env:TEMP\hermes-agent-extract"
+                $zipPath = "$env:TEMP\arachne-$Branch.zip"
+                $extractPath = "$env:TEMP\arachne-extract"
                 
                 Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath -UseBasicParsing
                 if (Test-Path $extractPath) { Remove-Item -Recurse -Force $extractPath }
@@ -764,9 +764,9 @@ function Invoke-SetupWizard {
     
     # Run hermes setup using the venv Python directly (no activation needed)
     if (-not $NoVenv) {
-        & ".\venv\Scripts\python.exe" -m hermes_cli.main setup
+        & ".\venv\Scripts\python.exe" -m arachne_cli.main setup
     } else {
-        python -m hermes_cli.main setup
+        python -m arachne_cli.main setup
     }
     
     Pop-Location
@@ -850,7 +850,7 @@ function Write-Completion {
     Write-Host "   Data:      " -NoNewline -ForegroundColor Yellow
     Write-Host "$HermesHome\cron\, sessions\, logs\"
     Write-Host "   Code:      " -NoNewline -ForegroundColor Yellow
-    Write-Host "$HermesHome\hermes-agent\"
+    Write-Host "$HermesHome\arachne\"
     Write-Host ""
     
     Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Cyan

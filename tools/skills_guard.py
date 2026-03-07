@@ -29,7 +29,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Tuple
 
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_constants import OPENROUTER_BASE_URL
 
 
 # ---------------------------------------------------------------------------
@@ -1033,7 +1033,7 @@ def _parse_llm_response(text: str, skill_name: str) -> List[Finding]:
 def _get_configured_model() -> str:
     """Load the user's configured model from ~/.hermes/config.yaml."""
     try:
-        from hermes_cli.config import load_config
+        from arachne_cli.config import load_config
         config = load_config()
         return config.get("model", "")
     except Exception:

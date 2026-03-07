@@ -23,7 +23,7 @@ _IS_WINDOWS = platform.system() == "Windows"
 
 import yaml
 
-from hermes_cli.colors import Colors, color
+from arachne_cli.colors import Colors, color
 
 
 # =============================================================================

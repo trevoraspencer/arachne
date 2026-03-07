@@ -22,4 +22,20 @@ Started: Sat Mar  7 20:46:12 UTC 2026
   - The `hermes` file at root is a binary entrypoint script, renamed to `arachne`
   - Two image files with hermes in name are binary and excluded per project rules
   - `scripts/hermes-gateway` is a script file (not binary), renamed to `arachne-gateway`
+- For content replacements, use two-pass approach: (1) bulk replace, (2) restore NousResearch/ URLs and hermes-agent.nousresearch.com
+- Exclude from content edits: prd.json, progress.txt, _rename_manifest.txt, arachne-README.md, package-lock.json, .gitmodules
+- NousResearch URL patterns to restore after bulk replace: NousResearch/arachne→NousResearch/hermes-agent, arachne.nousresearch.com→hermes-agent.nousresearch.com, arachne-megascience→hermes-agent-megascience, terminal-tasks-glm-arachne→terminal-tasks-glm-hermes-agent
+
+---
+
+## 2026-03-07 - US-002
+- What was implemented: Replaced all compound hermes forms and module-level names in file content
+- Replacements: hermes_cli→arachne_cli, hermes_constants→arachne_constants, hermes_state→arachne_state, hermes_tools→arachne_tools, hermes_agent→arachne, hermes-agent→arachne
+- NousResearch/hermes-agent URLs preserved (GitHub, HuggingFace, doc site)
+- Files changed: ~100+ files across tools/, arachne_cli/, environments/, tests/, gateway/, scripts/, website/, skills/, agent/, AGENTS.md, CONTRIBUTING.md, README.md, pyproject.toml, package.json, cli.py, run_agent.py, etc.
+- **Learnings for future iterations:**
+  - hermes-agent in badge URLs (hermes--agent with double dash) is NOT matched by sed s/hermes-agent/arachne/g — no issue
+  - arachne-README.md must NOT be edited — it's the verbatim target for US-005
+  - The two-pass approach (replace all, then restore URLs) is clean and reliable
+  - hermes_tools appears as substring in test names like hermes_toolsets — replacement to arachne_toolsets is correct
 ---

@@ -29,7 +29,7 @@ BOLD='\033[1m'
 REPO_URL_SSH="git@github.com:NousResearch/hermes-agent.git"
 REPO_URL_HTTPS="https://github.com/NousResearch/hermes-agent.git"
 HERMES_HOME="$HOME/.hermes"
-INSTALL_DIR="${HERMES_INSTALL_DIR:-$HERMES_HOME/hermes-agent}"
+INSTALL_DIR="${HERMES_INSTALL_DIR:-$HERMES_HOME/arachne}"
 PYTHON_VERSION="3.11"
 NODE_VERSION="22"
 
@@ -75,7 +75,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --no-venv      Don't create virtual environment"
             echo "  --skip-setup   Skip interactive setup wizard"
             echo "  --branch NAME  Git branch to install (default: main)"
-            echo "  --dir PATH     Installation directory (default: ~/.hermes/hermes-agent)"
+            echo "  --dir PATH     Installation directory (default: ~/.hermes/arachne)"
             echo "  -h, --help     Show this help"
             exit 0
             ;;
@@ -865,9 +865,9 @@ run_setup_wizard() {
     # Run hermes setup using the venv Python directly (no activation needed).
     # Redirect stdin from /dev/tty so interactive prompts work when piped from curl.
     if [ "$USE_VENV" = true ]; then
-        "$INSTALL_DIR/venv/bin/python" -m hermes_cli.main setup < /dev/tty
+        "$INSTALL_DIR/venv/bin/python" -m arachne_cli.main setup < /dev/tty
     else
-        python -m hermes_cli.main setup < /dev/tty
+        python -m arachne_cli.main setup < /dev/tty
     fi
 }
 
@@ -971,7 +971,7 @@ print_success() {
     echo -e "   ${YELLOW}Config:${NC}    ~/.hermes/config.yaml"
     echo -e "   ${YELLOW}API Keys:${NC}  ~/.hermes/.env"
     echo -e "   ${YELLOW}Data:${NC}      ~/.hermes/cron/, sessions/, logs/"
-    echo -e "   ${YELLOW}Code:${NC}      ~/.hermes/hermes-agent/"
+    echo -e "   ${YELLOW}Code:${NC}      ~/.hermes/arachne/"
     echo ""
 
     echo -e "${CYAN}─────────────────────────────────────────────────────────${NC}"

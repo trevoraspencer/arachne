@@ -35,7 +35,7 @@ This pulls the latest code, updates dependencies, and restarts the gateway.
 If you installed manually (not via the quick installer):
 
 ```bash
-cd /path/to/hermes-agent
+cd /path/to/arachne
 export VIRTUAL_ENV="$(pwd)/venv"
 
 # Pull latest code and submodules
@@ -66,7 +66,7 @@ The uninstaller gives you the option to keep your configuration files (`~/.herme
 
 ```bash
 rm -f ~/.local/bin/hermes
-rm -rf /path/to/hermes-agent
+rm -rf /path/to/arachne
 rm -rf ~/.hermes            # Optional — keep if you plan to reinstall
 ```
 

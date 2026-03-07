@@ -22,13 +22,13 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
 # Import config helpers
-from hermes_cli.config import (
+from arachne_cli.config import (
     get_hermes_home, get_config_path, get_env_path,
     load_config, save_config, save_env_value, get_env_value,
     ensure_hermes_home, DEFAULT_CONFIG
 )
 
-from hermes_cli.colors import Colors, color
+from arachne_cli.colors import Colors, color
 
 def print_header(title: str):
     """Print a section header."""
@@ -475,7 +475,7 @@ def _prompt_container_resources(config: dict):
 
 def setup_model_provider(config: dict):
     """Configure the inference provider and default model."""
-    from hermes_cli.auth import (
+    from arachne_cli.auth import (
         get_active_provider, get_provider_auth_state, PROVIDER_REGISTRY,
         format_auth_error, AuthError, fetch_nous_models,
         resolve_nous_runtime_credentials, _update_config_for_provider,
@@ -550,7 +550,7 @@ def setup_model_provider(config: dict):
         print()
 
         try:
-            from hermes_cli.auth import _login_nous, ProviderConfig
+            from arachne_cli.auth import _login_nous, ProviderConfig
             import argparse
             mock_args = argparse.Namespace(
                 portal_url=None, inference_url=None, client_id=None,
@@ -695,7 +695,7 @@ def setup_model_provider(config: dict):
         if api_key:
             print()
             print_info("Detecting your z.ai endpoint...")
-            from hermes_cli.auth import detect_zai_endpoint
+            from arachne_cli.auth import detect_zai_endpoint
             detected = detect_zai_endpoint(api_key)
             if detected:
                 zai_base_url = detected["base_url"]
@@ -861,7 +861,7 @@ def setup_model_provider(config: dict):
             # else: keep current
 
         elif selected_provider == "openai-codex":
-            from hermes_cli.codex_models import get_codex_models
+            from arachne_cli.codex_models import get_codex_models
             codex_models = get_codex_models()
             model_choices = codex_models + [f"Keep current ({current_model})"]
             default_codex = 0
@@ -941,7 +941,7 @@ def setup_model_provider(config: dict):
             # else: keep current
         else:
             # Static list for OpenRouter / fallback (from canonical list)
-            from hermes_cli.models import model_ids, menu_labels
+            from arachne_cli.models import model_ids, menu_labels
 
             ids = model_ids()
             model_choices = menu_labels() + [
@@ -1589,7 +1589,7 @@ def setup_gateway(config: dict):
         _is_linux = _platform.system() == "Linux"
         _is_macos = _platform.system() == "Darwin"
 
-        from hermes_cli.gateway import (
+        from arachne_cli.gateway import (
             _is_service_installed, _is_service_running,
             systemd_install, systemd_start, systemd_restart,
             launchd_install, launchd_start, launchd_restart,
@@ -1657,7 +1657,7 @@ def setup_tools(config: dict):
     Both `hermes setup tools` and `hermes tools` use the same flow:
     platform selection → toolset toggles → provider/API key configuration.
     """
-    from hermes_cli.tools_config import tools_command
+    from arachne_cli.tools_config import tools_command
     tools_command()
 
 
@@ -1710,7 +1710,7 @@ def run_setup_wizard(args):
         return
     
     # Check if this is an existing installation with a provider configured
-    from hermes_cli.auth import get_active_provider
+    from arachne_cli.auth import get_active_provider
     active_provider = get_active_provider()
     is_existing = (
         bool(get_env_value("OPENROUTER_API_KEY"))
@@ -1820,7 +1820,7 @@ def run_setup_wizard(args):
 
 def _run_quick_setup(config: dict, hermes_home):
     """Quick setup — only configure items that are missing."""
-    from hermes_cli.config import (
+    from arachne_cli.config import (
         get_missing_env_vars, get_missing_config_fields,
         check_config_version, migrate_config,
     )

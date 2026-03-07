@@ -35,7 +35,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 # Load .env from ~/.hermes/.env first, then project root as dev fallback
 from dotenv import load_dotenv
-from hermes_cli.config import get_env_path, get_hermes_home
+from arachne_cli.config import get_env_path, get_hermes_home
 _user_env = get_env_path()
 if _user_env.exists():
     try:
@@ -50,21 +50,21 @@ os.environ.setdefault("MSWEA_SILENT_STARTUP", "1")
 
 import logging
 
-from hermes_cli import __version__
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_cli import __version__
+from arachne_constants import OPENROUTER_BASE_URL
 
 logger = logging.getLogger(__name__)
 
 
 def _has_any_provider_configured() -> bool:
     """Check if at least one inference provider is usable."""
-    from hermes_cli.config import get_env_path, get_hermes_home
-    from hermes_cli.auth import get_auth_status
+    from arachne_cli.config import get_env_path, get_hermes_home
+    from arachne_cli.auth import get_auth_status
 
     # Check env vars (may be set by .env or shell).
     # OPENAI_BASE_URL alone counts — local models (vLLM, llama.cpp, etc.)
     # often don't require an API key.
-    from hermes_cli.auth import PROVIDER_REGISTRY
+    from arachne_cli.auth import PROVIDER_REGISTRY
 
     # Collect all provider env vars
     provider_env_vars = {"OPENROUTER_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_BASE_URL"}
@@ -109,7 +109,7 @@ def _has_any_provider_configured() -> bool:
 def _resolve_last_cli_session() -> Optional[str]:
     """Look up the most recent CLI session ID from SQLite. Returns None if unavailable."""
     try:
-        from hermes_state import SessionDB
+        from arachne_state import SessionDB
         db = SessionDB()
         sessions = db.search_sessions(source="cli", limit=1)
         db.close()
@@ -176,7 +176,7 @@ def cmd_chat(args):
 
 def cmd_gateway(args):
     """Gateway management commands."""
-    from hermes_cli.gateway import gateway_command
+    from arachne_cli.gateway import gateway_command
     gateway_command(args)
 
 
@@ -185,7 +185,7 @@ def cmd_whatsapp(args):
     import os
     import subprocess
     from pathlib import Path
-    from hermes_cli.config import get_env_value, save_env_value
+    from arachne_cli.config import get_env_value, save_env_value
 
     print()
     print("⚕ WhatsApp Setup")
@@ -369,19 +369,19 @@ def cmd_whatsapp(args):
 
 def cmd_setup(args):
     """Interactive setup wizard."""
-    from hermes_cli.setup import run_setup_wizard
+    from arachne_cli.setup import run_setup_wizard
     run_setup_wizard(args)
 
 
 def cmd_model(args):
     """Select default model — starts with provider selection, then model picker."""
-    from hermes_cli.auth import (
+    from arachne_cli.auth import (
         resolve_provider, get_provider_auth_state, PROVIDER_REGISTRY,
         _prompt_model_selection, _save_model_choice, _update_config_for_provider,
         resolve_nous_runtime_credentials, fetch_nous_models, AuthError, format_auth_error,
         _login_nous,
     )
-    from hermes_cli.config import load_config, save_config, get_env_value, save_env_value
+    from arachne_cli.config import load_config, save_config, get_env_value, save_env_value
 
     config = load_config()
     current_model = config.get("model")
@@ -514,8 +514,8 @@ def _prompt_provider_choice(choices):
 
 def _model_flow_openrouter(config, current_model=""):
     """OpenRouter provider: ensure API key, then pick model."""
-    from hermes_cli.auth import _prompt_model_selection, _save_model_choice, deactivate_provider
-    from hermes_cli.config import get_env_value, save_env_value
+    from arachne_cli.auth import _prompt_model_selection, _save_model_choice, deactivate_provider
+    from arachne_cli.config import get_env_value, save_env_value
 
     api_key = get_env_value("OPENROUTER_API_KEY")
     if not api_key:
@@ -534,7 +534,7 @@ def _model_flow_openrouter(config, current_model=""):
         print("API key saved.")
         print()
 
-    from hermes_cli.models import model_ids
+    from arachne_cli.models import model_ids
     openrouter_models = model_ids()
 
     selected = _prompt_model_selection(openrouter_models, current_model=current_model)
@@ -546,7 +546,7 @@ def _model_flow_openrouter(config, current_model=""):
         _save_model_choice(selected)
 
         # Update config provider and deactivate any OAuth provider
-        from hermes_cli.config import load_config, save_config
+        from arachne_cli.config import load_config, save_config
         cfg = load_config()
         model = cfg.get("model")
         if isinstance(model, dict):
@@ -561,13 +561,13 @@ def _model_flow_openrouter(config, current_model=""):
 
 def _model_flow_nous(config, current_model=""):
     """Nous Portal provider: ensure logged in, then pick model."""
-    from hermes_cli.auth import (
+    from arachne_cli.auth import (
         get_provider_auth_state, _prompt_model_selection, _save_model_choice,
         _update_config_for_provider, resolve_nous_runtime_credentials,
         fetch_nous_models, AuthError, format_auth_error,
         _login_nous, PROVIDER_REGISTRY,
     )
-    from hermes_cli.config import get_env_value, save_env_value
+    from arachne_cli.config import get_env_value, save_env_value
     import argparse
 
     state = get_provider_auth_state("nous")
@@ -638,13 +638,13 @@ def _model_flow_nous(config, current_model=""):
 
 def _model_flow_openai_codex(config, current_model=""):
     """OpenAI Codex provider: ensure logged in, then pick model."""
-    from hermes_cli.auth import (
+    from arachne_cli.auth import (
         get_codex_auth_status, _prompt_model_selection, _save_model_choice,
         _update_config_for_provider, _login_openai_codex,
         PROVIDER_REGISTRY, DEFAULT_CODEX_BASE_URL,
     )
-    from hermes_cli.codex_models import get_codex_model_ids
-    from hermes_cli.config import get_env_value, save_env_value
+    from arachne_cli.codex_models import get_codex_model_ids
+    from arachne_cli.config import get_env_value, save_env_value
     import argparse
 
     status = get_codex_auth_status()
@@ -663,7 +663,7 @@ def _model_flow_openai_codex(config, current_model=""):
 
     _codex_token = None
     try:
-        from hermes_cli.auth import resolve_codex_runtime_credentials
+        from arachne_cli.auth import resolve_codex_runtime_credentials
         _codex_creds = resolve_codex_runtime_credentials()
         _codex_token = _codex_creds.get("api_key")
     except Exception:
@@ -685,8 +685,8 @@ def _model_flow_openai_codex(config, current_model=""):
 
 def _model_flow_custom(config):
     """Custom endpoint: collect URL, API key, and model name."""
-    from hermes_cli.auth import _save_model_choice, deactivate_provider
-    from hermes_cli.config import get_env_value, save_env_value, load_config, save_config
+    from arachne_cli.auth import _save_model_choice, deactivate_provider
+    from arachne_cli.config import get_env_value, save_env_value, load_config, save_config
 
     current_url = get_env_value("OPENAI_BASE_URL") or ""
     current_key = get_env_value("OPENAI_API_KEY") or ""
@@ -769,11 +769,11 @@ _PROVIDER_MODELS = {
 
 def _model_flow_api_key_provider(config, provider_id, current_model=""):
     """Generic flow for API-key providers (z.ai, Kimi, MiniMax)."""
-    from hermes_cli.auth import (
+    from arachne_cli.auth import (
         PROVIDER_REGISTRY, _prompt_model_selection, _save_model_choice,
         _update_config_for_provider, deactivate_provider,
     )
-    from hermes_cli.config import get_env_value, save_env_value, load_config, save_config
+    from arachne_cli.config import get_env_value, save_env_value, load_config, save_config
 
     pconfig = PROVIDER_REGISTRY[provider_id]
     key_env = pconfig.api_key_env_vars[0] if pconfig.api_key_env_vars else ""
@@ -853,37 +853,37 @@ def _model_flow_api_key_provider(config, provider_id, current_model=""):
 
 def cmd_login(args):
     """Authenticate Hermes CLI with a provider."""
-    from hermes_cli.auth import login_command
+    from arachne_cli.auth import login_command
     login_command(args)
 
 
 def cmd_logout(args):
     """Clear provider authentication."""
-    from hermes_cli.auth import logout_command
+    from arachne_cli.auth import logout_command
     logout_command(args)
 
 
 def cmd_status(args):
     """Show status of all components."""
-    from hermes_cli.status import show_status
+    from arachne_cli.status import show_status
     show_status(args)
 
 
 def cmd_cron(args):
     """Cron job management."""
-    from hermes_cli.cron import cron_command
+    from arachne_cli.cron import cron_command
     cron_command(args)
 
 
 def cmd_doctor(args):
     """Check configuration and dependencies."""
-    from hermes_cli.doctor import run_doctor
+    from arachne_cli.doctor import run_doctor
     run_doctor(args)
 
 
 def cmd_config(args):
     """Configuration management."""
-    from hermes_cli.config import config_command
+    from arachne_cli.config import config_command
     config_command(args)
 
 
@@ -905,7 +905,7 @@ def cmd_version(args):
 
 def cmd_uninstall(args):
     """Uninstall Hermes Agent."""
-    from hermes_cli.uninstall import run_uninstall
+    from arachne_cli.uninstall import run_uninstall
     run_uninstall(args)
 
 
@@ -926,15 +926,15 @@ def _update_via_zip(args):
     print("→ Downloading latest version...")
     try:
         tmp_dir = tempfile.mkdtemp(prefix="hermes-update-")
-        zip_path = os.path.join(tmp_dir, f"hermes-agent-{branch}.zip")
+        zip_path = os.path.join(tmp_dir, f"arachne-{branch}.zip")
         urlretrieve(zip_url, zip_path)
         
         print("→ Extracting...")
         with zipfile.ZipFile(zip_path, 'r') as zf:
             zf.extractall(tmp_dir)
         
-        # GitHub ZIPs extract to hermes-agent-<branch>/
-        extracted = os.path.join(tmp_dir, f"hermes-agent-{branch}")
+        # GitHub ZIPs extract to arachne-<branch>/
+        extracted = os.path.join(tmp_dir, f"arachne-{branch}")
         if not os.path.isdir(extracted):
             # Try to find it
             for d in os.listdir(tmp_dir):
@@ -1125,7 +1125,7 @@ def cmd_update(args):
         print()
         print("→ Checking configuration for new options...")
         
-        from hermes_cli.config import (
+        from arachne_cli.config import (
             get_missing_env_vars, get_missing_config_fields, 
             check_config_version, migrate_config
         )
@@ -1564,7 +1564,7 @@ For more help on a command:
     pairing_clear_parser = pairing_sub.add_parser("clear-pending", help="Clear all pending codes")
 
     def cmd_pairing(args):
-        from hermes_cli.pairing import pairing_command
+        from arachne_cli.pairing import pairing_command
         pairing_command(args)
 
     pairing_parser.set_defaults(func=cmd_pairing)
@@ -1630,7 +1630,7 @@ For more help on a command:
     tap_rm.add_argument("name", help="Tap name to remove")
 
     def cmd_skills(args):
-        from hermes_cli.skills_hub import skills_command
+        from arachne_cli.skills_hub import skills_command
         skills_command(args)
 
     skills_parser.set_defaults(func=cmd_skills)
@@ -1645,7 +1645,7 @@ For more help on a command:
     )
 
     def cmd_tools(args):
-        from hermes_cli.tools_config import tools_command
+        from arachne_cli.tools_config import tools_command
         tools_command(args)
 
     tools_parser.set_defaults(func=cmd_tools)
@@ -1683,7 +1683,7 @@ For more help on a command:
     def cmd_sessions(args):
         import json as _json
         try:
-            from hermes_state import SessionDB
+            from arachne_state import SessionDB
             db = SessionDB()
         except Exception as e:
             print(f"Error: Could not open session database: {e}")
@@ -1778,7 +1778,7 @@ For more help on a command:
 
     def cmd_insights(args):
         try:
-            from hermes_state import SessionDB
+            from arachne_state import SessionDB
             from agent.insights import InsightsEngine
 
             db = SessionDB()

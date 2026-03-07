@@ -9,7 +9,7 @@ with the TUI.
 import queue
 import time as _time
 
-from hermes_cli.banner import cprint, _DIM, _RST
+from arachne_cli.banner import cprint, _DIM, _RST
 
 
 def clarify_callback(cli, question, choices):

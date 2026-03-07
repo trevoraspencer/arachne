@@ -15,11 +15,11 @@ from typing import Dict, List, Set
 
 import os
 
-from hermes_cli.config import (
+from arachne_cli.config import (
     load_config, save_config, get_env_value, save_env_value,
     get_hermes_home,
 )
-from hermes_cli.colors import Colors, color
+from arachne_cli.colors import Colors, color
 
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
@@ -251,9 +251,9 @@ def _run_post_setup(post_setup_key: str):
             if result.returncode == 0:
                 _print_success("    Node.js dependencies installed")
             else:
-                _print_warning("    npm install failed - run manually: cd ~/.hermes/hermes-agent && npm install")
+                _print_warning("    npm install failed - run manually: cd ~/.hermes/arachne && npm install")
         elif not node_modules.exists():
-            _print_warning("    Node.js not found - browser tools require: npm install (in hermes-agent directory)")
+            _print_warning("    Node.js not found - browser tools require: npm install (in arachne directory)")
 
     elif post_setup_key == "rl_training":
         try:

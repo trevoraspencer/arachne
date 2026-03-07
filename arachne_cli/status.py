@@ -11,9 +11,9 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
-from hermes_cli.colors import Colors, color
-from hermes_cli.config import get_env_path, get_env_value
-from hermes_constants import OPENROUTER_MODELS_URL
+from arachne_cli.colors import Colors, color
+from arachne_cli.config import get_env_path, get_env_value
+from arachne_constants import OPENROUTER_MODELS_URL
 
 def check_mark(ok: bool) -> str:
     if ok:
@@ -105,7 +105,7 @@ def show_status(args):
     print(color("◆ Auth Providers", Colors.CYAN, Colors.BOLD))
 
     try:
-        from hermes_cli.auth import get_nous_auth_status, get_codex_auth_status
+        from arachne_cli.auth import get_nous_auth_status, get_codex_auth_status
         nous_status = get_nous_auth_status()
         codex_status = get_codex_auth_status()
     except Exception:
@@ -174,7 +174,7 @@ def show_status(args):
         # Fall back to config file value when env var isn't set
         # (hermes status doesn't go through cli.py's config loading)
         try:
-            from hermes_cli.config import load_config
+            from arachne_cli.config import load_config
             _cfg = load_config()
             terminal_env = _cfg.get("terminal", {}).get("backend", "local")
         except Exception:

@@ -9,7 +9,7 @@ vision_tools, mixture_of_agents_tool, and session_search_tool.
 import os
 
 from openai import AsyncOpenAI
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_constants import OPENROUTER_BASE_URL
 
 _client: AsyncOpenAI | None = None
 

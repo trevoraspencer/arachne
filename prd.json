@@ -36,7 +36,7 @@
         "Verification: grep for hermes_cli|hermes_constants|hermes_state|hermes_tools returns empty"
       ],
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "notes": "In-scope file types: .py .ts .js .sh .ps1 .md .txt .toml .yaml .yml .json .cfg .env .example .ini. Do NOT edit .gitmodules, lock files, binary files, image files. Exclude .git/, mini-swe-agent/, tinker-atropos/."
     },
     {

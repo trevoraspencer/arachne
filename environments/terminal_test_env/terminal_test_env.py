@@ -112,7 +112,7 @@ class TerminalTestEnv(HermesAgentBaseEnv):
         Default configuration for the terminal test environment.
 
         Uses Modal terminal backend for cloud isolation and OpenRouter with
-        Claude for inference. API keys loaded from ~/hermes-agent/.env.
+        Claude for inference. API keys loaded from ~/arachne/.env.
         """
         env_config = TerminalTestEnvConfig(
             # Terminal + file tools only

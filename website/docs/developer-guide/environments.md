@@ -65,9 +65,9 @@ The foundation from `atroposlib`. Provides:
 
 ### HermesAgentBaseEnv
 
-The hermes-agent layer (`environments/hermes_base_env.py`). Adds:
+The arachne layer (`environments/hermes_base_env.py`). Adds:
 - **Terminal backend configuration** — sets `TERMINAL_ENV` for sandboxed execution (local, Docker, Modal, Daytona, SSH, Singularity)
-- **Tool resolution** — `_resolve_tools_for_group()` calls hermes-agent's `get_tool_definitions()` to get the right tool schemas based on enabled/disabled toolsets
+- **Tool resolution** — `_resolve_tools_for_group()` calls arachne's `get_tool_definitions()` to get the right tool schemas based on enabled/disabled toolsets
 - **Agent loop integration** — `collect_trajectory()` runs `HermesAgentLoop` and scores the result
 - **Two-phase operation** — Phase 1 (OpenAI server) for eval/SFT, Phase 2 (VLLM ManagedServer) for full RL with logprobs
 - **Async safety patches** — monkey-patches Modal backend to work inside Atropos's event loop
@@ -88,7 +88,7 @@ Your environment inherits from `HermesAgentBaseEnv` and implements five methods:
 
 ### Agent Loop
 
-`HermesAgentLoop` (`environments/agent_loop.py`) is the reusable multi-turn agent engine. It runs the same tool-calling pattern as hermes-agent's main loop:
+`HermesAgentLoop` (`environments/agent_loop.py`) is the reusable multi-turn agent engine. It runs the same tool-calling pattern as arachne's main loop:
 
 1. Send messages + tool schemas to the API via `server.chat_completion()`
 2. If the response contains `tool_calls`, dispatch each via `handle_function_call()`
@@ -140,7 +140,7 @@ Available methods:
 | **Transfers** | `upload_file()`, `upload_dir()`, `download_file()`, `download_dir()` |
 | **Web** | `web_search(query)`, `web_extract(urls)` |
 | **Browser** | `browser_navigate(url)`, `browser_snapshot()` |
-| **Generic** | `call_tool(name, args)` — escape hatch for any hermes-agent tool |
+| **Generic** | `call_tool(name, args)` — escape hatch for any arachne tool |
 | **Cleanup** | `cleanup()` — release all resources |
 
 ### Tool Call Parsers
@@ -223,7 +223,7 @@ TBLite is a thin subclass of TerminalBench2 — only the dataset and timeouts di
 
 ```bash
 # Install yc-bench (optional dependency)
-pip install "hermes-agent[yc-bench]"
+pip install "arachne[yc-bench]"
 
 # Run evaluation
 bash environments/benchmarks/yc_bench/run_eval.sh
@@ -459,12 +459,12 @@ python my_env.py evaluate \
 
 ### For Modal-sandboxed benchmarks (TB2, TBLite)
 
-- [Modal](https://modal.com) account and CLI: `pip install "hermes-agent[modal]"`
+- [Modal](https://modal.com) account and CLI: `pip install "arachne[modal]"`
 - `MODAL_TOKEN_ID` and `MODAL_TOKEN_SECRET` environment variables
 
 ### For YC-Bench
 
-- `pip install "hermes-agent[yc-bench]"` (installs the yc-bench CLI + SQLAlchemy)
+- `pip install "arachne[yc-bench]"` (installs the yc-bench CLI + SQLAlchemy)
 - No Modal needed — runs with local terminal backend
 
 ### For RL training

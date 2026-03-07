@@ -11,7 +11,7 @@ const config: Config = {
   baseUrl: '/docs/',
 
   organizationName: 'NousResearch',
-  projectName: 'hermes-agent',
+  projectName: 'arachne',
 
   onBrokenLinks: 'warn',
 
@@ -44,7 +44,7 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/hermes-agent-banner.png',
+    image: 'img/arachne-banner.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,

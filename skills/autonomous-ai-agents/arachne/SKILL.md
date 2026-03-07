@@ -1,5 +1,5 @@
 ---
-name: hermes-agent-spawning
+name: arachne-spawning
 description: Spawn additional Hermes Agent instances as autonomous subprocesses for independent long-running tasks. Supports non-interactive one-shot mode (-q) and interactive PTY mode for multi-turn collaboration. Different from delegate_task — this runs a full separate hermes process.
 version: 1.1.0
 author: Hermes Agent

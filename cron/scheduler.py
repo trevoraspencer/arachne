@@ -227,7 +227,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
         # Provider routing
         pr = _cfg.get("provider_routing", {})
 
-        from hermes_cli.runtime_provider import (
+        from arachne_cli.runtime_provider import (
             resolve_runtime_provider,
             format_runtime_provider_error,
         )

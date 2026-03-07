@@ -52,7 +52,7 @@ import queue
 
 # Load .env from ~/.hermes/.env first, then project root as dev fallback
 from dotenv import load_dotenv
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_constants import OPENROUTER_BASE_URL
 
 _hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
 _user_env = _hermes_home / ".env"
@@ -257,7 +257,7 @@ def load_cli_config() -> Dict[str, Any]:
     # Apply terminal config to environment variables (so terminal_tool picks them up)
     terminal_config = defaults.get("terminal", {})
     
-    # Normalize config key: the new config system (hermes_cli/config.py) and all
+    # Normalize config key: the new config system (arachne_cli/config.py) and all
     # documentation use "backend", the legacy cli-config.yaml uses "env_type".
     # Accept both, with "backend" taking precedence (it's the documented key).
     if "backend" in terminal_config:
@@ -354,14 +354,14 @@ from run_agent import AIAgent
 from model_tools import get_tool_definitions, get_toolset_for_tool
 
 # Extracted CLI modules (Phase 3)
-from hermes_cli.banner import (
+from arachne_cli.banner import (
     cprint as _cprint, _GOLD, _BOLD, _DIM, _RST,
     VERSION, HERMES_AGENT_LOGO, HERMES_CADUCEUS, COMPACT_BANNER,
     get_available_skills as _get_available_skills,
     build_welcome_banner,
 )
-from hermes_cli.commands import COMMANDS, SlashCommandCompleter
-from hermes_cli import callbacks as _callbacks
+from arachne_cli.commands import COMMANDS, SlashCommandCompleter
+from arachne_cli import callbacks as _callbacks
 from toolsets import get_all_toolsets, get_toolset_info, resolve_toolset, validate_toolset
 
 # Cron job system for scheduled tasks (CRUD only — execution is handled by the gateway)
@@ -962,7 +962,7 @@ class HermesCLI:
         are picked up without restarting the CLI.
         Returns True if credentials are ready, False on auth failure.
         """
-        from hermes_cli.runtime_provider import (
+        from arachne_cli.runtime_provider import (
             resolve_runtime_provider,
             format_runtime_provider_error,
         )
@@ -1023,7 +1023,7 @@ class HermesCLI:
         # Initialize SQLite session store for CLI sessions
         self._session_db = None
         try:
-            from hermes_state import SessionDB
+            from arachne_state import SessionDB
             self._session_db = SessionDB()
         except Exception as e:
             logger.debug("SQLite session store not available: %s", e)
@@ -1128,7 +1128,7 @@ class HermesCLI:
         Saves the image to ~/.hermes/images/ and appends the path to
         ``_attached_images``.  Returns True if an image was attached.
         """
-        from hermes_cli.clipboard import save_clipboard_image
+        from arachne_cli.clipboard import save_clipboard_image
 
         img_dir = Path.home() / ".hermes" / "images"
         self._image_counter += 1
@@ -1148,7 +1148,7 @@ class HermesCLI:
         doesn't fire for image-only clipboard content (e.g., VSCode terminal,
         Windows Terminal with WSL2).
         """
-        from hermes_cli.clipboard import has_clipboard_image
+        from arachne_cli.clipboard import has_clipboard_image
         if has_clipboard_image():
             if self._try_attach_clipboard_image():
                 n = len(self._attached_images)
@@ -1719,8 +1719,8 @@ class HermesCLI:
             print("  Available: list, add, remove")
     
     def _handle_skills_command(self, cmd: str):
-        """Handle /skills slash command — delegates to hermes_cli.skills_hub."""
-        from hermes_cli.skills_hub import handle_skills_slash
+        """Handle /skills slash command — delegates to arachne_cli.skills_hub."""
+        from arachne_cli.skills_hub import handle_skills_slash
         handle_skills_slash(cmd, ChatConsole())
 
     def _show_gateway_status(self):
@@ -1988,7 +1988,7 @@ class HermesCLI:
                 logging.getLogger(noisy).setLevel(logging.WARNING)
         else:
             logging.getLogger().setLevel(logging.INFO)
-            for quiet_logger in ('tools', 'minisweagent', 'run_agent', 'trajectory_compressor', 'cron', 'hermes_cli'):
+            for quiet_logger in ('tools', 'minisweagent', 'run_agent', 'trajectory_compressor', 'cron', 'arachne_cli'):
                 logging.getLogger(quiet_logger).setLevel(logging.ERROR)
 
     def _show_insights(self, command: str = "/insights"):
@@ -2013,7 +2013,7 @@ class HermesCLI:
                 i += 1
 
         try:
-            from hermes_state import SessionDB
+            from arachne_state import SessionDB
             from agent.insights import InsightsEngine
 
             db = SessionDB()

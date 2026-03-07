@@ -35,8 +35,8 @@ from typing import Any, Dict, List, Optional
 import httpx
 import yaml
 
-from hermes_cli.config import get_hermes_home, get_config_path
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_cli.config import get_hermes_home, get_config_path
+from arachne_constants import OPENROUTER_BASE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -1587,7 +1587,7 @@ def _prompt_model_selection(model_ids: List[str], current_model: str = "") -> Op
 
 def _save_model_choice(model_id: str) -> None:
     """Save the selected model to config.yaml and .env."""
-    from hermes_cli.config import save_config, load_config, save_env_value
+    from arachne_cli.config import save_config, load_config, save_env_value
 
     config = load_config()
     # Handle both string and dict model formats

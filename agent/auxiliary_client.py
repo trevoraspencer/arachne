@@ -29,7 +29,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from openai import OpenAI
 
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_constants import OPENROUTER_BASE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ _OR_HEADERS = {
 # Nous Portal extra_body for product attribution.
 # Callers should pass this as extra_body in chat.completions.create()
 # when the auxiliary client is backed by Nous Portal.
-NOUS_EXTRA_BODY = {"tags": ["product=hermes-agent"]}
+NOUS_EXTRA_BODY = {"tags": ["product=arachne"]}
 
 # Set at resolve time — True if the auxiliary client points to Nous Portal
 auxiliary_is_nous: bool = False
@@ -280,7 +280,7 @@ def _nous_base_url() -> str:
 def _read_codex_access_token() -> Optional[str]:
     """Read a valid Codex OAuth access token from Hermes auth store (~/.hermes/auth.json)."""
     try:
-        from hermes_cli.auth import _read_codex_tokens
+        from arachne_cli.auth import _read_codex_tokens
         data = _read_codex_tokens()
         tokens = data.get("tokens", {})
         access_token = tokens.get("access_token")
@@ -299,7 +299,7 @@ def _resolve_api_key_provider() -> Tuple[Optional[OpenAI], Optional[str]]:
     or (None, None) if none are configured.
     """
     try:
-        from hermes_cli.auth import PROVIDER_REGISTRY
+        from arachne_cli.auth import PROVIDER_REGISTRY
     except ImportError:
         logger.debug("Could not import PROVIDER_REGISTRY for API-key fallback")
         return None, None

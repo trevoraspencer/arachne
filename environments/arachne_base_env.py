@@ -1,7 +1,7 @@
 """
 HermesAgentBaseEnv -- Abstract Base Environment for Hermes-Agent + Atropos
 
-Provides the Atropos integration plumbing that all hermes-agent environments share:
+Provides the Atropos integration plumbing that all arachne environments share:
 - Two-mode operation (OpenAI server for Phase 1, VLLM ManagedServer for Phase 2)
 - Per-group toolset/distribution resolution
 - Agent loop orchestration via HermesAgentLoop
@@ -26,7 +26,7 @@ from abc import abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-# Ensure the hermes-agent repo root is on sys.path so that imports like
+# Ensure the arachne repo root is on sys.path so that imports like
 # `from model_tools import ...` and `from environments.X import ...` work
 # regardless of where the script is invoked from.
 _repo_root = Path(__file__).resolve().parent.parent
@@ -36,7 +36,7 @@ if str(_repo_root) not in sys.path:
 from dotenv import load_dotenv
 from pydantic import Field
 
-# Load API keys from hermes-agent/.env so all environments can access them
+# Load API keys from arachne/.env so all environments can access them
 _env_path = _repo_root / ".env"
 if _env_path.exists():
     load_dotenv(dotenv_path=_env_path)
@@ -63,7 +63,7 @@ from atroposlib.type_definitions import Item
 from environments.agent_loop import AgentResult, HermesAgentLoop
 from environments.tool_context import ToolContext
 
-# Import hermes-agent toolset infrastructure
+# Import arachne toolset infrastructure
 from model_tools import get_tool_definitions
 from toolset_distributions import sample_toolsets_from_distribution
 
@@ -72,7 +72,7 @@ logger = logging.getLogger(__name__)
 
 class HermesAgentEnvConfig(BaseEnvConfig):
     """
-    Configuration for hermes-agent Atropos environments.
+    Configuration for arachne Atropos environments.
 
     Extends BaseEnvConfig with agent-specific settings for toolsets,
     terminal backend, dataset loading, and tool call parsing.
@@ -179,7 +179,7 @@ class HermesAgentEnvConfig(BaseEnvConfig):
 
 class HermesAgentBaseEnv(BaseEnv):
     """
-    Abstract base environment for hermes-agent Atropos integration.
+    Abstract base environment for arachne Atropos integration.
 
     Handles two modes of operation:
     - Phase 1 (OpenAI server type): Uses server.chat_completion() directly.
@@ -199,7 +199,7 @@ class HermesAgentBaseEnv(BaseEnv):
         evaluate()        -- Periodic evaluation
     """
 
-    name: Optional[str] = "hermes-agent"
+    name: Optional[str] = "arachne"
     env_config_cls = HermesAgentEnvConfig
 
     def __init__(
@@ -647,7 +647,7 @@ class HermesAgentBaseEnv(BaseEnv):
         Score the rollout. Has full access to:
         - item: the original dataset item (ground truth, test commands, etc.)
         - result: AgentResult with full messages, turn count, reasoning, etc.
-        - ctx: ToolContext -- call ANY hermes-agent tool (terminal, file, web,
+        - ctx: ToolContext -- call ANY arachne tool (terminal, file, web,
                browser, vision...) scoped to this rollout's sandbox. Nothing
                is off-limits.
 

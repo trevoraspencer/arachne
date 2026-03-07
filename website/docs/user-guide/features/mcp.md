@@ -22,7 +22,7 @@ What this means for you:
 ## Prerequisites
 
 ```bash
-pip install hermes-agent[mcp]
+pip install arachne[mcp]
 ```
 
 | Server Type | Runtime Needed | Example |
@@ -225,7 +225,7 @@ mcp_servers:
 ### "MCP SDK not available"
 
 ```bash
-pip install hermes-agent[mcp]
+pip install arachne[mcp]
 ```
 
 ### Server fails to start

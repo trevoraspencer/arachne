@@ -11,12 +11,12 @@ This guide covers the internal architecture of Hermes Agent for developers contr
 ## Project Structure
 
 ```
-hermes-agent/
+arachne/
 ├── run_agent.py              # AIAgent class — core conversation loop, tool dispatch
 ├── cli.py                    # HermesCLI class — interactive TUI, prompt_toolkit
 ├── model_tools.py            # Tool orchestration (thin layer over tools/registry.py)
 ├── toolsets.py               # Tool groupings and presets
-├── hermes_state.py           # SQLite session database with FTS5 full-text search
+├── arachne_state.py           # SQLite session database with FTS5 full-text search
 ├── batch_runner.py           # Parallel batch processing for trajectory generation
 │
 ├── agent/                    # Agent internals (extracted modules)
@@ -27,7 +27,7 @@ hermes-agent/
 │   ├── model_metadata.py         # Model context lengths, token estimation
 │   └── trajectory.py             # Trajectory saving helpers
 │
-├── hermes_cli/               # CLI command implementations
+├── arachne_cli/               # CLI command implementations
 │   ├── main.py                   # Entry point, argument parsing, command dispatch
 │   ├── config.py                 # Config management, migration, env var definitions
 │   ├── setup.py                  # Interactive setup wizard
@@ -160,7 +160,7 @@ Tools are grouped into toolsets (`web`, `terminal`, `file`, `browser`, etc.) tha
 
 ### Session Persistence
 
-All conversations are stored in SQLite (`hermes_state.py`) with full-text search. JSON logs go to `~/.hermes/sessions/`.
+All conversations are stored in SQLite (`arachne_state.py`) with full-text search. JSON logs go to `~/.hermes/sessions/`.
 
 ### Ephemeral Injection
 

@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [Coding-Agent, Claude, Anthropic, Code-Review, Refactoring]
-    related_skills: [codex, hermes-agent]
+    related_skills: [codex, arachne]
 ---
 
 # Claude Code

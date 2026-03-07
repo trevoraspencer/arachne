@@ -14,7 +14,7 @@ source venv/bin/activate  # Before running any Python commands
 ## Project Structure
 
 ```
-hermes-agent/
+arachne/
 ├── agent/                # Agent internals (extracted from run_agent.py)
 │   ├── model_metadata.py     # Model context lengths, token estimation
 │   ├── context_compressor.py # Auto context compression
@@ -22,7 +22,7 @@ hermes-agent/
 │   ├── prompt_builder.py     # System prompt assembly (identity, skills index, context files)
 │   ├── display.py            # KawaiiSpinner, tool preview formatting
 │   └── trajectory.py         # Trajectory saving helpers
-├── hermes_cli/           # CLI implementation
+├── arachne_cli/           # CLI implementation
 │   ├── main.py           # Entry point, command dispatcher
 │   ├── banner.py         # Welcome banner, ASCII art, skills summary
 │   ├── commands.py       # Slash command definitions + autocomplete
@@ -308,7 +308,7 @@ Instead of static allowlists, users can pair via one-time codes:
 
 Security: 8-char codes, 1-hour expiry, rate-limited (1/10min/user), max 3 pending per platform, lockout after 5 failed attempts, `chmod 0600` on data files.
 
-Files: `gateway/pairing.py`, `hermes_cli/pairing.py`
+Files: `gateway/pairing.py`, `arachne_cli/pairing.py`
 
 ### Event Hooks
 
@@ -365,7 +365,7 @@ When adding new configuration variables, you MUST follow this process:
 
 #### For config.yaml options:
 
-1. Add to `DEFAULT_CONFIG` in `hermes_cli/config.py`
+1. Add to `DEFAULT_CONFIG` in `arachne_cli/config.py`
 2. **CRITICAL**: Bump `_config_version` in `DEFAULT_CONFIG` when adding required fields
 3. This triggers migration prompts for existing users on next `hermes update` or `hermes setup`
 
@@ -386,7 +386,7 @@ DEFAULT_CONFIG = {
 
 #### For .env variables (API keys/secrets):
 
-1. Add to `REQUIRED_ENV_VARS` or `OPTIONAL_ENV_VARS` in `hermes_cli/config.py`
+1. Add to `REQUIRED_ENV_VARS` or `OPTIONAL_ENV_VARS` in `arachne_cli/config.py`
 2. Include metadata for the migration system:
 
 ```python
@@ -404,7 +404,7 @@ OPTIONAL_ENV_VARS = {
 
 #### Update related files:
 
-- `hermes_cli/setup.py` - Add prompts in the setup wizard
+- `arachne_cli/setup.py` - Add prompts in the setup wizard
 - `cli-config.yaml.example` - Add example with comments
 - Update README.md if user-facing
 
@@ -563,7 +563,7 @@ registry.register(
 
 That's it. The registry handles schema collection, dispatch, availability checking, and error wrapping automatically. No edits to `TOOLSET_REQUIREMENTS`, `handle_function_call()`, `get_all_tool_names()`, or any other data structure.
 
-**Optional:** Add to `OPTIONAL_ENV_VARS` in `hermes_cli/config.py` for the setup wizard, and to `toolset_distributions.py` for batch processing.
+**Optional:** Add to `OPTIONAL_ENV_VARS` in `arachne_cli/config.py` for the setup wizard, and to `toolset_distributions.py` for batch processing.
 
 **Special case: tools that need agent-level state** (like `todo`, `memory`):
 These are intercepted by `run_agent.py`'s tool dispatch loop *before* `handle_function_call()`. The registry still holds their schemas, but dispatch returns a stub error as a safety fallback. See `todo_tool.py` for the pattern.
@@ -674,7 +674,7 @@ Key files:
 - `tools/skills_tool.py` — Agent-facing skill list/view (progressive disclosure)
 - `tools/skills_guard.py` — Security scanner (regex + LLM audit, trust-aware install policy)
 - `tools/skills_hub.py` — Source adapters (OptionalSkillSource, GitHub, ClawHub, Claude marketplace, LobeHub), lock file, auth
-- `hermes_cli/skills_hub.py` — CLI subcommands + `/skills` slash command handler
+- `arachne_cli/skills_hub.py` — CLI subcommands + `/skills` slash command handler
 
 ---
 

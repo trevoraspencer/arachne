@@ -6,7 +6,7 @@ Lets the LLM write a Python script that calls Hermes tools via RPC,
 collapsing multi-step tool chains into a single inference turn.
 
 Architecture:
-  1. Parent generates a `hermes_tools.py` stub module with RPC functions
+  1. Parent generates a `arachne_tools.py` stub module with RPC functions
   2. Parent opens a Unix domain socket and starts an RPC listener thread
   3. Parent spawns a child process that runs the LLM's script
   4. When the script calls a tool function, the call travels over the UDS
@@ -63,7 +63,7 @@ def check_sandbox_requirements() -> bool:
 
 
 # ---------------------------------------------------------------------------
-# hermes_tools.py code generator
+# arachne_tools.py code generator
 # ---------------------------------------------------------------------------
 
 # Per-tool stub templates: (function_name, signature, docstring, args_dict_expr)
@@ -114,9 +114,9 @@ _TOOL_STUBS = {
 }
 
 
-def generate_hermes_tools_module(enabled_tools: List[str]) -> str:
+def generate_arachne_tools_module(enabled_tools: List[str]) -> str:
     """
-    Build the source code for the hermes_tools.py stub module.
+    Build the source code for the arachne_tools.py stub module.
 
     Only tools in both SANDBOX_ALLOWED_TOOLS and enabled_tools get stubs.
     """
@@ -383,7 +383,7 @@ def execute_code(
     if not sandbox_tools:
         sandbox_tools = SANDBOX_ALLOWED_TOOLS
 
-    # --- Set up temp directory with hermes_tools.py and script.py ---
+    # --- Set up temp directory with arachne_tools.py and script.py ---
     tmpdir = tempfile.mkdtemp(prefix="hermes_sandbox_")
     sock_path = os.path.join(tempfile.gettempdir(), f"hermes_rpc_{uuid.uuid4().hex}.sock")
 
@@ -392,11 +392,11 @@ def execute_code(
     exec_start = time.monotonic()
 
     try:
-        # Write the auto-generated hermes_tools module
-        tools_src = generate_hermes_tools_module(
+        # Write the auto-generated arachne_tools module
+        tools_src = generate_arachne_tools_module(
             list(sandbox_tools) if enabled_tools else list(SANDBOX_ALLOWED_TOOLS)
         )
-        with open(os.path.join(tmpdir, "hermes_tools.py"), "w") as f:
+        with open(os.path.join(tmpdir, "arachne_tools.py"), "w") as f:
             f.write(tools_src)
 
         # Write the user's script
@@ -654,13 +654,13 @@ def build_execute_code_schema(enabled_sandbox_tools: set = None) -> dict:
         "Use normal tool calls instead when: single tool call with no processing, "
         "you need to see the full result and apply complex reasoning, "
         "or the task requires interactive user input.\n\n"
-        f"Available via `from hermes_tools import ...`:\n\n"
+        f"Available via `from arachne_tools import ...`:\n\n"
         f"{tool_lines}\n\n"
         "Limits: 5-minute timeout, 50KB stdout cap, max 50 tool calls per script. "
         "terminal() is foreground-only (no background or pty).\n\n"
         "Print your final result to stdout. Use Python stdlib (json, re, math, csv, "
         "datetime, collections, etc.) for processing between tool calls.\n\n"
-        "Also available (no import needed — built into hermes_tools):\n"
+        "Also available (no import needed — built into arachne_tools):\n"
         "  json_parse(text: str) — json.loads with strict=False; use for terminal() output with control chars\n"
         "  shell_quote(s: str) — shlex.quote(); use when interpolating dynamic strings into shell commands\n"
         "  retry(fn, max_attempts=3, delay=2) — retry with exponential backoff for transient failures"
@@ -676,7 +676,7 @@ def build_execute_code_schema(enabled_sandbox_tools: set = None) -> dict:
                     "type": "string",
                     "description": (
                         "Python code to execute. Import tools with "
-                        f"`from hermes_tools import {import_str}` "
+                        f"`from arachne_tools import {import_str}` "
                         "and print your final result to stdout."
                     ),
                 },

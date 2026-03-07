@@ -1004,7 +1004,7 @@ class TestNousCredentialRefresh:
             rebuilt["kwargs"] = kwargs
             return _RebuiltClient()
 
-        monkeypatch.setattr("hermes_cli.auth.resolve_nous_runtime_credentials", _fake_resolve)
+        monkeypatch.setattr("arachne_cli.auth.resolve_nous_runtime_credentials", _fake_resolve)
 
         agent.client = _ExistingClient()
         with patch("run_agent.OpenAI", side_effect=_fake_openai):

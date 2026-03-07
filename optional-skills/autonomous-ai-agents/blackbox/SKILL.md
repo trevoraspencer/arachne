@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [Coding-Agent, Blackbox, Multi-Agent, Judge, Multi-Model]
-    related_skills: [claude-code, codex, hermes-agent]
+    related_skills: [claude-code, codex, arachne]
 ---
 
 # Blackbox CLI

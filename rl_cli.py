@@ -55,7 +55,7 @@ if tinker_atropos_dir.exists():
     os.environ['HERMES_QUIET'] = '1'  # Disable temp subdirectory creation
     print(f"📂 Terminal working directory: {tinker_atropos_dir}")
 else:
-    # Fall back to hermes-agent directory if submodule not found
+    # Fall back to arachne directory if submodule not found
     os.environ['TERMINAL_CWD'] = str(Path(__file__).parent)
     os.environ['HERMES_QUIET'] = '1'
     print(f"⚠️  tinker-atropos submodule not found, using: {Path(__file__).parent}")
@@ -70,7 +70,7 @@ from tools.rl_training_tool import check_rl_api_keys, get_missing_keys
 # Config Loading
 # ============================================================================
 
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_constants import OPENROUTER_BASE_URL
 
 DEFAULT_MODEL = "anthropic/claude-opus-4.5"
 DEFAULT_BASE_URL = OPENROUTER_BASE_URL

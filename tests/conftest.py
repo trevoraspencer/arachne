@@ -1,4 +1,4 @@
-"""Shared fixtures for the hermes-agent test suite."""
+"""Shared fixtures for the arachne test suite."""
 
 import os
 import sys

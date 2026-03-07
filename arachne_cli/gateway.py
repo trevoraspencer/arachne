@@ -13,12 +13,12 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
-from hermes_cli.config import get_env_value, save_env_value
-from hermes_cli.setup import (
+from arachne_cli.config import get_env_value, save_env_value
+from arachne_cli.setup import (
     print_header, print_info, print_success, print_warning, print_error,
     prompt, prompt_choice, prompt_yes_no,
 )
-from hermes_cli.colors import Colors, color
+from arachne_cli.colors import Colors, color
 
 
 # =============================================================================
@@ -29,7 +29,7 @@ def find_gateway_pids() -> list:
     """Find PIDs of running gateway processes."""
     pids = []
     patterns = [
-        "hermes_cli.main gateway",
+        "arachne_cli.main gateway",
         "hermes gateway",
         "gateway/run.py",
     ]
@@ -137,7 +137,7 @@ def get_python_path() -> str:
         return str(venv_python)
     return sys.executable
 
-def get_hermes_cli_path() -> str:
+def get_arachne_cli_path() -> str:
     """Get the path to the hermes CLI."""
     # Check if installed via pip
     import shutil
@@ -146,7 +146,7 @@ def get_hermes_cli_path() -> str:
         return hermes_bin
     
     # Fallback to direct module execution
-    return f"{get_python_path()} -m hermes_cli.main"
+    return f"{get_python_path()} -m arachne_cli.main"
 
 
 # =============================================================================
@@ -163,7 +163,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart={python_path} -m hermes_cli.main gateway run
+ExecStart={python_path} -m arachne_cli.main gateway run
 WorkingDirectory={working_dir}
 Restart=on-failure
 RestartSec=10
@@ -283,7 +283,7 @@ def generate_launchd_plist() -> str:
     <array>
         <string>{python_path}</string>
         <string>-m</string>
-        <string>hermes_cli.main</string>
+        <string>arachne_cli.main</string>
         <string>gateway</string>
         <string>run</string>
     </array>
@@ -597,7 +597,7 @@ def _setup_standard_platform(platform: dict):
 
 def _setup_whatsapp():
     """Delegate to the existing WhatsApp setup flow."""
-    from hermes_cli.main import cmd_whatsapp
+    from arachne_cli.main import cmd_whatsapp
     import argparse
     cmd_whatsapp(argparse.Namespace())
 

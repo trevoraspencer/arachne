@@ -1,6 +1,6 @@
 # Hermes-Agent Atropos Environments
 
-This directory contains the integration layer between **hermes-agent's** tool-calling capabilities and the **Atropos** RL training framework. It provides everything needed to run agentic LLMs through multi-turn tool-calling loops, score their output with arbitrary reward functions, and feed results into Atropos for training or evaluation.
+This directory contains the integration layer between **arachne's** tool-calling capabilities and the **Atropos** RL training framework. It provides everything needed to run agentic LLMs through multi-turn tool-calling loops, score their output with arbitrary reward functions, and feed results into Atropos for training or evaluation.
 
 ## Architecture Overview
 
@@ -39,9 +39,9 @@ This directory contains the integration layer between **hermes-agent's** tool-ca
 - CLI interface with three subcommands: `serve`, `process`, `evaluate`
 - `evaluate_log()` for saving eval results to JSON + samples.jsonl
 
-**HermesAgentBaseEnv** (`hermes_base_env.py`) extends BaseEnv with hermes-agent specifics:
+**HermesAgentBaseEnv** (`hermes_base_env.py`) extends BaseEnv with arachne specifics:
 - Sets `os.environ["TERMINAL_ENV"]` to configure the terminal backend (local, docker, modal, daytona, ssh, singularity)
-- Resolves hermes-agent toolsets via `_resolve_tools_for_group()` (calls `get_tool_definitions()` which queries `tools/registry.py`)
+- Resolves arachne toolsets via `_resolve_tools_for_group()` (calls `get_tool_definitions()` which queries `tools/registry.py`)
 - Implements `collect_trajectory()` which runs the full agent loop and computes rewards
 - Supports two-phase operation (Phase 1: OpenAI server, Phase 2: VLLM ManagedServer)
 - Applies monkey patches for async-safe tool operation at import time
@@ -57,7 +57,7 @@ Concrete environments inherit from `HermesAgentBaseEnv` and implement:
 
 ### Agent Loop (`agent_loop.py`)
 
-`HermesAgentLoop` is the reusable multi-turn agent engine. It runs the same pattern as hermes-agent's `run_agent.py`:
+`HermesAgentLoop` is the reusable multi-turn agent engine. It runs the same pattern as arachne's `run_agent.py`:
 
 1. Send messages + tools to the API via `server.chat_completion()`
 2. If the response contains `tool_calls`, execute each one via `handle_function_call()` (which delegates to `tools/registry.py`'s `dispatch()`)
@@ -70,7 +70,7 @@ Returns an `AgentResult` containing the full conversation history, turn count, r
 
 ### Tool Context (`tool_context.py`)
 
-`ToolContext` is a per-rollout handle that gives reward/verification functions direct access to **all** hermes-agent tools, scoped to the rollout's `task_id`. The same `task_id` means the terminal/browser session is the SAME one the model used during its rollout -- all state (files, processes, browser tabs) is preserved.
+`ToolContext` is a per-rollout handle that gives reward/verification functions direct access to **all** arachne tools, scoped to the rollout's `task_id`. The same `task_id` means the terminal/browser session is the SAME one the model used during its rollout -- all state (files, processes, browser tabs) is preserved.
 
 ```python
 async def compute_reward(self, item, result, ctx: ToolContext):
@@ -96,12 +96,12 @@ Available methods:
 - **Transfers**: `upload_file()`, `upload_dir()`, `download_file()`, `download_dir()` -- binary-safe file transfers between host and sandbox
 - **Web**: `web_search(query)`, `web_extract(urls)`
 - **Browser**: `browser_navigate(url)`, `browser_snapshot()`
-- **Generic**: `call_tool(name, args)` -- call any hermes-agent tool by name
+- **Generic**: `call_tool(name, args)` -- call any arachne tool by name
 - **Cleanup**: `cleanup()` -- release all resources (called automatically after `compute_reward`)
 
 ### Patches (`patches.py`)
 
-**Problem**: Some hermes-agent tools use `asyncio.run()` internally (e.g., mini-swe-agent's Modal backend via SWE-ReX). This crashes when called from inside Atropos's event loop because `asyncio.run()` cannot be nested.
+**Problem**: Some arachne tools use `asyncio.run()` internally (e.g., mini-swe-agent's Modal backend via SWE-ReX). This crashes when called from inside Atropos's event loop because `asyncio.run()` cannot be nested.
 
 **Solution**: `patches.py` monkey-patches `SwerexModalEnvironment` to use a dedicated background thread (`_AsyncWorker`) with its own event loop. The calling code sees the same sync interface, but internally the async work happens on a separate thread that doesn't conflict with Atropos's loop.
 

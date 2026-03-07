@@ -1,10 +1,10 @@
-"""Tests for hermes_cli configuration management."""
+"""Tests for arachne_cli configuration management."""
 
 import os
 from pathlib import Path
 from unittest.mock import patch
 
-from hermes_cli.config import (
+from arachne_cli.config import (
     DEFAULT_CONFIG,
     get_hermes_home,
     ensure_hermes_home,

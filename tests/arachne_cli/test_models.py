@@ -1,6 +1,6 @@
-"""Tests for the hermes_cli models module."""
+"""Tests for the arachne_cli models module."""
 
-from hermes_cli.models import OPENROUTER_MODELS, menu_labels, model_ids
+from arachne_cli.models import OPENROUTER_MODELS, menu_labels, model_ids
 
 
 class TestModelIds:

@@ -10,7 +10,7 @@ import subprocess
 import shutil
 from pathlib import Path
 
-from hermes_cli.config import get_project_root, get_hermes_home, get_env_path
+from arachne_cli.config import get_project_root, get_hermes_home, get_env_path
 
 PROJECT_ROOT = get_project_root()
 HERMES_HOME = get_hermes_home()
@@ -30,8 +30,8 @@ load_dotenv(PROJECT_ROOT / ".env", override=False, encoding="utf-8")
 os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(HERMES_HOME))
 os.environ.setdefault("MSWEA_SILENT_STARTUP", "1")
 
-from hermes_cli.colors import Colors, color
-from hermes_constants import OPENROUTER_MODELS_URL
+from arachne_cli.colors import Colors, color
+from arachne_constants import OPENROUTER_MODELS_URL
 
 def check_ok(text: str, detail: str = ""):
     print(f"  {color('✓', Colors.GREEN)} {text}" + (f" {color(detail, Colors.DIM)}" if detail else ""))
@@ -186,7 +186,7 @@ def run_doctor(args):
     print(color("◆ Auth Providers", Colors.CYAN, Colors.BOLD))
 
     try:
-        from hermes_cli.auth import get_nous_auth_status, get_codex_auth_status
+        from arachne_cli.auth import get_nous_auth_status, get_codex_auth_status
 
         nous_status = get_nous_auth_status()
         if nous_status.get("logged_in"):
@@ -598,7 +598,7 @@ def run_doctor(args):
     else:
         check_warn("Skills Hub directory not initialized", "(run: hermes skills list)")
 
-    from hermes_cli.config import get_env_value
+    from arachne_cli.config import get_env_value
     github_token = get_env_value("GITHUB_TOKEN") or get_env_value("GH_TOKEN")
     if github_token:
         check_ok("GitHub token configured (authenticated API access)")

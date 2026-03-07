@@ -1,10 +1,10 @@
-"""Tests for hermes_state.py — SessionDB SQLite CRUD, FTS5 search, export."""
+"""Tests for arachne_state.py — SessionDB SQLite CRUD, FTS5 search, export."""
 
 import time
 import pytest
 from pathlib import Path
 
-from hermes_state import SessionDB
+from arachne_state import SessionDB
 
 
 @pytest.fixture()

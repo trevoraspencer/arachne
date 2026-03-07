@@ -40,7 +40,7 @@ def cprint(text: str):
 # ASCII Art & Branding
 # =========================================================================
 
-from hermes_cli import __version__ as VERSION
+from arachne_cli import __version__ as VERSION
 
 HERMES_AGENT_LOGO = """[bold #FFD700]██╗  ██╗███████╗██████╗ ███╗   ███╗███████╗███████╗       █████╗  ██████╗ ███████╗███╗   ██╗████████╗[/]
 [bold #FFD700]██║  ██║██╔════╝██╔══██╗████╗ ████║██╔════╝██╔════╝      ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝[/]
@@ -118,7 +118,7 @@ def check_for_updates() -> Optional[int]:
     or ``None`` if the check fails or isn't applicable.
     """
     hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
-    repo_dir = hermes_home / "hermes-agent"
+    repo_dir = hermes_home / "arachne"
     cache_file = hermes_home / ".update_check"
 
     # Must be a git repo

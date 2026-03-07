@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from typing import Any, Dict, Optional
 
-from hermes_cli.auth import (
+from arachne_cli.auth import (
     AuthError,
     PROVIDER_REGISTRY,
     format_auth_error,
@@ -14,8 +14,8 @@ from hermes_cli.auth import (
     resolve_codex_runtime_credentials,
     resolve_api_key_provider_credentials,
 )
-from hermes_cli.config import load_config
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_cli.config import load_config
+from arachne_constants import OPENROUTER_BASE_URL
 
 
 def _get_model_config() -> Dict[str, Any]:

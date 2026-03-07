@@ -182,7 +182,7 @@ Write only the summary, starting with "[CONTEXT SUMMARY]:" prefix."""
             return None, None
 
         # Don't fallback to the same provider that just failed
-        from hermes_constants import OPENROUTER_BASE_URL
+        from arachne_constants import OPENROUTER_BASE_URL
         if custom_base.rstrip("/") == OPENROUTER_BASE_URL.rstrip("/"):
             return None, None
 

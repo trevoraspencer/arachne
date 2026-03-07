@@ -80,7 +80,7 @@ def _load_tts_config() -> Dict[str, Any]:
     for any missing fields.
     """
     try:
-        from hermes_cli.config import load_config
+        from arachne_cli.config import load_config
         config = load_config()
         return config.get("tts", {})
     except Exception:
