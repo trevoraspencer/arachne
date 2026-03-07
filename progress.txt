@@ -70,3 +70,20 @@ Started: Sat Mar  7 20:46:12 UTC 2026
   - After standalone replace, only .ralph/rebrand-arachne-prompt.md retains hermes references (in naming rules table Find column) — this is correct
   - Corrupted model name patterns to check after replacement: NousResearch/arachne, NousResearch/Arachne, Arachne-3, Arachne-2, DeepArachne, arachne-3, arachne-2
 ---
+
+## 2026-03-07 - US-005
+- What was implemented: Updated package metadata, install scripts, and replaced README
+- pyproject.toml: description updated to 'Persistent agent layer for the Spiderweb system. Forked from NousResearch/hermes-agent.' (name and entrypoints already correct from prior stories)
+- package.json: description updated to match pyproject.toml (name already correct, no bin entry present)
+- scripts/install.cmd: renamed "Hermes Agent Installer" → "Arachne Agent Installer" (2 occurrences)
+- scripts/install.sh, install.ps1, setup-arachne.sh: already clean from prior stories — only NousResearch/hermes-agent upstream URLs remain (correct)
+- setup.py files (arachne_cli/setup.py, skills/.../setup.py): already clean, no hermes references
+- README.md: replaced entirely with verbatim content from arachne-README.md
+- arachne-README.md: deleted after copy
+- Files changed: pyproject.toml, package.json, scripts/install.cmd, README.md, arachne-README.md (deleted)
+- **Learnings for future iterations:**
+  - Most install script paths were already renamed by US-001 through US-004 — US-005 only needed metadata description updates and the install.cmd banner text
+  - The README replacement is a full file overwrite — no incremental edits needed
+  - hermes references in README documentation text (describing the rename, upstream sync) are intentional and correct
+  - NousResearch/hermes-agent URLs in install scripts are upstream attribution and must be preserved
+---

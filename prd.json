@@ -91,7 +91,7 @@
         "Verification: grep -n hermes in install scripts returns empty (except upstream attribution)"
       ],
       "priority": 5,
-      "passes": false,
+      "passes": true,
       "notes": "The arachne-README.md file in the project root contains the verbatim README content. Copy it to README.md and then delete arachne-README.md."
     },
     {
