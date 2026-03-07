@@ -1,0 +1,115 @@
+{
+  "project": "Arachne",
+  "branchName": "ralph/rebrand-arachne",
+  "description": "Rebrand all agent framework references from hermes to arachne throughout the codebase. Mechanical rename only — no logic changes, no refactoring, no new features.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Audit and rename all hermes-named directories and files",
+      "description": "As a developer, I need all directories and files with 'hermes' in their names renamed to use 'arachne' equivalents, so the filesystem reflects the new brand.",
+      "acceptanceCriteria": [
+        "Run the audit commands from the spec and save output to _rename_manifest.txt",
+        "Confirm no .git/ or submodule paths appear in the manifest",
+        "Identify and record all model name strings (Hermes-3, Hermes-2, etc.) for later protection",
+        "Rename all directories containing 'hermes' (deepest first): hermes_agent→arachne, hermes_cli→arachne_cli, hermes_constants→arachne_constants, hermes_state→arachne_state, hermes_tools→arachne_tools, etc.",
+        "Rename all files containing 'hermes': setup-hermes.sh→setup-arachne.sh, etc.",
+        "Verification: find for hermes-named dirs returns empty (excl .git, submodules)",
+        "Verification: find for hermes-named files returns empty (excl .git, submodules)"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Do NOT touch .git/, mini-swe-agent/, tinker-atropos/. Apply naming rules table exactly. Process deepest paths first to avoid breaking child paths."
+    },
+    {
+      "id": "US-002",
+      "title": "Replace compound forms and module-level names in file content",
+      "description": "As a developer, I need all compound hermes references (hermes-agent, hermes_agent) and module names (hermes_cli, hermes_constants, hermes_state, hermes_tools) replaced in file content.",
+      "acceptanceCriteria": [
+        "Replace hermes-agent → arachne in all in-scope file types",
+        "Replace hermes_agent → arachne in all in-scope file types",
+        "Preserve hermes-agent in https://github.com/NousResearch/hermes-agent URLs",
+        "Replace hermes_cli → arachne_cli in all in-scope file types",
+        "Replace hermes_constants → arachne_constants in all in-scope file types",
+        "Replace hermes_state → arachne_state in all in-scope file types",
+        "Replace hermes_tools → arachne_tools in all in-scope file types",
+        "Verification: grep for hermes-agent|hermes_agent returns empty (excl external URLs)",
+        "Verification: grep for hermes_cli|hermes_constants|hermes_state|hermes_tools returns empty"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": "In-scope file types: .py .ts .js .sh .ps1 .md .txt .toml .yaml .yml .json .cfg .env .example .ini. Do NOT edit .gitmodules, lock files, binary files, image files. Exclude .git/, mini-swe-agent/, tinker-atropos/."
+    },
+    {
+      "id": "US-003",
+      "title": "Replace class names, env var prefix, and config path in content",
+      "description": "As a developer, I need all CamelCase class names, the HERMES_ env var prefix, and ~/.hermes config paths updated to their arachne equivalents.",
+      "acceptanceCriteria": [
+        "Replace HermesAgent → ArachneAgent in all in-scope file types",
+        "Replace HermesCLI → ArachneCLI in all in-scope file types",
+        "Replace HermesState → ArachneState in all in-scope file types",
+        "Replace HermesConstants → ArachneConstants in all in-scope file types",
+        "Replace HERMES_ → ARACHNE_ (env var prefix) in all in-scope file types",
+        "Replace ~/.hermes → ~/.arachne in all in-scope file types",
+        "Verification: grep for HermesAgent|HermesCLI|HermesState|HermesConstants returns empty",
+        "Verification: grep for HERMES_ returns empty",
+        "Verification: grep for ~/.hermes returns empty"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": "Case-sensitive replacements. Same file type scope and exclusions as US-002."
+    },
+    {
+      "id": "US-004",
+      "title": "Replace standalone hermes/Hermes with model name protection",
+      "description": "As a developer, I need all remaining standalone 'hermes' (lowercase) and 'Hermes' (title case) replaced with 'arachne'/'Arachne', while preserving all NousResearch model name strings.",
+      "acceptanceCriteria": [
+        "Replace standalone lowercase hermes → arachne across all in-scope files",
+        "Replace standalone title-case Hermes → Arachne across all in-scope files",
+        "Preserve all NousResearch model name strings (e.g. NousResearch/Hermes-3-Llama-3.1-8B) — these must NOT be renamed",
+        "Preserve hermes in external URLs (e.g. https://github.com/NousResearch/hermes-agent)",
+        "After replacement, verify no corrupted model strings exist: grep for NousResearch/arachne, arachne-3, arachne-2, NousResearch/Arachne, Arachne-3, Arachne-2",
+        "If any corrupted model strings found, restore them to original form",
+        "Verification: corrupted model string grep returns empty after restoration"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": "This is the broadest and most delicate pass. Model name patterns: NousResearch/Hermes-*, Hermes-3, Hermes-2. These must be preserved exactly. Check the model name list from _rename_manifest.txt (recorded in US-001)."
+    },
+    {
+      "id": "US-005",
+      "title": "Update package metadata, install scripts, and replace README",
+      "description": "As a developer, I need pyproject.toml, package.json, install scripts, and README.md updated to reflect the arachne brand.",
+      "acceptanceCriteria": [
+        "pyproject.toml: name → arachne, description → 'Persistent agent layer for the Spiderweb system. Forked from NousResearch/hermes-agent.', entrypoint hermes → arachne",
+        "package.json: name → arachne, description updated, bin entry hermes → arachne if present",
+        "setup.py/setup.cfg: same changes if files exist",
+        "scripts/install.sh: ~/.local/bin/hermes → ~/.local/bin/arachne, ~/.hermes/hermes-agent → ~/.arachne/arachne, all other hermes paths",
+        "scripts/install.ps1: same path replacements",
+        "setup-arachne.sh: confirm all internal references now use arachne",
+        "Replace README.md content with the Arachne README from arachne-README.md (copy verbatim)",
+        "Verification: README.md first line reads '# Arachne'",
+        "Verification: grep -n hermes in install scripts returns empty (except upstream attribution)"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": "The arachne-README.md file in the project root contains the verbatim README content. Copy it to README.md and then delete arachne-README.md."
+    },
+    {
+      "id": "US-006",
+      "title": "Final sweep, cleanup manifest, and commit",
+      "description": "As a developer, I need a final broad grep to catch any missed hermes references, cleanup of working files, and a clean git commit.",
+      "acceptanceCriteria": [
+        "Run final sweep: grep -rn '\\bhermes\\b' with all in-scope extensions, -i flag, excluding .git/, submodules, NousResearch/Hermes model strings, and hermes-agent GitHub URLs",
+        "If any output returned, inspect each line, apply naming rules, make replacement, re-run until empty",
+        "Delete _rename_manifest.txt",
+        "git add -A && git commit with message: 'chore: rename hermes → arachne throughout'",
+        "Verification: final sweep returns empty output",
+        "Verification: git status is clean",
+        "Verification: git log --oneline -1 shows the rebrand commit"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": "Commit message body: 'Fork of NousResearch/hermes-agent.\\nAll agent framework references renamed to Arachne.\\nUpstream model name strings (NousResearch/Hermes-*) preserved unchanged.\\nSubmodules (mini-swe-agent, tinker-atropos) untouched.'"
+    }
+  ]
+}

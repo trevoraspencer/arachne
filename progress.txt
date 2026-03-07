@@ -1,0 +1,25 @@
+# Ralph Progress Log
+Started: Sat Mar  7 20:46:12 UTC 2026
+
+## Codebase Patterns
+- Binary/image files (*.png, *.jpg, etc.) must NOT be renamed or edited
+- Submodules (mini-swe-agent/, tinker-atropos/) and .git/ are excluded from all operations
+- Model name strings to protect: NousResearch/Hermes-3-Llama-3.1-8B, NousResearch/DeepHermes-3-Llama-3-3B-Preview, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT1, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT2
+- The `hermes` entrypoint file at root was renamed to `arachne`
+- `environments/hermes_swe_env/` renamed to `environments/arachne_swe_env/`
+- Manifest of all renames saved at `_rename_manifest.txt`
+
+---
+
+## 2026-03-07 - US-001
+- What was implemented: Audited and renamed all hermes-named directories and files
+- Directories renamed: environments/hermes_swe_env→arachne_swe_env, hermes_cli→arachne_cli, skills/autonomous-ai-agents/hermes-agent→arachne, tests/hermes_cli→arachne_cli
+- Files renamed: hermes_base_env.py→arachne_base_env.py, hermes_swe_env.py→arachne_swe_env.py, hermes_parser.py→arachne_parser.py, hermes→arachne, hermes_constants.py→arachne_constants.py, hermes_state.py→arachne_state.py, hermes_time.py→arachne_time.py, hermes-gateway→arachne-gateway, setup-hermes.sh→setup-arachne.sh, test_hermes_state.py→test_arachne_state.py
+- Skipped: landingpage/hermes-agent-banner.png and website/static/img/hermes-agent-banner.png (binary images)
+- Model name strings recorded in _rename_manifest.txt for protection in later stories
+- **Learnings for future iterations:**
+  - Process deepest paths first when renaming directories to avoid breaking child paths
+  - The `hermes` file at root is a binary entrypoint script, renamed to `arachne`
+  - Two image files with hermes in name are binary and excluded per project rules
+  - `scripts/hermes-gateway` is a script file (not binary), renamed to `arachne-gateway`
+---

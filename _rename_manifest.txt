@@ -1,0 +1,27 @@
+=== DIRECTORIES WITH HERMES IN NAME ===
+environments/hermes_swe_env
+hermes_cli
+skills/autonomous-ai-agents/hermes-agent
+tests/hermes_cli
+
+=== FILES WITH HERMES IN NAME ===
+environments/hermes_base_env.py
+environments/hermes_swe_env/hermes_swe_env.py
+environments/tool_call_parsers/hermes_parser.py
+hermes (binary/entrypoint)
+hermes_constants.py
+hermes_state.py
+hermes_time.py
+landingpage/hermes-agent-banner.png (SKIP: binary/image)
+scripts/hermes-gateway
+setup-hermes.sh
+tests/test_hermes_state.py
+website/static/img/hermes-agent-banner.png (SKIP: binary/image)
+
+=== MODEL NAME STRINGS TO PROTECT ===
+NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT2
+NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT1
+NousResearch/Hermes-3-Llama-3.1-8B
+NousResearch/DeepHermes-3-Llama-3-3B-Preview
+NousResearch/Hermes-Agent.git (URL)
+NousResearch/Hermes-Agent (GitHub)
