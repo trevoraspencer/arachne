@@ -87,3 +87,16 @@ Started: Sat Mar  7 20:46:12 UTC 2026
   - hermes references in README documentation text (describing the rename, upstream sync) are intentional and correct
   - NousResearch/hermes-agent URLs in install scripts are upstream attribution and must be preserved
 ---
+
+## 2026-03-07 - US-006
+- What was implemented: Final sweep, cleanup manifest, and commit
+- Ran case-insensitive grep for \bhermes\b across all in-scope file types, excluding .git/, submodules
+- All remaining references verified as legitimate: NousResearch/hermes-agent URLs (upstream attribution), NousResearch/Hermes-* model name strings, NousResearch dataset strings, lock files (excluded), meta files (prd.json, progress.txt, .ralph/)
+- No additional replacements needed — sweep was clean
+- Deleted _rename_manifest.txt
+- Files changed: _rename_manifest.txt (deleted), prd.json (US-006 passes: true), progress.txt (this entry)
+- **Learnings for future iterations:**
+  - The final sweep found ~100+ matches, all falling into preserved categories (external URLs, model names, dataset names, lock files, meta files)
+  - For rebrand tasks, a final sweep is essential to confirm completeness but typically finds zero actionable items if prior stories were thorough
+  - Lock files (package-lock.json) will always retain old names — this is correct since they should not be manually edited
+---

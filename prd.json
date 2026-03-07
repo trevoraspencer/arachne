@@ -108,7 +108,7 @@
         "Verification: git log --oneline -1 shows the rebrand commit"
       ],
       "priority": 6,
-      "passes": false,
+      "passes": true,
       "notes": "Commit message body: 'Fork of NousResearch/hermes-agent.\\nAll agent framework references renamed to Arachne.\\nUpstream model name strings (NousResearch/Hermes-*) preserved unchanged.\\nSubmodules (mini-swe-agent, tinker-atropos) untouched.'"
     }
   ]
