@@ -39,11 +39,11 @@ import fire
 from datetime import datetime
 from pathlib import Path
 
-# Load .env from ~/.hermes/.env first, then project root as dev fallback
+# Load .env from ~/.arachne/.env first, then project root as dev fallback
 from dotenv import load_dotenv
 
-_hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
-_user_env = _hermes_home / ".env"
+_arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+_user_env = _arachne_home / ".env"
 _project_env = Path(__file__).parent / '.env'
 if _user_env.exists():
     try:
@@ -60,8 +60,8 @@ elif _project_env.exists():
 else:
     logger.info("No .env file found. Using system environment variables.")
 
-# Point mini-swe-agent at ~/.hermes/ so it shares our config
-os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(_hermes_home))
+# Point mini-swe-agent at ~/.arachne/ so it shares our config
+os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(_arachne_home))
 os.environ.setdefault("MSWEA_SILENT_STARTUP", "1")
 
 # Import our tool system
@@ -72,7 +72,7 @@ from tools.browser_tool import cleanup_browser
 
 import requests
 
-from hermes_constants import OPENROUTER_BASE_URL, OPENROUTER_MODELS_URL
+from arachne_constants import OPENROUTER_BASE_URL, OPENROUTER_MODELS_URL
 
 # Agent internals extracted to agent/ package for modularity
 from agent.prompt_builder import (
@@ -256,7 +256,7 @@ class AIAgent:
         if base_url and "api.anthropic.com" in base_url.strip().lower():
             raise ValueError(
                 "Anthropic's native /v1/messages API is not supported yet (planned for a future release). "
-                "Hermes currently requires OpenAI-compatible /chat/completions endpoints. "
+                "Arachne currently requires OpenAI-compatible /chat/completions endpoints. "
                 "To use Claude models now, route through OpenRouter (OPENROUTER_API_KEY) "
                 "or any OpenAI-compatible proxy that wraps the Anthropic API."
             )
@@ -298,10 +298,10 @@ class AIAgent:
         self._use_prompt_caching = is_openrouter and is_claude
         self._cache_ttl = "5m"  # Default 5-minute TTL (1.25x write cost)
         
-        # Persistent error log -- always writes WARNING+ to ~/.hermes/logs/errors.log
+        # Persistent error log -- always writes WARNING+ to ~/.arachne/logs/errors.log
         # so tool failures, API errors, etc. are inspectable after the fact.
         from agent.redact import RedactingFormatter
-        _error_log_dir = Path.home() / ".hermes" / "logs"
+        _error_log_dir = Path.home() / ".arachne" / "logs"
         _error_log_dir.mkdir(parents=True, exist_ok=True)
         _error_log_path = _error_log_dir / "errors.log"
         from logging.handlers import RotatingFileHandler
@@ -361,7 +361,7 @@ class AIAgent:
                     'run_agent',            # agent runner internals
                     'trajectory_compressor',
                     'cron',                 # scheduler (only relevant in daemon mode)
-                    'hermes_cli',           # CLI helpers
+                    'arachne_cli',           # CLI helpers
                 ]:
                     logging.getLogger(quiet_logger).setLevel(logging.ERROR)
         
@@ -381,12 +381,12 @@ class AIAgent:
             # Primary: OPENROUTER_API_KEY, fallback to direct provider keys
             client_kwargs["api_key"] = os.getenv("OPENROUTER_API_KEY", "")
         
-        # OpenRouter app attribution — shows hermes-agent in rankings/analytics
+        # OpenRouter app attribution — shows arachne in rankings/analytics
         effective_base = client_kwargs.get("base_url", "")
         if "openrouter" in effective_base.lower():
             client_kwargs["default_headers"] = {
                 "HTTP-Referer": "https://github.com/NousResearch/hermes-agent",
-                "X-OpenRouter-Title": "Hermes Agent",
+                "X-OpenRouter-Title": "Arachne Agent",
                 "X-OpenRouter-Categories": "productivity,cli-agent",
             }
         
@@ -460,9 +460,9 @@ class AIAgent:
             short_uuid = uuid.uuid4().hex[:6]
             self.session_id = f"{timestamp_str}_{short_uuid}"
         
-        # Session logs go into ~/.hermes/sessions/ alongside gateway sessions
-        hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
-        self.logs_dir = hermes_home / "sessions"
+        # Session logs go into ~/.arachne/sessions/ alongside gateway sessions
+        arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+        self.logs_dir = arachne_home / "sessions"
         self.logs_dir.mkdir(parents=True, exist_ok=True)
         self.session_log_file = self.logs_dir / f"session_{self.session_id}.json"
         
@@ -502,7 +502,7 @@ class AIAgent:
         self._memory_flush_min_turns = 6
         if not skip_memory:
             try:
-                from hermes_cli.config import load_config as _load_mem_config
+                from arachne_cli.config import load_config as _load_mem_config
                 mem_config = _load_mem_config().get("memory", {})
                 self._memory_enabled = mem_config.get("memory_enabled", False)
                 self._user_profile_enabled = mem_config.get("user_profile_enabled", False)
@@ -538,7 +538,7 @@ class AIAgent:
                     if not self._honcho_session_key:
                         self._honcho_session_key = (
                             hcfg.resolve_session_name()
-                            or "hermes-default"
+                            or "arachne-default"
                         )
                     # Ensure session exists in Honcho
                     self._honcho.get_or_create(self._honcho_session_key)
@@ -561,7 +561,7 @@ class AIAgent:
         # Skills config: nudge interval for skill creation reminders
         self._skill_nudge_interval = 15
         try:
-            from hermes_cli.config import load_config as _load_skills_config
+            from arachne_cli.config import load_config as _load_skills_config
             skills_config = _load_skills_config().get("skills", {})
             self._skill_nudge_interval = int(skills_config.get("creation_nudge_interval", 15))
         except Exception:
@@ -1148,7 +1148,7 @@ class AIAgent:
 
             print(f"{self.log_prefix}🧾 Request debug dump written to: {dump_file}")
 
-            if os.getenv("HERMES_DUMP_REQUEST_STDOUT", "").strip().lower() in {"1", "true", "yes", "on"}:
+            if os.getenv("ARACHNE_DUMP_REQUEST_STDOUT", "").strip().lower() in {"1", "true", "yes", "on"}:
                 print(json.dumps(dump_payload, ensure_ascii=False, indent=2, default=str))
 
             return dump_file
@@ -1407,8 +1407,8 @@ class AIAgent:
             if context_files_prompt:
                 prompt_parts.append(context_files_prompt)
 
-        from hermes_time import now as _hermes_now
-        now = _hermes_now()
+        from arachne_time import now as _arachne_now
+        now = _arachne_now()
         prompt_parts.append(
             f"Conversation started: {now.strftime('%A, %B %d, %Y %I:%M %p')}"
         )
@@ -2031,7 +2031,7 @@ class AIAgent:
             return False
 
         try:
-            from hermes_cli.auth import resolve_codex_runtime_credentials
+            from arachne_cli.auth import resolve_codex_runtime_credentials
 
             creds = resolve_codex_runtime_credentials(force_refresh=force)
         except Exception as exc:
@@ -2068,11 +2068,11 @@ class AIAgent:
             return False
 
         try:
-            from hermes_cli.auth import resolve_nous_runtime_credentials
+            from arachne_cli.auth import resolve_nous_runtime_credentials
 
             creds = resolve_nous_runtime_credentials(
-                min_key_ttl_seconds=max(60, int(os.getenv("HERMES_NOUS_MIN_KEY_TTL_SECONDS", "1800"))),
-                timeout_seconds=float(os.getenv("HERMES_NOUS_TIMEOUT_SECONDS", "15")),
+                min_key_ttl_seconds=max(60, int(os.getenv("ARACHNE_NOUS_MIN_KEY_TTL_SECONDS", "1800"))),
+                timeout_seconds=float(os.getenv("ARACHNE_NOUS_TIMEOUT_SECONDS", "15")),
                 force_mint=force,
             )
         except Exception as exc:
@@ -2229,7 +2229,7 @@ class AIAgent:
 
         # Nous Portal product attribution
         if _is_nous:
-            extra_body["tags"] = ["product=hermes-agent"]
+            extra_body["tags"] = ["product=arachne"]
 
         if extra_body:
             api_kwargs["extra_body"] = extra_body
@@ -2770,7 +2770,7 @@ class AIAgent:
                         "effort": "medium"
                     }
             if _is_nous:
-                summary_extra_body["tags"] = ["product=hermes-agent"]
+                summary_extra_body["tags"] = ["product=arachne"]
 
             if self.api_mode == "codex_responses":
                 codex_kwargs = self._build_api_kwargs(api_messages)
@@ -3157,7 +3157,7 @@ class AIAgent:
                     if self.api_mode == "codex_responses":
                         api_kwargs = self._preflight_codex_api_kwargs(api_kwargs, allow_stream=False)
 
-                    if os.getenv("HERMES_DUMP_REQUESTS", "").strip().lower() in {"1", "true", "yes", "on"}:
+                    if os.getenv("ARACHNE_DUMP_REQUESTS", "").strip().lower() in {"1", "true", "yes", "on"}:
                         self._dump_api_request_debug(api_kwargs, reason="preflight")
 
                     response = self._interruptible_api_call(api_kwargs)

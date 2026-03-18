@@ -75,10 +75,10 @@ def _check_disk_usage_warning():
     scratch_dir = _get_scratch_dir()
     
     try:
-        # Get total size of hermes directories
+        # Get total size of arachne directories
         total_bytes = 0
         import glob
-        for path in glob.glob(str(scratch_dir / "hermes-*")):
+        for path in glob.glob(str(scratch_dir / "arachne-*")):
             for f in Path(path).rglob('*'):
                 if f.is_file():
                     try:
@@ -146,7 +146,7 @@ def _handle_sudo_failure(output: str, env_type: str) -> str:
     
     Returns enhanced output if sudo failed in messaging context, else original.
     """
-    is_gateway = os.getenv("HERMES_GATEWAY_SESSION")
+    is_gateway = os.getenv("ARACHNE_GATEWAY_SESSION")
     
     if not is_gateway:
         return output
@@ -160,7 +160,7 @@ def _handle_sudo_failure(output: str, env_type: str) -> str:
     
     for failure in sudo_failures:
         if failure in output:
-            return output + "\n\n💡 Tip: To enable sudo over messaging, add SUDO_PASSWORD to ~/.hermes/.env on the agent machine."
+            return output + "\n\n💡 Tip: To enable sudo over messaging, add SUDO_PASSWORD to ~/.arachne/.env on the agent machine."
     
     return output
 
@@ -174,7 +174,7 @@ def _prompt_for_sudo_password(timeout_seconds: int = 45) -> str:
     - Timeout expires (45s default)
     - Any error occurs
     
-    Only works in interactive mode (HERMES_INTERACTIVE=1).
+    Only works in interactive mode (ARACHNE_INTERACTIVE=1).
     If a _sudo_password_callback is registered (by the CLI), delegates to it
     so the prompt integrates with prompt_toolkit's UI.  Otherwise reads
     directly from /dev/tty with echo disabled.
@@ -228,7 +228,7 @@ def _prompt_for_sudo_password(timeout_seconds: int = 45) -> str:
             result["done"] = True
     
     try:
-        os.environ["HERMES_SPINNER_PAUSE"] = "1"
+        os.environ["ARACHNE_SPINNER_PAUSE"] = "1"
         time_module.sleep(0.2)
         
         print()
@@ -274,8 +274,8 @@ def _prompt_for_sudo_password(timeout_seconds: int = 45) -> str:
         sys.stdout.flush()
         return ""
     finally:
-        if "HERMES_SPINNER_PAUSE" in os.environ:
-            del os.environ["HERMES_SPINNER_PAUSE"]
+        if "ARACHNE_SPINNER_PAUSE" in os.environ:
+            del os.environ["ARACHNE_SPINNER_PAUSE"]
 
 
 def _transform_sudo_command(command: str) -> str:
@@ -288,7 +288,7 @@ def _transform_sudo_command(command: str) -> str:
     If SUDO_PASSWORD is set (via env, config, or interactive prompt):
       'sudo apt install curl' -> password piped via sudo -S
       
-    If SUDO_PASSWORD is not set and in interactive mode (HERMES_INTERACTIVE=1):
+    If SUDO_PASSWORD is not set and in interactive mode (ARACHNE_INTERACTIVE=1):
       Prompts user for password with 45s timeout, caches for session.
       
     If SUDO_PASSWORD is not set and NOT interactive:
@@ -306,7 +306,7 @@ def _transform_sudo_command(command: str) -> str:
     
     if not sudo_password:
         # No password configured - check if we're in interactive mode
-        if os.getenv("HERMES_INTERACTIVE"):
+        if os.getenv("ARACHNE_INTERACTIVE"):
             # Prompt user for password
             sudo_password = _prompt_for_sudo_password(timeout_seconds=45)
             if sudo_password:
@@ -652,7 +652,7 @@ def get_active_environments_info() -> Dict[str, Any]:
     total_size = 0
     for task_id in _active_environments.keys():
         scratch_dir = _get_scratch_dir()
-        pattern = f"hermes-*{task_id[:8]}*"
+        pattern = f"arachne-*{task_id[:8]}*"
         import glob
         for path in glob.glob(str(scratch_dir / pattern)):
             try:
@@ -682,7 +682,7 @@ def cleanup_all_environments():
     # Also clean any orphaned directories
     scratch_dir = _get_scratch_dir()
     import glob
-    for path in glob.glob(str(scratch_dir / "hermes-*")):
+    for path in glob.glob(str(scratch_dir / "arachne-*")):
         try:
             shutil.rmtree(path, ignore_errors=True)
             logger.info("Removed orphaned: %s", path)
@@ -931,7 +931,7 @@ def terminal_tool(
             # For non-local backends: runs inside the sandbox via env.execute().
             from tools.process_registry import process_registry
 
-            session_key = os.getenv("HERMES_SESSION_KEY", "")
+            session_key = os.getenv("ARACHNE_SESSION_KEY", "")
             effective_cwd = workdir or cwd
             try:
                 if env_type == "local":
@@ -979,8 +979,8 @@ def terminal_tool(
                         "session_id": proc_session.id,
                         "check_interval": effective_interval,
                         "session_key": session_key,
-                        "platform": os.getenv("HERMES_SESSION_PLATFORM", ""),
-                        "chat_id": os.getenv("HERMES_SESSION_CHAT_ID", ""),
+                        "platform": os.getenv("ARACHNE_SESSION_PLATFORM", ""),
+                        "chat_id": os.getenv("ARACHNE_SESSION_CHAT_ID", ""),
                     })
 
                 return json.dumps(result_data, ensure_ascii=False)
@@ -1149,7 +1149,7 @@ if __name__ == "__main__":
     print(f"  TERMINAL_MODAL_IMAGE: {os.getenv('TERMINAL_MODAL_IMAGE', default_img)}")
     print(f"  TERMINAL_DAYTONA_IMAGE: {os.getenv('TERMINAL_DAYTONA_IMAGE', default_img)}")
     print(f"  TERMINAL_CWD: {os.getenv('TERMINAL_CWD', os.getcwd())}")
-    print(f"  TERMINAL_SANDBOX_DIR: {os.getenv('TERMINAL_SANDBOX_DIR', '~/.hermes/sandboxes')}")
+    print(f"  TERMINAL_SANDBOX_DIR: {os.getenv('TERMINAL_SANDBOX_DIR', '~/.arachne/sandboxes')}")
     print(f"  TERMINAL_TIMEOUT: {os.getenv('TERMINAL_TIMEOUT', '60')}")
     print(f"  TERMINAL_LIFETIME_SECONDS: {os.getenv('TERMINAL_LIFETIME_SECONDS', '300')}")
 

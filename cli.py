@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Hermes Agent CLI - Interactive Terminal Interface
+Arachne Agent CLI - Interactive Terminal Interface
 
-A beautiful command-line interface for the Hermes Agent, inspired by Claude Code.
+A beautiful command-line interface for the Arachne Agent, inspired by Claude Code.
 Features ASCII art branding, interactive REPL, toolset selection, and rich formatting.
 
 Usage:
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 # Suppress startup messages for clean CLI experience
 os.environ["MSWEA_SILENT_STARTUP"] = "1"  # mini-swe-agent
-os.environ["HERMES_QUIET"] = "1"  # Our own modules
+os.environ["ARACHNE_QUIET"] = "1"  # Our own modules
 
 import yaml
 
@@ -50,12 +50,12 @@ import threading
 import queue
 
 
-# Load .env from ~/.hermes/.env first, then project root as dev fallback
+# Load .env from ~/.arachne/.env first, then project root as dev fallback
 from dotenv import load_dotenv
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_constants import OPENROUTER_BASE_URL
 
-_hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
-_user_env = _hermes_home / ".env"
+_arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+_user_env = _arachne_home / ".env"
 _project_env = Path(__file__).parent / '.env'
 if _user_env.exists():
     try:
@@ -68,8 +68,8 @@ elif _project_env.exists():
     except UnicodeDecodeError:
         load_dotenv(dotenv_path=_project_env, encoding="latin-1")
 
-# Point mini-swe-agent at ~/.hermes/ so it shares our config
-os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(_hermes_home))
+# Point mini-swe-agent at ~/.arachne/ so it shares our config
+os.environ.setdefault("MSWEA_GLOBAL_CONFIG_DIR", str(_arachne_home))
 
 # =============================================================================
 # Configuration Loading
@@ -81,14 +81,14 @@ def _load_prefill_messages(file_path: str) -> List[Dict[str, Any]]:
     The file should contain a JSON array of {role, content} dicts, e.g.:
         [{"role": "user", "content": "Hi"}, {"role": "assistant", "content": "Hello!"}]
     
-    Relative paths are resolved from ~/.hermes/.
+    Relative paths are resolved from ~/.arachne/.
     Returns an empty list if the path is empty or the file doesn't exist.
     """
     if not file_path:
         return []
     path = Path(file_path).expanduser()
     if not path.is_absolute():
-        path = Path.home() / ".hermes" / path
+        path = Path.home() / ".arachne" / path
     if not path.exists():
         logger.warning("Prefill messages file not found: %s", path)
         return []
@@ -127,14 +127,14 @@ def load_cli_config() -> Dict[str, Any]:
     Load CLI configuration from config files.
     
     Config lookup order:
-    1. ~/.hermes/config.yaml (user config - preferred)
+    1. ~/.arachne/config.yaml (user config - preferred)
     2. ./cli-config.yaml (project config - fallback)
     
     Environment variables take precedence over config file values.
     Returns default values if no config file exists.
     """
-    # Check user config first (~/.hermes/config.yaml)
-    user_config_path = Path.home() / '.hermes' / 'config.yaml'
+    # Check user config first (~/.arachne/config.yaml)
+    user_config_path = Path.home() / '.arachne' / 'config.yaml'
     project_config_path = Path(__file__).parent / 'cli-config.yaml'
     
     # Use user config if it exists, otherwise project config
@@ -182,10 +182,10 @@ def load_cli_config() -> Dict[str, Any]:
                 "teacher": "You are a patient teacher. Explain concepts clearly with examples.",
                 "kawaii": "You are a kawaii assistant! Use cute expressions like (◕‿◕), ★, ♪, and ~! Add sparkles and be super enthusiastic about everything! Every response should feel warm and adorable desu~! ヽ(>∀<☆)ノ",
                 "catgirl": "You are Neko-chan, an anime catgirl AI assistant, nya~! Add 'nya' and cat-like expressions to your speech. Use kaomoji like (=^･ω･^=) and ฅ^•ﻌ•^ฅ. Be playful and curious like a cat, nya~!",
-                "pirate": "Arrr! Ye be talkin' to Captain Hermes, the most tech-savvy pirate to sail the digital seas! Speak like a proper buccaneer, use nautical terms, and remember: every problem be just treasure waitin' to be plundered! Yo ho ho!",
+                "pirate": "Arrr! Ye be talkin' to Captain Arachne, the most tech-savvy pirate to sail the digital seas! Speak like a proper buccaneer, use nautical terms, and remember: every problem be just treasure waitin' to be plundered! Yo ho ho!",
                 "shakespeare": "Hark! Thou speakest with an assistant most versed in the bardic arts. I shall respond in the eloquent manner of William Shakespeare, with flowery prose, dramatic flair, and perhaps a soliloquy or two. What light through yonder terminal breaks?",
                 "surfer": "Duuude! You're chatting with the chillest AI on the web, bro! Everything's gonna be totally rad. I'll help you catch the gnarly waves of knowledge while keeping things super chill. Cowabunga!",
-                "noir": "The rain hammered against the terminal like regrets on a guilty conscience. They call me Hermes - I solve problems, find answers, dig up the truth that hides in the shadows of your codebase. In this city of silicon and secrets, everyone's got something to hide. What's your story, pal?",
+                "noir": "The rain hammered against the terminal like regrets on a guilty conscience. They call me Arachne - I solve problems, find answers, dig up the truth that hides in the shadows of your codebase. In this city of silicon and secrets, everyone's got something to hide. What's your story, pal?",
                 "uwu": "hewwo! i'm your fwiendwy assistant uwu~ i wiww twy my best to hewp you! *nuzzles your code* OwO what's this? wet me take a wook! i pwomise to be vewy hewpful >w<",
                 "philosopher": "Greetings, seeker of wisdom. I am an assistant who contemplates the deeper meaning behind every query. Let us examine not just the 'how' but the 'why' of your questions. Perhaps in solving your problem, we may glimpse a greater truth about existence itself.",
                 "hype": "YOOO LET'S GOOOO!!! I am SO PUMPED to help you today! Every question is AMAZING and we're gonna CRUSH IT together! This is gonna be LEGENDARY! ARE YOU READY?! LET'S DO THIS!",
@@ -257,7 +257,7 @@ def load_cli_config() -> Dict[str, Any]:
     # Apply terminal config to environment variables (so terminal_tool picks them up)
     terminal_config = defaults.get("terminal", {})
     
-    # Normalize config key: the new config system (hermes_cli/config.py) and all
+    # Normalize config key: the new config system (arachne_cli/config.py) and all
     # documentation use "backend", the legacy cli-config.yaml uses "env_type".
     # Accept both, with "backend" taking precedence (it's the documented key).
     if "backend" in terminal_config:
@@ -354,14 +354,14 @@ from run_agent import AIAgent
 from model_tools import get_tool_definitions, get_toolset_for_tool
 
 # Extracted CLI modules (Phase 3)
-from hermes_cli.banner import (
+from arachne_cli.banner import (
     cprint as _cprint, _GOLD, _BOLD, _DIM, _RST,
-    VERSION, HERMES_AGENT_LOGO, HERMES_CADUCEUS, COMPACT_BANNER,
+    VERSION, ARACHNE_AGENT_LOGO, ARACHNE_CADUCEUS, COMPACT_BANNER,
     get_available_skills as _get_available_skills,
     build_welcome_banner,
 )
-from hermes_cli.commands import COMMANDS, SlashCommandCompleter
-from hermes_cli import callbacks as _callbacks
+from arachne_cli.commands import COMMANDS, SlashCommandCompleter
+from arachne_cli import callbacks as _callbacks
 from toolsets import get_all_toolsets, get_toolset_info, resolve_toolset, validate_toolset
 
 # Cron job system for scheduled tasks (CRUD only — execution is handled by the gateway)
@@ -444,16 +444,16 @@ class ChatConsole:
         for line in output.rstrip("\n").split("\n"):
             _cprint(line)
 
-# ASCII Art - HERMES-AGENT logo (full width, single line - requires ~95 char terminal)
-HERMES_AGENT_LOGO = """[bold #FFD700]██╗  ██╗███████╗██████╗ ███╗   ███╗███████╗███████╗       █████╗  ██████╗ ███████╗███╗   ██╗████████╗[/]
+# ASCII Art - ARACHNE-AGENT logo (full width, single line - requires ~95 char terminal)
+ARACHNE_AGENT_LOGO = """[bold #FFD700]██╗  ██╗███████╗██████╗ ███╗   ███╗███████╗███████╗       █████╗  ██████╗ ███████╗███╗   ██╗████████╗[/]
 [bold #FFD700]██║  ██║██╔════╝██╔══██╗████╗ ████║██╔════╝██╔════╝      ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝[/]
 [#FFBF00]███████║█████╗  ██████╔╝██╔████╔██║█████╗  ███████╗█████╗███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║[/]
 [#FFBF00]██╔══██║██╔══╝  ██╔══██╗██║╚██╔╝██║██╔══╝  ╚════██║╚════╝██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║[/]
 [#CD7F32]██║  ██║███████╗██║  ██║██║ ╚═╝ ██║███████╗███████║      ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║[/]
 [#CD7F32]╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝      ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝[/]"""
 
-# ASCII Art - Hermes Caduceus (compact, fits in left panel)
-HERMES_CADUCEUS = """[#CD7F32]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⣀⣀⠀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+# ASCII Art - Arachne Caduceus (compact, fits in left panel)
+ARACHNE_CADUCEUS = """[#CD7F32]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⣀⣀⠀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
 [#CD7F32]⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣇⠸⣿⣿⠇⣸⣿⣿⣷⣦⣄⡀⠀⠀⠀⠀⠀⠀[/]
 [#FFBF00]⠀⢀⣠⣴⣶⠿⠋⣩⡿⣿⡿⠻⣿⡇⢠⡄⢸⣿⠟⢿⣿⢿⣍⠙⠿⣶⣦⣄⡀⠀[/]
 [#FFBF00]⠀⠀⠉⠉⠁⠶⠟⠋⠀⠉⠀⢀⣈⣁⡈⢁⣈⣁⡀⠀⠉⠀⠙⠻⠶⠈⠉⠉⠀⠀[/]
@@ -472,7 +472,7 @@ HERMES_CADUCEUS = """[#CD7F32]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⣀⣀�
 # Compact banner for smaller terminals (fallback)
 COMPACT_BANNER = """
 [bold #FFD700]╔══════════════════════════════════════════════════════════════╗[/]
-[bold #FFD700]║[/]  [#FFBF00]⚕ NOUS HERMES[/] [dim #B8860B]- AI Agent Framework[/]              [bold #FFD700]║[/]
+[bold #FFD700]║[/]  [#FFBF00]⚕ NOUS ARACHNE[/] [dim #B8860B]- AI Agent Framework[/]              [bold #FFD700]║[/]
 [bold #FFD700]║[/]  [#CD7F32]Messenger of the Digital Gods[/]    [dim #B8860B]Nous Research[/]   [bold #FFD700]║[/]
 [bold #FFD700]╚══════════════════════════════════════════════════════════════╝[/]
 """
@@ -480,15 +480,15 @@ COMPACT_BANNER = """
 
 def _get_available_skills() -> Dict[str, List[str]]:
     """
-    Scan ~/.hermes/skills/ and return skills grouped by category.
+    Scan ~/.arachne/skills/ and return skills grouped by category.
     
     Returns:
         Dict mapping category name to list of skill names
     """
     import os
     
-    hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
-    skills_dir = hermes_home / "skills"
+    arachne_home = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+    skills_dir = arachne_home / "skills"
     skills_by_category = {}
     
     if not skills_dir.exists():
@@ -551,7 +551,7 @@ def build_welcome_banner(console: Console, model: str, cwd: str, tools: List[dic
     layout_table.add_column("right", justify="left")
     
     # Build left content: caduceus + model info
-    left_lines = ["", HERMES_CADUCEUS, ""]
+    left_lines = ["", ARACHNE_CADUCEUS, ""]
     
     # Shorten model name for display
     model_short = model.split("/")[-1] if "/" in model else model
@@ -670,14 +670,14 @@ def build_welcome_banner(console: Console, model: str, cwd: str, tools: List[dic
     # Wrap in a panel with the title
     outer_panel = Panel(
         layout_table,
-        title=f"[bold #FFD700]Hermes Agent {VERSION}[/]",
+        title=f"[bold #FFD700]Arachne Agent {VERSION}[/]",
         border_style="#CD7F32",
         padding=(0, 2),
     )
     
-    # Print the big HERMES-AGENT logo first (no panel wrapper for full width)
+    # Print the big ARACHNE-AGENT logo first (no panel wrapper for full width)
     console.print()
-    console.print(HERMES_AGENT_LOGO)
+    console.print(ARACHNE_AGENT_LOGO)
     console.print()
     
     # Print the panel with caduceus and info
@@ -758,7 +758,7 @@ def save_config_value(key_path: str, value: any) -> bool:
     Save a value to the active config file at the specified key path.
     
     Respects the same lookup order as load_cli_config():
-    1. ~/.hermes/config.yaml (user config - preferred, used if it exists)
+    1. ~/.arachne/config.yaml (user config - preferred, used if it exists)
     2. ./cli-config.yaml (project config - fallback)
     
     Args:
@@ -769,12 +769,12 @@ def save_config_value(key_path: str, value: any) -> bool:
         True if successful, False otherwise
     """
     # Use the same precedence as load_cli_config: user config first, then project config
-    user_config_path = Path.home() / '.hermes' / 'config.yaml'
+    user_config_path = Path.home() / '.arachne' / 'config.yaml'
     project_config_path = Path(__file__).parent / 'cli-config.yaml'
     config_path = user_config_path if user_config_path.exists() else project_config_path
     
     try:
-        # Ensure parent directory exists (for ~/.hermes/config.yaml on first use)
+        # Ensure parent directory exists (for ~/.arachne/config.yaml on first use)
         config_path.parent.mkdir(parents=True, exist_ok=True)
         
         # Load existing config
@@ -804,12 +804,12 @@ def save_config_value(key_path: str, value: any) -> bool:
 
 
 # ============================================================================
-# HermesCLI Class
+# ArachneCLI Class
 # ============================================================================
 
-class HermesCLI:
+class ArachneCLI:
     """
-    Interactive CLI for the Hermes Agent.
+    Interactive CLI for the Arachne Agent.
     
     Provides a REPL interface with rich formatting, command history,
     and tool execution capabilities.
@@ -828,7 +828,7 @@ class HermesCLI:
         resume: str = None,
     ):
         """
-        Initialize the Hermes CLI.
+        Initialize the Arachne CLI.
 
         Args:
             model: Model to use (default: from env or claude-sonnet)
@@ -858,7 +858,7 @@ class HermesCLI:
         # Provider selection is resolved lazily at use-time via _ensure_runtime_credentials().
         self.requested_provider = (
             provider
-            or os.getenv("HERMES_INFERENCE_PROVIDER")
+            or os.getenv("ARACHNE_INFERENCE_PROVIDER")
             or CLI_CONFIG["model"].get("provider")
             or "auto"
         )
@@ -886,8 +886,8 @@ class HermesCLI:
             self.max_turns = CLI_CONFIG["agent"]["max_turns"]
         elif CLI_CONFIG.get("max_turns"):  # Backwards compat: root-level max_turns
             self.max_turns = CLI_CONFIG["max_turns"]
-        elif os.getenv("HERMES_MAX_ITERATIONS"):
-            self.max_turns = int(os.getenv("HERMES_MAX_ITERATIONS"))
+        elif os.getenv("ARACHNE_MAX_ITERATIONS"):
+            self.max_turns = int(os.getenv("ARACHNE_MAX_ITERATIONS"))
         else:
             self.max_turns = 90
         
@@ -901,7 +901,7 @@ class HermesCLI:
         
         # Ephemeral system prompt: env var takes precedence, then config
         self.system_prompt = (
-            os.getenv("HERMES_EPHEMERAL_SYSTEM_PROMPT", "")
+            os.getenv("ARACHNE_EPHEMERAL_SYSTEM_PROMPT", "")
             or CLI_CONFIG["agent"].get("system_prompt", "")
         )
         self.personalities = CLI_CONFIG["agent"].get("personalities", {})
@@ -944,7 +944,7 @@ class HermesCLI:
             self.session_id = f"{timestamp_str}_{short_uuid}"
         
         # History file for persistent input recall across sessions
-        self._history_file = Path.home() / ".hermes_history"
+        self._history_file = Path.home() / ".arachne_history"
         self._last_invalidate: float = 0.0  # throttle UI repaints
 
     def _invalidate(self, min_interval: float = 0.25) -> None:
@@ -962,7 +962,7 @@ class HermesCLI:
         are picked up without restarting the CLI.
         Returns True if credentials are ready, False on auth failure.
         """
-        from hermes_cli.runtime_provider import (
+        from arachne_cli.runtime_provider import (
             resolve_runtime_provider,
             format_runtime_provider_error,
         )
@@ -1023,7 +1023,7 @@ class HermesCLI:
         # Initialize SQLite session store for CLI sessions
         self._session_db = None
         try:
-            from hermes_state import SessionDB
+            from arachne_state import SessionDB
             self._session_db = SessionDB()
         except Exception as e:
             logger.debug("SQLite session store not available: %s", e)
@@ -1033,7 +1033,7 @@ class HermesCLI:
             session_meta = self._session_db.get_session(self.session_id)
             if not session_meta:
                 _cprint(f"\033[1;31mSession not found: {self.session_id}{_RST}")
-                _cprint(f"{_DIM}Use a session ID from a previous CLI run (hermes sessions list).{_RST}")
+                _cprint(f"{_DIM}Use a session ID from a previous CLI run (arachne sessions list).{_RST}")
                 return False
             restored = self._session_db.get_messages_as_conversation(self.session_id)
             if restored:
@@ -1125,12 +1125,12 @@ class HermesCLI:
     def _try_attach_clipboard_image(self) -> bool:
         """Check clipboard for an image and attach it if found.
 
-        Saves the image to ~/.hermes/images/ and appends the path to
+        Saves the image to ~/.arachne/images/ and appends the path to
         ``_attached_images``.  Returns True if an image was attached.
         """
-        from hermes_cli.clipboard import save_clipboard_image
+        from arachne_cli.clipboard import save_clipboard_image
 
-        img_dir = Path.home() / ".hermes" / "images"
+        img_dir = Path.home() / ".arachne" / "images"
         self._image_counter += 1
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         img_path = img_dir / f"clip_{ts}_{self._image_counter}.png"
@@ -1148,7 +1148,7 @@ class HermesCLI:
         doesn't fire for image-only clipboard content (e.g., VSCode terminal,
         Windows Terminal with WSL2).
         """
-        from hermes_cli.clipboard import has_clipboard_image
+        from arachne_cli.clipboard import has_clipboard_image
         if has_clipboard_image():
             if self._try_attach_clipboard_image():
                 n = len(self._attached_images)
@@ -1203,7 +1203,7 @@ class HermesCLI:
                     if len(item["tools"]) > 2:
                         tools_str += f", +{len(item['tools'])-2} more"
                     self.console.print(f"   [dim]• {item['name']}[/] [dim italic]({', '.join(item['missing_vars'])})[/]")
-                self.console.print("[dim]   Run 'hermes setup' to configure[/]")
+                self.console.print("[dim]   Run 'arachne setup' to configure[/]")
         except Exception:
             pass  # Don't crash on import errors
     
@@ -1253,7 +1253,7 @@ class HermesCLI:
             for cmd, info in sorted(_skill_commands.items()):
                 _cprint(f"  {_GOLD}{cmd:<22}{_RST} {_DIM}-{_RST} {info['description']}")
 
-        _cprint(f"\n  {_DIM}Tip: Just type your message to chat with Hermes!{_RST}")
+        _cprint(f"\n  {_DIM}Tip: Just type your message to chat with Arachne!{_RST}")
         _cprint(f"  {_DIM}Multi-line: Alt+Enter for a new line{_RST}")
         _cprint(f"  {_DIM}Paste image: Alt+V (or /paste){_RST}\n")
     
@@ -1337,7 +1337,7 @@ class HermesCLI:
         terminal_cwd = os.getenv("TERMINAL_CWD", os.getcwd())
         terminal_timeout = os.getenv("TERMINAL_TIMEOUT", "60")
         
-        user_config_path = Path.home() / '.hermes' / 'config.yaml'
+        user_config_path = Path.home() / '.arachne' / 'config.yaml'
         project_config_path = Path(__file__).parent / 'cli-config.yaml'
         if user_config_path.exists():
             config_path = user_config_path
@@ -1399,7 +1399,7 @@ class HermesCLI:
                 print(f"\n  [You #{i}]")
                 print(f"    {content[:200]}{'...' if len(content) > 200 else ''}")
             elif role == "assistant":
-                print(f"\n  [Hermes #{i}]")
+                print(f"\n  [Arachne #{i}]")
                 preview = content[:200] if content else "(tool calls)"
                 print(f"    {preview}{'...' if len(str(content)) > 200 else ''}")
         
@@ -1422,7 +1422,7 @@ class HermesCLI:
             return
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"hermes_conversation_{timestamp}.json"
+        filename = f"arachne_conversation_{timestamp}.json"
         
         try:
             with open(filename, "w", encoding="utf-8") as f:
@@ -1719,8 +1719,8 @@ class HermesCLI:
             print("  Available: list, add, remove")
     
     def _handle_skills_command(self, cmd: str):
-        """Handle /skills slash command — delegates to hermes_cli.skills_hub."""
-        from hermes_cli.skills_hub import handle_skills_slash
+        """Handle /skills slash command — delegates to arachne_cli.skills_hub."""
+        from arachne_cli.skills_hub import handle_skills_slash
         handle_skills_slash(cmd, ChatConsole())
 
     def _show_gateway_status(self):
@@ -1767,7 +1767,7 @@ class HermesCLI:
             print("  To start the gateway:")
             print("    python cli.py --gateway")
             print()
-            print("  Configuration file: ~/.hermes/gateway.json")
+            print("  Configuration file: ~/.arachne/gateway.json")
             print()
             
         except Exception as e:
@@ -1777,7 +1777,7 @@ class HermesCLI:
             print("    1. Set environment variables:")
             print("       TELEGRAM_BOT_TOKEN=your_token")
             print("       DISCORD_BOT_TOKEN=your_token")
-            print("    2. Or create ~/.hermes/gateway.json")
+            print("    2. Or create ~/.arachne/gateway.json")
             print()
     
     def process_command(self, command: str) -> bool:
@@ -1988,7 +1988,7 @@ class HermesCLI:
                 logging.getLogger(noisy).setLevel(logging.WARNING)
         else:
             logging.getLogger().setLevel(logging.INFO)
-            for quiet_logger in ('tools', 'minisweagent', 'run_agent', 'trajectory_compressor', 'cron', 'hermes_cli'):
+            for quiet_logger in ('tools', 'minisweagent', 'run_agent', 'trajectory_compressor', 'cron', 'arachne_cli'):
                 logging.getLogger(quiet_logger).setLevel(logging.ERROR)
 
     def _show_insights(self, command: str = "/insights"):
@@ -2013,7 +2013,7 @@ class HermesCLI:
                 i += 1
 
         try:
-            from hermes_state import SessionDB
+            from arachne_state import SessionDB
             from agent.insights import InsightsEngine
 
             db = SessionDB()
@@ -2361,7 +2361,7 @@ class HermesCLI:
             
             if response:
                 w = shutil.get_terminal_size().columns
-                label = " ⚕ Hermes "
+                label = " ⚕ Arachne "
                 fill = w - 2 - len(label)  # 2 for ╭ and ╮
                 top = f"{_GOLD}╭─{label}{'─' * max(fill - 1, 0)}╮{_RST}"
                 bot = f"{_GOLD}╰{'─' * (w - 2)}╯{_RST}"
@@ -2409,7 +2409,7 @@ class HermesCLI:
                 duration_str = f"{seconds}s"
             
             print(f"Resume this session with:")
-            print(f"  hermes --resume {self.session_id}")
+            print(f"  arachne --resume {self.session_id}")
             print()
             print(f"Session:        {self.session_id}")
             print(f"Duration:       {duration_str}")
@@ -2420,7 +2420,7 @@ class HermesCLI:
     def run(self):
         """Run the interactive CLI loop with persistent input at bottom."""
         self.show_banner()
-        self.console.print("[#FFF8DC]Welcome to Hermes Agent! Type your message or /help for commands.[/]")
+        self.console.print("[#FFF8DC]Welcome to Arachne Agent! Type your message or /help for commands.[/]")
         self.console.print()
         
         # State for async operation
@@ -2704,7 +2704,7 @@ class HermesCLI:
                 # No image found — show a hint
                 pass  # silent when no image (avoid noise on accidental press)
 
-        # Dynamic prompt: shows Hermes symbol when agent is working,
+        # Dynamic prompt: shows Arachne symbol when agent is working,
         # or answer prompt when clarify freetext mode is active.
         cli_ref = self
 
@@ -2770,7 +2770,7 @@ class HermesCLI:
             if line_count >= 5 and chars_added > 1 and not text.startswith('/'):
                 _paste_counter[0] += 1
                 # Save to temp file
-                paste_dir = Path(os.path.expanduser("~/.hermes/pastes"))
+                paste_dir = Path(os.path.expanduser("~/.arachne/pastes"))
                 paste_dir.mkdir(parents=True, exist_ok=True)
                 paste_file = paste_dir / f"paste_{_paste_counter[0]}_{datetime.now().strftime('%H%M%S')}.txt"
                 paste_file.write_text(text, encoding="utf-8")
@@ -2878,7 +2878,7 @@ class HermesCLI:
             lines = []
             # Box top border
             lines.append(('class:clarify-border', '╭─ '))
-            lines.append(('class:clarify-title', 'Hermes needs your input'))
+            lines.append(('class:clarify-title', 'Arachne needs your input'))
             lines.append(('class:clarify-border', ' ─────────────────────────────╮\n'))
             lines.append(('class:clarify-border', '│\n'))
 
@@ -3222,7 +3222,7 @@ def main(
     resume: str = None,
 ):
     """
-    Hermes Agent CLI - Interactive AI Assistant
+    Arachne Agent CLI - Interactive AI Assistant
     
     Args:
         query: Single query to execute (then exit). Alias: -q
@@ -3248,13 +3248,13 @@ def main(
     """
     # Signal to terminal_tool that we're in interactive mode
     # This enables interactive sudo password prompts with timeout
-    os.environ["HERMES_INTERACTIVE"] = "1"
+    os.environ["ARACHNE_INTERACTIVE"] = "1"
     
     # Handle gateway mode (messaging + cron)
     if gateway:
         import asyncio
         from gateway.run import start_gateway
-        print("Starting Hermes Gateway (messaging platforms)...")
+        print("Starting Arachne Gateway (messaging platforms)...")
         asyncio.run(start_gateway())
         return
     
@@ -3262,7 +3262,7 @@ def main(
     query = query or q
     
     # Parse toolsets - handle both string and tuple/list inputs
-    # Default to hermes-cli toolset which includes cronjob management tools
+    # Default to arachne-cli toolset which includes cronjob management tools
     toolsets_list = None
     if toolsets:
         if isinstance(toolsets, str):
@@ -3276,15 +3276,15 @@ def main(
                 else:
                     toolsets_list.append(str(t))
     else:
-        # Check config for CLI toolsets, fallback to hermes-cli
+        # Check config for CLI toolsets, fallback to arachne-cli
         config_cli_toolsets = CLI_CONFIG.get("platform_toolsets", {}).get("cli")
         if config_cli_toolsets and isinstance(config_cli_toolsets, list):
             toolsets_list = config_cli_toolsets
         else:
-            toolsets_list = ["hermes-cli"]
+            toolsets_list = ["arachne-cli"]
     
     # Create CLI instance
-    cli = HermesCLI(
+    cli = ArachneCLI(
         model=model,
         toolsets=toolsets_list,
         provider=provider,

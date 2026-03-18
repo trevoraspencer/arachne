@@ -51,7 +51,7 @@ logger = logging.getLogger(__name__)
 
 
 # Checkpoint file for crash recovery (gateway only)
-CHECKPOINT_PATH = Path(os.path.expanduser("~/.hermes/processes.json"))
+CHECKPOINT_PATH = Path(os.path.expanduser("~/.arachne/processes.json"))
 
 # Limits
 MAX_OUTPUT_CHARS = 200_000      # 200KB rolling output buffer
@@ -257,8 +257,8 @@ class ProcessRegistry:
         )
 
         # Run the command in the sandbox with output capture
-        log_path = f"/tmp/hermes_bg_{session.id}.log"
-        pid_path = f"/tmp/hermes_bg_{session.id}.pid"
+        log_path = f"/tmp/arachne_bg_{session.id}.log"
+        pid_path = f"/tmp/arachne_bg_{session.id}.pid"
         quoted_command = shlex.quote(command)
         bg_command = (
             f"nohup bash -c {quoted_command} > {log_path} 2>&1 & "

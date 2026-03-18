@@ -574,7 +574,7 @@ def _create_browserbase_session(task_id: str) -> Dict[str, str]:
         raise RuntimeError(f"Failed to create Browserbase session: {response.status_code} {response.text}")
     
     session_data = response.json()
-    session_name = f"hermes_{task_id}_{uuid.uuid4().hex[:8]}"
+    session_name = f"arachne_{task_id}_{uuid.uuid4().hex[:8]}"
     
     # Update features based on what actually succeeded
     if enable_proxies and not proxies_fallback:
@@ -605,7 +605,7 @@ def _create_local_session(task_id: str) -> Dict[str, str]:
     of the code can treat both modes uniformly.
     """
     import uuid
-    session_name = f"hermes_{task_id}_{uuid.uuid4().hex[:8]}"
+    session_name = f"arachne_{task_id}_{uuid.uuid4().hex[:8]}"
     logger.info("Created local browser session %s", session_name)
     return {
         "session_name": session_name,

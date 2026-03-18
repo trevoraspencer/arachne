@@ -5,7 +5,7 @@ version: 1.1.0
 author: gamedevCloudy
 license: MIT
 metadata:
-  hermes:
+  arachne:
     tags: [search, duckduckgo, web-search, free, fallback]
     related_skills: [arxiv]
 ---
@@ -50,7 +50,7 @@ ddgs text -k "fastapi tutorial" -m 5 -o json
 ### Via Python (in execute_code)
 
 ```python
-from hermes_tools import terminal
+from arachne_tools import terminal
 
 # Search and get results
 result = terminal("ddgs text -k 'python web framework comparison' -m 5")

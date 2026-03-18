@@ -6,7 +6,7 @@ the best available backend without duplicating fallback logic.
 
 Resolution order for text tasks:
   1. OpenRouter  (OPENROUTER_API_KEY)
-  2. Nous Portal (~/.hermes/auth.json active provider)
+  2. Nous Portal (~/.arachne/auth.json active provider)
   3. Custom endpoint (OPENAI_BASE_URL + OPENAI_API_KEY)
   4. Codex OAuth (Responses API via chatgpt.com with gpt-5.3-codex,
      wrapped to look like a chat.completions client)
@@ -29,7 +29,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from openai import OpenAI
 
-from hermes_constants import OPENROUTER_BASE_URL
+from arachne_constants import OPENROUTER_BASE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -44,14 +44,14 @@ _API_KEY_PROVIDER_AUX_MODELS: Dict[str, str] = {
 # OpenRouter app attribution headers
 _OR_HEADERS = {
     "HTTP-Referer": "https://github.com/NousResearch/hermes-agent",
-    "X-OpenRouter-Title": "Hermes Agent",
+    "X-OpenRouter-Title": "Arachne Agent",
     "X-OpenRouter-Categories": "productivity,cli-agent",
 }
 
 # Nous Portal extra_body for product attribution.
 # Callers should pass this as extra_body in chat.completions.create()
 # when the auxiliary client is backed by Nous Portal.
-NOUS_EXTRA_BODY = {"tags": ["product=hermes-agent"]}
+NOUS_EXTRA_BODY = {"tags": ["product=arachne"]}
 
 # Set at resolve time — True if the auxiliary client points to Nous Portal
 auxiliary_is_nous: bool = False
@@ -60,7 +60,7 @@ auxiliary_is_nous: bool = False
 _OPENROUTER_MODEL = "google/gemini-3-flash-preview"
 _NOUS_MODEL = "gemini-3-flash"
 _NOUS_DEFAULT_BASE_URL = "https://inference-api.nousresearch.com/v1"
-_AUTH_JSON_PATH = Path.home() / ".hermes" / "auth.json"
+_AUTH_JSON_PATH = Path.home() / ".arachne" / "auth.json"
 
 # Codex fallback: uses the Responses API (the only endpoint the Codex
 # OAuth token can access) with a fast model for auxiliary tasks.
@@ -246,7 +246,7 @@ class AsyncCodexAuxiliaryClient:
 
 
 def _read_nous_auth() -> Optional[dict]:
-    """Read and validate ~/.hermes/auth.json for an active Nous provider.
+    """Read and validate ~/.arachne/auth.json for an active Nous provider.
 
     Returns the provider state dict if Nous is active with tokens,
     otherwise None.
@@ -278,9 +278,9 @@ def _nous_base_url() -> str:
 
 
 def _read_codex_access_token() -> Optional[str]:
-    """Read a valid Codex OAuth access token from Hermes auth store (~/.hermes/auth.json)."""
+    """Read a valid Codex OAuth access token from Arachne auth store (~/.arachne/auth.json)."""
     try:
-        from hermes_cli.auth import _read_codex_tokens
+        from arachne_cli.auth import _read_codex_tokens
         data = _read_codex_tokens()
         tokens = data.get("tokens", {})
         access_token = tokens.get("access_token")
@@ -299,7 +299,7 @@ def _resolve_api_key_provider() -> Tuple[Optional[OpenAI], Optional[str]]:
     or (None, None) if none are configured.
     """
     try:
-        from hermes_cli.auth import PROVIDER_REGISTRY
+        from arachne_cli.auth import PROVIDER_REGISTRY
     except ImportError:
         logger.debug("Could not import PROVIDER_REGISTRY for API-key fallback")
         return None, None

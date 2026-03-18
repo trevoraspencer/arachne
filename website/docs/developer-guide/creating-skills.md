@@ -1,12 +1,12 @@
 ---
 sidebar_position: 3
 title: "Creating Skills"
-description: "How to create skills for Hermes Agent — SKILL.md format, guidelines, and publishing"
+description: "How to create skills for Arachne Agent — SKILL.md format, guidelines, and publishing"
 ---
 
 # Creating Skills
 
-Skills are the preferred way to add new capabilities to Hermes Agent. They're easier to create than tools, require no code changes to the agent, and can be shared with the community.
+Skills are the preferred way to add new capabilities to Arachne Agent. They're easier to create than tools, require no code changes to the agent, and can be shared with the community.
 
 ## Should it be a Skill or a Tool?
 
@@ -54,7 +54,7 @@ platforms: [macos, linux]          # Optional — restrict to specific OS platfo
                                    #   Valid: macos, linux, windows
                                    #   Omit to load on all platforms (default)
 metadata:
-  hermes:
+  arachne:
     tags: [Category, Subcategory, Keywords]
     related_skills: [other-skill-name]
 ---
@@ -97,7 +97,7 @@ See `skills/apple/` for examples of macOS-only skills.
 
 ### No External Dependencies
 
-Prefer stdlib Python, curl, and existing Hermes tools (`web_extract`, `terminal`, `read_file`). If a dependency is needed, document installation steps in the skill.
+Prefer stdlib Python, curl, and existing Arachne tools (`web_extract`, `terminal`, `read_file`). If a dependency is needed, document installation steps in the skill.
 
 ### Progressive Disclosure
 
@@ -112,26 +112,26 @@ For XML/JSON parsing or complex logic, include helper scripts in `scripts/` — 
 Run the skill and verify the agent follows the instructions correctly:
 
 ```bash
-hermes chat --toolsets skills -q "Use the X skill to do Y"
+arachne chat --toolsets skills -q "Use the X skill to do Y"
 ```
 
 ## Where Should the Skill Live?
 
-Bundled skills (in `skills/`) ship with every Hermes install. They should be **broadly useful to most users**:
+Bundled skills (in `skills/`) ship with every Arachne install. They should be **broadly useful to most users**:
 
 - Document handling, web research, common dev workflows, system administration
 - Used regularly by a wide range of people
 
-If your skill is official and useful but not universally needed (e.g., a paid service integration, a heavyweight dependency), put it in **`optional-skills/`** — it ships with the repo, is discoverable via `hermes skills browse` (labeled "official"), and installs with builtin trust.
+If your skill is official and useful but not universally needed (e.g., a paid service integration, a heavyweight dependency), put it in **`optional-skills/`** — it ships with the repo, is discoverable via `arachne skills browse` (labeled "official"), and installs with builtin trust.
 
-If your skill is specialized, community-contributed, or niche, it's better suited for a **Skills Hub** — upload it to a registry and share it via `hermes skills install`.
+If your skill is specialized, community-contributed, or niche, it's better suited for a **Skills Hub** — upload it to a registry and share it via `arachne skills install`.
 
 ## Publishing Skills
 
 ### To the Skills Hub
 
 ```bash
-hermes skills publish skills/my-skill --to github --repo owner/repo
+arachne skills publish skills/my-skill --to github --repo owner/repo
 ```
 
 ### To a Custom Repository
@@ -139,7 +139,7 @@ hermes skills publish skills/my-skill --to github --repo owner/repo
 Add your repo as a tap:
 
 ```bash
-hermes skills tap add owner/repo
+arachne skills tap add owner/repo
 ```
 
 Users can then search and install from your repository.
@@ -154,7 +154,7 @@ All hub-installed skills go through a security scanner that checks for:
 - Shell injection
 
 Trust levels:
-- `builtin` — ships with Hermes (always trusted)
+- `builtin` — ships with Arachne (always trusted)
 - `official` — from `optional-skills/` in the repo (builtin trust, no third-party warning)
 - `trusted` — from openai/skills, anthropics/skills
 - `community` — any findings = blocked unless `--force`

@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hermes-agent"
+name = "arachne"
 version = "0.1.0"
-description = "The self-improving AI agent — creates skills from experience, improves them during use, and runs anywhere"
+description = "Persistent agent layer for the Spiderweb system. Forked from NousResearch/hermes-agent."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "Nous Research" }]
@@ -52,29 +52,29 @@ mcp = ["mcp>=1.2.0"]
 homeassistant = ["aiohttp>=3.9.0"]
 yc-bench = ["yc-bench @ git+https://github.com/collinear-ai/yc-bench.git"]
 all = [
-  "hermes-agent[modal]",
-  "hermes-agent[daytona]",
-  "hermes-agent[messaging]",
-  "hermes-agent[cron]",
-  "hermes-agent[cli]",
-  "hermes-agent[dev]",
-  "hermes-agent[tts-premium]",
-  "hermes-agent[slack]",
-  "hermes-agent[pty]",
-  "hermes-agent[honcho]",
-  "hermes-agent[mcp]",
-  "hermes-agent[homeassistant]",
+  "arachne[modal]",
+  "arachne[daytona]",
+  "arachne[messaging]",
+  "arachne[cron]",
+  "arachne[cli]",
+  "arachne[dev]",
+  "arachne[tts-premium]",
+  "arachne[slack]",
+  "arachne[pty]",
+  "arachne[honcho]",
+  "arachne[mcp]",
+  "arachne[homeassistant]",
 ]
 
 [project.scripts]
-hermes = "hermes_cli.main:main"
-hermes-agent = "run_agent:main"
+arachne = "arachne_cli.main:main"
+arachne = "run_agent:main"
 
 [tool.setuptools]
-py-modules = ["run_agent", "model_tools", "toolsets", "batch_runner", "trajectory_compressor", "toolset_distributions", "cli", "hermes_constants"]
+py-modules = ["run_agent", "model_tools", "toolsets", "batch_runner", "trajectory_compressor", "toolset_distributions", "cli", "arachne_constants"]
 
 [tool.setuptools.packages.find]
-include = ["tools", "hermes_cli", "gateway", "cron", "honcho_integration"]
+include = ["tools", "arachne_cli", "gateway", "cron", "honcho_integration"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

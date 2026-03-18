@@ -178,7 +178,7 @@ class KawaiiSpinner:
 
     def _animate(self):
         while self.running:
-            if os.getenv("HERMES_SPINNER_PAUSE"):
+            if os.getenv("ARACHNE_SPINNER_PAUSE"):
                 time.sleep(0.1)
                 continue
             frame = self.spinner_frames[self.frame_idx % len(self.spinner_frames)]

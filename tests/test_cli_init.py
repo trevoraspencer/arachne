@@ -1,4 +1,4 @@
-"""Tests for HermesCLI initialization -- catches configuration bugs
+"""Tests for ArachneCLI initialization -- catches configuration bugs
 that only manifest at runtime (not in mocked unit tests)."""
 
 import os
@@ -11,9 +11,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 def _make_cli(env_overrides=None, **kwargs):
-    """Create a HermesCLI instance with minimal mocking."""
+    """Create a ArachneCLI instance with minimal mocking."""
     import cli as _cli_mod
-    from cli import HermesCLI
+    from cli import ArachneCLI
     _clean_config = {
         "model": {
             "default": "anthropic/claude-opus-4.6",
@@ -24,13 +24,13 @@ def _make_cli(env_overrides=None, **kwargs):
         "agent": {},
         "terminal": {"env_type": "local"},
     }
-    clean_env = {"LLM_MODEL": "", "HERMES_MAX_ITERATIONS": ""}
+    clean_env = {"LLM_MODEL": "", "ARACHNE_MAX_ITERATIONS": ""}
     if env_overrides:
         clean_env.update(env_overrides)
     with patch("cli.get_tool_definitions", return_value=[]), \
          patch.dict("os.environ", clean_env, clear=False), \
          patch.dict(_cli_mod.__dict__, {"CLI_CONFIG": _clean_config}):
-        return HermesCLI(**kwargs)
+        return ArachneCLI(**kwargs)
 
 
 class TestMaxTurnsResolution:
@@ -52,7 +52,7 @@ class TestMaxTurnsResolution:
 
     def test_env_var_max_turns(self):
         """Env var is used when config file doesn't set max_turns."""
-        cli_obj = _make_cli(env_overrides={"HERMES_MAX_ITERATIONS": "42"})
+        cli_obj = _make_cli(env_overrides={"ARACHNE_MAX_ITERATIONS": "42"})
         assert cli_obj.max_turns == 42
 
     def test_max_turns_never_none_for_agent(self):

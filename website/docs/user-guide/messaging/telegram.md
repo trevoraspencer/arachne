@@ -1,18 +1,18 @@
 ---
 sidebar_position: 2
 title: "Telegram"
-description: "Set up Hermes Agent as a Telegram bot"
+description: "Set up Arachne Agent as a Telegram bot"
 ---
 
 # Telegram Setup
 
-Connect Hermes Agent to Telegram so you can chat from your phone, send voice memos, and receive scheduled task results.
+Connect Arachne Agent to Telegram so you can chat from your phone, send voice memos, and receive scheduled task results.
 
 ## Setup Steps
 
 1. **Create a bot:** Message [@BotFather](https://t.me/BotFather) on Telegram, use `/newbot`
 2. **Get your user ID:** Message [@userinfobot](https://t.me/userinfobot) — it replies with your numeric ID
-3. **Configure:** Run `hermes gateway setup` and select Telegram, or add to `~/.hermes/.env` manually:
+3. **Configure:** Run `arachne gateway setup` and select Telegram, or add to `~/.arachne/.env` manually:
 
 ```bash
 TELEGRAM_BOT_TOKEN=123456:ABC-DEF...
@@ -22,7 +22,7 @@ TELEGRAM_ALLOWED_USERS=YOUR_USER_ID    # Comma-separated for multiple users
 4. **Start the gateway:**
 
 ```bash
-hermes gateway
+arachne gateway
 ```
 
 ## Optional: Home Channel
@@ -38,7 +38,7 @@ Or use the `/sethome` command in any Telegram chat to set it dynamically.
 
 ## Voice Messages
 
-Voice messages sent on Telegram are automatically transcribed using OpenAI's Whisper API and injected as text into the conversation. Requires `VOICE_TOOLS_OPENAI_KEY` in `~/.hermes/.env`.
+Voice messages sent on Telegram are automatically transcribed using OpenAI's Whisper API and injected as text into the conversation. Requires `VOICE_TOOLS_OPENAI_KEY` in `~/.arachne/.env`.
 
 ### Voice Bubbles (TTS)
 

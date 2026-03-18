@@ -5,7 +5,7 @@ version: 1.0.0
 author: community
 license: MIT
 metadata:
-  hermes:
+  arachne:
     tags: [MCP, Tools, API, Integrations, Interop]
     homepage: https://mcporter.dev
 ---
@@ -68,7 +68,7 @@ mcporter call --stdio "bun run ./server.ts" scrape url=https://example.com
 # JSON payload
 mcporter call <server.tool> --args '{"limit": 5}'
 
-# Machine-readable output (recommended for Hermes)
+# Machine-readable output (recommended for Arachne)
 mcporter call <server.tool> key=value --output json
 ```
 

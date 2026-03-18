@@ -1,4 +1,4 @@
-"""Base class for all Hermes execution environment backends."""
+"""Base class for all Arachne execution environment backends."""
 
 from abc import ABC, abstractmethod
 import os
@@ -10,19 +10,19 @@ def get_sandbox_dir() -> Path:
     """Return the host-side root for all sandbox storage (Docker workspaces,
     Singularity overlays/SIF cache, etc.).
 
-    Configurable via TERMINAL_SANDBOX_DIR. Defaults to ~/.hermes/sandboxes/.
+    Configurable via TERMINAL_SANDBOX_DIR. Defaults to ~/.arachne/sandboxes/.
     """
     custom = os.getenv("TERMINAL_SANDBOX_DIR")
     if custom:
         p = Path(custom)
     else:
-        p = Path.home() / ".hermes" / "sandboxes"
+        p = Path.home() / ".arachne" / "sandboxes"
     p.mkdir(parents=True, exist_ok=True)
     return p
 
 
 class BaseEnvironment(ABC):
-    """Common interface for all Hermes execution backends.
+    """Common interface for all Arachne execution backends.
 
     Subclasses implement execute() and cleanup(). Shared helpers eliminate
     duplicated subprocess boilerplate across backends.

@@ -1,6 +1,6 @@
 import json
 
-from hermes_cli.codex_models import DEFAULT_CODEX_MODELS, get_codex_model_ids
+from arachne_cli.codex_models import DEFAULT_CODEX_MODELS, get_codex_model_ids
 
 
 def test_get_codex_model_ids_prioritizes_default_and_cache(tmp_path, monkeypatch):

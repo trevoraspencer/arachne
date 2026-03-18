@@ -17,7 +17,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-_SESSIONS_DIR = Path.home() / ".hermes" / "sessions"
+_SESSIONS_DIR = Path.home() / ".arachne" / "sessions"
 _SESSIONS_INDEX = _SESSIONS_DIR / "sessions.json"
 
 
@@ -112,7 +112,7 @@ def _append_to_jsonl(session_id: str, message: dict) -> None:
 def _append_to_sqlite(session_id: str, message: dict) -> None:
     """Append a message to the SQLite session database."""
     try:
-        from hermes_state import SessionDB
+        from arachne_state import SessionDB
         db = SessionDB()
         db.append_message(
             session_id=session_id,

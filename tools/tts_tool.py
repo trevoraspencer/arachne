@@ -11,7 +11,7 @@ Output formats:
 - Opus (.ogg) for Telegram voice bubbles (requires ffmpeg for Edge TTS)
 - MP3 (.mp3) for everything else (CLI, Discord, WhatsApp)
 
-Configuration is loaded from ~/.hermes/config.yaml under the 'tts:' key.
+Configuration is loaded from ~/.arachne/config.yaml under the 'tts:' key.
 The user chooses the provider and voice; the model just sends text.
 
 Usage:
@@ -65,22 +65,22 @@ DEFAULT_ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB"  # Adam
 DEFAULT_ELEVENLABS_MODEL_ID = "eleven_multilingual_v2"
 DEFAULT_OPENAI_MODEL = "gpt-4o-mini-tts"
 DEFAULT_OPENAI_VOICE = "alloy"
-DEFAULT_OUTPUT_DIR = os.path.expanduser("~/.hermes/audio_cache")
+DEFAULT_OUTPUT_DIR = os.path.expanduser("~/.arachne/audio_cache")
 MAX_TEXT_LENGTH = 4000
 
 
 # ===========================================================================
-# Config loader -- reads tts: section from ~/.hermes/config.yaml
+# Config loader -- reads tts: section from ~/.arachne/config.yaml
 # ===========================================================================
 def _load_tts_config() -> Dict[str, Any]:
     """
-    Load TTS configuration from ~/.hermes/config.yaml.
+    Load TTS configuration from ~/.arachne/config.yaml.
 
     Returns a dict with provider settings. Falls back to defaults
     for any missing fields.
     """
     try:
-        from hermes_cli.config import load_config
+        from arachne_cli.config import load_config
         config = load_config()
         return config.get("tts", {})
     except Exception:
@@ -246,7 +246,7 @@ def text_to_speech_tool(
     """
     Convert text to speech audio.
 
-    Reads provider/voice config from ~/.hermes/config.yaml (tts: section).
+    Reads provider/voice config from ~/.arachne/config.yaml (tts: section).
     The model sends text; the user configures voice and provider.
 
     On messaging platforms, the returned MEDIA:<path> tag is intercepted
@@ -275,7 +275,7 @@ def text_to_speech_tool(
     # Telegram voice bubbles require Opus (.ogg); OpenAI and ElevenLabs can
     # produce Opus natively (no ffmpeg needed).  Edge TTS always outputs MP3
     # and needs ffmpeg for conversion.
-    platform = os.getenv("HERMES_SESSION_PLATFORM", "").lower()
+    platform = os.getenv("ARACHNE_SESSION_PLATFORM", "").lower()
     want_opus = (platform == "telegram")
 
     # Determine output path
@@ -435,7 +435,7 @@ TTS_SCHEMA = {
             },
             "output_path": {
                 "type": "string",
-                "description": "Optional custom file path to save the audio. Defaults to ~/.hermes/audio_cache/<timestamp>.mp3"
+                "description": "Optional custom file path to save the audio. Defaults to ~/.arachne/audio_cache/<timestamp>.mp3"
             }
         },
         "required": ["text"]

@@ -28,7 +28,7 @@ from typing import List, Dict, Any, Set, Optional
 
 # Shared tool list for CLI and all messaging platform toolsets.
 # Edit this once to update all platforms simultaneously.
-_HERMES_CORE_TOOLS = [
+_ARACHNE_CORE_TOOLS = [
     # Web
     "web_search", "web_extract",
     # Terminal + process management
@@ -218,53 +218,53 @@ TOOLSETS = {
     },
     
     # ==========================================================================
-    # Full Hermes toolsets (CLI + messaging platforms)
+    # Full Arachne toolsets (CLI + messaging platforms)
     #
     # All platforms share the same core tools. Messaging platforms add
     # All platforms share the same core tools (including send_message,
     # which is gated on gateway running via its check_fn).
     # ==========================================================================
     
-    "hermes-cli": {
+    "arachne-cli": {
         "description": "Full interactive CLI toolset - all default tools plus cronjob management",
-        "tools": _HERMES_CORE_TOOLS,
+        "tools": _ARACHNE_CORE_TOOLS,
         "includes": []
     },
     
-    "hermes-telegram": {
+    "arachne-telegram": {
         "description": "Telegram bot toolset - full access for personal use (terminal has safety checks)",
-        "tools": _HERMES_CORE_TOOLS,
+        "tools": _ARACHNE_CORE_TOOLS,
         "includes": []
     },
     
-    "hermes-discord": {
+    "arachne-discord": {
         "description": "Discord bot toolset - full access (terminal has safety checks via dangerous command approval)",
-        "tools": _HERMES_CORE_TOOLS,
+        "tools": _ARACHNE_CORE_TOOLS,
         "includes": []
     },
     
-    "hermes-whatsapp": {
+    "arachne-whatsapp": {
         "description": "WhatsApp bot toolset - similar to Telegram (personal messaging, more trusted)",
-        "tools": _HERMES_CORE_TOOLS,
+        "tools": _ARACHNE_CORE_TOOLS,
         "includes": []
     },
     
-    "hermes-slack": {
+    "arachne-slack": {
         "description": "Slack bot toolset - full access for workspace use (terminal has safety checks)",
-        "tools": _HERMES_CORE_TOOLS,
+        "tools": _ARACHNE_CORE_TOOLS,
         "includes": []
     },
     
-    "hermes-homeassistant": {
+    "arachne-homeassistant": {
         "description": "Home Assistant bot toolset - smart home event monitoring and control",
-        "tools": _HERMES_CORE_TOOLS,
+        "tools": _ARACHNE_CORE_TOOLS,
         "includes": []
     },
 
-    "hermes-gateway": {
+    "arachne-gateway": {
         "description": "Gateway toolset - union of all messaging platform tools",
         "tools": [],
-        "includes": ["hermes-telegram", "hermes-discord", "hermes-whatsapp", "hermes-slack", "hermes-homeassistant"]
+        "includes": ["arachne-telegram", "arachne-discord", "arachne-whatsapp", "arachne-slack", "arachne-homeassistant"]
     }
 }
 

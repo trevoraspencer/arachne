@@ -1,18 +1,18 @@
 ---
 sidebar_position: 1
 title: "Messaging Gateway"
-description: "Chat with Hermes from Telegram, Discord, Slack, or WhatsApp — architecture and setup overview"
+description: "Chat with Arachne from Telegram, Discord, Slack, or WhatsApp — architecture and setup overview"
 ---
 
 # Messaging Gateway
 
-Chat with Hermes from Telegram, Discord, Slack, or WhatsApp. The gateway is a single background process that connects to all your configured platforms, handles sessions, runs cron jobs, and delivers voice messages.
+Chat with Arachne from Telegram, Discord, Slack, or WhatsApp. The gateway is a single background process that connects to all your configured platforms, handles sessions, runs cron jobs, and delivers voice messages.
 
 ## Architecture
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
-│                      Hermes Gateway                             │
+│                      Arachne Gateway                             │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐           │
@@ -42,7 +42,7 @@ Each platform adapter receives messages, routes them through a per-chat session 
 The easiest way to configure messaging platforms is the interactive wizard:
 
 ```bash
-hermes gateway setup        # Interactive setup for all messaging platforms
+arachne gateway setup        # Interactive setup for all messaging platforms
 ```
 
 This walks you through configuring each platform with arrow-key selection, shows which platforms are already configured, and offers to start/restart the gateway when done.
@@ -50,12 +50,12 @@ This walks you through configuring each platform with arrow-key selection, shows
 ## Gateway Commands
 
 ```bash
-hermes gateway              # Run in foreground
-hermes gateway setup        # Configure messaging platforms interactively
-hermes gateway install      # Install as systemd service (Linux) / launchd (macOS)
-hermes gateway start        # Start the service
-hermes gateway stop         # Stop the service
-hermes gateway status       # Check service status
+arachne gateway              # Run in foreground
+arachne gateway setup        # Configure messaging platforms interactively
+arachne gateway install      # Install as systemd service (Linux) / launchd (macOS)
+arachne gateway start        # Start the service
+arachne gateway stop         # Stop the service
+arachne gateway status       # Check service status
 ```
 
 ## Chat Commands (Inside Messaging)
@@ -74,7 +74,7 @@ hermes gateway status       # Check service status
 | `/usage` | Show token usage for this session |
 | `/insights [days]` | Show usage insights and analytics |
 | `/reload-mcp` | Reload MCP servers from config |
-| `/update` | Update Hermes Agent to the latest version |
+| `/update` | Update Arachne Agent to the latest version |
 | `/help` | Show available commands |
 | `/<skill-name>` | Invoke any installed skill |
 
@@ -94,7 +94,7 @@ Sessions reset based on configurable policies:
 | Idle | 120 min | Reset after N minutes of inactivity |
 | Both | (combined) | Whichever triggers first |
 
-Configure per-platform overrides in `~/.hermes/gateway.json`:
+Configure per-platform overrides in `~/.arachne/gateway.json`:
 
 ```json
 {
@@ -128,11 +128,11 @@ Instead of manually configuring user IDs, unknown users receive a one-time pairi
 ```bash
 # The user sees: "Pairing code: XKGH5N7P"
 # You approve them with:
-hermes pairing approve telegram XKGH5N7P
+arachne pairing approve telegram XKGH5N7P
 
 # Other pairing commands:
-hermes pairing list          # View pending + approved users
-hermes pairing revoke telegram 123456789  # Remove access
+arachne pairing list          # View pending + approved users
+arachne pairing revoke telegram 123456789  # Remove access
 ```
 
 Pairing codes expire after 1 hour, are rate-limited, and use cryptographic randomness.
@@ -148,7 +148,7 @@ Send any message while the agent is working to interrupt it. Key behaviors:
 
 ## Tool Progress Notifications
 
-Control how much tool activity is displayed in `~/.hermes/config.yaml`:
+Control how much tool activity is displayed in `~/.arachne/config.yaml`:
 
 ```yaml
 display:
@@ -169,11 +169,11 @@ When enabled, the bot sends status messages as it works:
 ### Linux (systemd)
 
 ```bash
-hermes gateway install               # Install as user service
-systemctl --user start hermes-gateway
-systemctl --user stop hermes-gateway
-systemctl --user status hermes-gateway
-journalctl --user -u hermes-gateway -f
+arachne gateway install               # Install as user service
+systemctl --user start arachne-gateway
+systemctl --user stop arachne-gateway
+systemctl --user status arachne-gateway
+journalctl --user -u arachne-gateway -f
 
 # Enable lingering (keeps running after logout)
 sudo loginctl enable-linger $USER
@@ -182,10 +182,10 @@ sudo loginctl enable-linger $USER
 ### macOS (launchd)
 
 ```bash
-hermes gateway install
-launchctl start ai.hermes.gateway
-launchctl stop ai.hermes.gateway
-tail -f ~/.hermes/logs/gateway.log
+arachne gateway install
+launchctl start ai.arachne.gateway
+launchctl stop ai.arachne.gateway
+tail -f ~/.arachne/logs/gateway.log
 ```
 
 ## Platform-Specific Toolsets
@@ -194,11 +194,11 @@ Each platform has its own toolset:
 
 | Platform | Toolset | Capabilities |
 |----------|---------|--------------|
-| CLI | `hermes-cli` | Full access |
-| Telegram | `hermes-telegram` | Full tools including terminal |
-| Discord | `hermes-discord` | Full tools including terminal |
-| WhatsApp | `hermes-whatsapp` | Full tools including terminal |
-| Slack | `hermes-slack` | Full tools including terminal |
+| CLI | `arachne-cli` | Full access |
+| Telegram | `arachne-telegram` | Full tools including terminal |
+| Discord | `arachne-discord` | Full tools including terminal |
+| WhatsApp | `arachne-whatsapp` | Full tools including terminal |
+| Slack | `arachne-slack` | Full tools including terminal |
 
 ## Next Steps
 

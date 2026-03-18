@@ -3,15 +3,15 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'Hermes Agent',
+  title: 'Arachne Agent',
   tagline: 'The self-improving AI agent',
   favicon: 'img/favicon.svg',
 
-  url: 'https://hermes-agent.nousresearch.com',
+  url: 'https://arachne-agent.nousresearch.com',
   baseUrl: '/docs/',
 
   organizationName: 'NousResearch',
-  projectName: 'hermes-agent',
+  projectName: 'arachne',
 
   onBrokenLinks: 'warn',
 
@@ -44,15 +44,15 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/hermes-agent-banner.png',
+    image: 'img/arachne-banner.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'Hermes Agent',
+      title: 'Arachne Agent',
       logo: {
-        alt: 'Hermes Agent',
+        alt: 'Arachne Agent',
         src: 'img/favicon.svg',
       },
       items: [
@@ -63,7 +63,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          href: 'https://hermes-agent.nousresearch.com',
+          href: 'https://arachne-agent.nousresearch.com',
           label: 'Home',
           position: 'right',
         },

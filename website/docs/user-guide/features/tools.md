@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 title: "Tools & Toolsets"
-description: "Overview of Hermes Agent's tools — what's available, how toolsets work, and terminal backends"
+description: "Overview of Arachne Agent's tools — what's available, how toolsets work, and terminal backends"
 ---
 
 # Tools & Toolsets
@@ -34,13 +34,13 @@ Tools are functions that extend the agent's capabilities. They're organized into
 
 ```bash
 # Use specific toolsets
-hermes chat --toolsets "web,terminal"
+arachne chat --toolsets "web,terminal"
 
 # See all available tools
-hermes tools
+arachne tools
 
 # Configure tools per platform (interactive)
-hermes tools
+arachne tools
 ```
 
 **Available toolsets:** `web`, `terminal`, `file`, `browser`, `vision`, `image_gen`, `moa`, `skills`, `tts`, `todo`, `memory`, `session_search`, `cronjob`, `code_execution`, `delegation`, `clarify`, and more.
@@ -60,7 +60,7 @@ The terminal tool can execute commands in different environments:
 ### Configuration
 
 ```yaml
-# In ~/.hermes/config.yaml
+# In ~/.arachne/config.yaml
 terminal:
   backend: local    # or: docker, ssh, singularity, modal, daytona
   cwd: "."          # Working directory
@@ -84,7 +84,7 @@ terminal:
   backend: ssh
 ```
 ```bash
-# Set credentials in ~/.hermes/.env
+# Set credentials in ~/.arachne/.env
 TERMINAL_SSH_HOST=my-server.example.com
 TERMINAL_SSH_USER=myuser
 TERMINAL_SSH_KEY=~/.ssh/id_rsa
@@ -97,8 +97,8 @@ TERMINAL_SSH_KEY=~/.ssh/id_rsa
 apptainer build ~/python.sif docker://python:3.11-slim
 
 # Configure
-hermes config set terminal.backend singularity
-hermes config set terminal.singularity_image ~/python.sif
+arachne config set terminal.backend singularity
+arachne config set terminal.singularity_image ~/python.sif
 ```
 
 ### Modal (Serverless Cloud)
@@ -106,7 +106,7 @@ hermes config set terminal.singularity_image ~/python.sif
 ```bash
 uv pip install "swe-rex[modal]"
 modal setup
-hermes config set terminal.backend modal
+arachne config set terminal.backend modal
 ```
 
 ### Container Resources
@@ -156,8 +156,8 @@ PTY mode (`pty=true`) enables interactive CLI tools like Codex and Claude Code.
 
 ## Sudo Support
 
-If a command needs sudo, you'll be prompted for your password (cached for the session). Or set `SUDO_PASSWORD` in `~/.hermes/.env`.
+If a command needs sudo, you'll be prompted for your password (cached for the session). Or set `SUDO_PASSWORD` in `~/.arachne/.env`.
 
 :::warning
-On messaging platforms, if sudo fails, the output includes a tip to add `SUDO_PASSWORD` to `~/.hermes/.env`.
+On messaging platforms, if sudo fails, the output includes a tip to add `SUDO_PASSWORD` to `~/.arachne/.env`.
 :::

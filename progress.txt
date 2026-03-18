@@ -1,0 +1,102 @@
+# Ralph Progress Log
+Started: Sat Mar  7 20:46:12 UTC 2026
+
+## Codebase Patterns
+- Binary/image files (*.png, *.jpg, etc.) must NOT be renamed or edited
+- Submodules (mini-swe-agent/, tinker-atropos/) and .git/ are excluded from all operations
+- Model name strings to protect: NousResearch/Hermes-3-Llama-3.1-8B, NousResearch/DeepHermes-3-Llama-3-3B-Preview, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT1, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT2
+- Additional NousResearch dataset strings to protect: hermes-agent-megascience-sft1, terminal-tasks-glm-hermes-agent
+- The `hermes` entrypoint file at root was renamed to `arachne`
+- `environments/hermes_swe_env/` renamed to `environments/arachne_swe_env/`
+- Manifest of all renames saved at `_rename_manifest.txt`
+- After US-004, only .ralph/rebrand-arachne-prompt.md naming rules table retains hermes in "Find" column — this is intentional
+- All NousResearch/hermes-agent GitHub URLs are preserved (not renamed to arachne)
+
+---
+
+## 2026-03-07 - US-001
+- What was implemented: Audited and renamed all hermes-named directories and files
+- Directories renamed: environments/hermes_swe_env→arachne_swe_env, hermes_cli→arachne_cli, skills/autonomous-ai-agents/hermes-agent→arachne, tests/hermes_cli→arachne_cli
+- Files renamed: hermes_base_env.py→arachne_base_env.py, hermes_swe_env.py→arachne_swe_env.py, hermes_parser.py→arachne_parser.py, hermes→arachne, hermes_constants.py→arachne_constants.py, hermes_state.py→arachne_state.py, hermes_time.py→arachne_time.py, hermes-gateway→arachne-gateway, setup-hermes.sh→setup-arachne.sh, test_hermes_state.py→test_arachne_state.py
+- Skipped: landingpage/hermes-agent-banner.png and website/static/img/hermes-agent-banner.png (binary images)
+- Model name strings recorded in _rename_manifest.txt for protection in later stories
+- **Learnings for future iterations:**
+  - Process deepest paths first when renaming directories to avoid breaking child paths
+  - The `hermes` file at root is a binary entrypoint script, renamed to `arachne`
+  - Two image files with hermes in name are binary and excluded per project rules
+  - `scripts/hermes-gateway` is a script file (not binary), renamed to `arachne-gateway`
+- For content replacements, use two-pass approach: (1) bulk replace, (2) restore NousResearch/ URLs and hermes-agent.nousresearch.com
+- Exclude from content edits: prd.json, progress.txt, _rename_manifest.txt, arachne-README.md, package-lock.json, .gitmodules
+- NousResearch URL patterns to restore after bulk replace: NousResearch/arachne→NousResearch/hermes-agent, arachne.nousresearch.com→hermes-agent.nousresearch.com, arachne-megascience→hermes-agent-megascience, terminal-tasks-glm-arachne→terminal-tasks-glm-hermes-agent
+
+---
+
+## 2026-03-07 - US-002
+- What was implemented: Replaced all compound hermes forms and module-level names in file content
+- Replacements: hermes_cli→arachne_cli, hermes_constants→arachne_constants, hermes_state→arachne_state, hermes_tools→arachne_tools, hermes_agent→arachne, hermes-agent→arachne
+- NousResearch/hermes-agent URLs preserved (GitHub, HuggingFace, doc site)
+- Files changed: ~100+ files across tools/, arachne_cli/, environments/, tests/, gateway/, scripts/, website/, skills/, agent/, AGENTS.md, CONTRIBUTING.md, README.md, pyproject.toml, package.json, cli.py, run_agent.py, etc.
+- **Learnings for future iterations:**
+  - hermes-agent in badge URLs (hermes--agent with double dash) is NOT matched by sed s/hermes-agent/arachne/g — no issue
+  - arachne-README.md must NOT be edited — it's the verbatim target for US-005
+  - The two-pass approach (replace all, then restore URLs) is clean and reliable
+  - hermes_tools appears as substring in test names like hermes_toolsets — replacement to arachne_toolsets is correct
+---
+
+## 2026-03-07 - US-003
+- What was implemented: Replaced class names, env var prefix, and config path in file content
+- Replacements: HermesAgent→ArachneAgent, HermesCLI→ArachneCLI, HermesState→ArachneState, HermesConstants→ArachneConstants, HERMES_→ARACHNE_, ~/.hermes→~/.arachne
+- All six replacements done in a single sed pass across all in-scope files
+- Compound class names like HermesAgentLoop→ArachneAgentLoop, HermesAgentBaseEnv→ArachneAgentBaseEnv handled correctly via prefix matching
+- Files changed: ~80+ files across tools/, arachne_cli/, environments/, tests/, gateway/, scripts/, website/, skills/, cli.py, run_agent.py, AGENTS.md, .env.example, etc.
+- **Learnings for future iterations:**
+  - HERMES_ prefix appears in env vars (HERMES_HOME, HERMES_GATEWAY_SESSION, HERMES_INTERACTIVE, etc.), internal markers (HERMES_EOF_, HERMES_FENCE), and config references
+  - HermesAgent is a prefix for many compound names (HermesAgentLoop, HermesAgentBaseEnv, HermesAgentEnvConfig) — simple prefix replacement handles all correctly
+  - No model name conflicts with these patterns since model names use hyphenated form (Hermes-3, NousResearch/Hermes-Agent-Thinking-*)
+  - ~/.hermes replacement is safe — never appears in external URLs
+---
+
+## 2026-03-07 - US-004
+- What was implemented: Replaced all remaining standalone hermes/Hermes/HERMES with arachne/Arachne/ARACHNE, with model name protection
+- Two-pass approach: (1) bulk sed replace of hermes→arachne, Hermes→Arachne, HERMES→ARACHNE across 268 files, (2) restore protected NousResearch model name strings and external URLs
+- Model name strings restored: NousResearch/Hermes-3-Llama-3.1-8B, NousResearch/DeepHermes-3-Llama-3-3B-Preview, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT1, NousResearch/Hermes-Agent-Thinking-GLM-4.7-SFT2
+- External URLs restored: NousResearch/hermes-agent (GitHub), NousResearch/Hermes-Agent (package.json), hermes-agent-megascience, terminal-tasks-glm-hermes-agent
+- Also restored .ralph/rebrand-arachne-prompt.md naming rules table (Find column) and model name references in instructions
+- Files changed: ~268 files across all directories (tools/, environments/, arachne_cli/, tests/, scripts/, website/, gateway/, skills/, .github/, landingpage/, .ralph/, etc.)
+- **Learnings for future iterations:**
+  - The two-pass approach (bulk replace, then restore) works reliably for standalone replacements too
+  - Model name restoration patterns must be applied most-specific-first (e.g. NousResearch/Arachne-Agent-Thinking before NousResearch/Arachne-Agent)
+  - The .ralph/ prompt file is a meta-document — its "Find" column in the naming rules table should retain original hermes names
+  - After standalone replace, only .ralph/rebrand-arachne-prompt.md retains hermes references (in naming rules table Find column) — this is correct
+  - Corrupted model name patterns to check after replacement: NousResearch/arachne, NousResearch/Arachne, Arachne-3, Arachne-2, DeepArachne, arachne-3, arachne-2
+---
+
+## 2026-03-07 - US-005
+- What was implemented: Updated package metadata, install scripts, and replaced README
+- pyproject.toml: description updated to 'Persistent agent layer for the Spiderweb system. Forked from NousResearch/hermes-agent.' (name and entrypoints already correct from prior stories)
+- package.json: description updated to match pyproject.toml (name already correct, no bin entry present)
+- scripts/install.cmd: renamed "Hermes Agent Installer" → "Arachne Agent Installer" (2 occurrences)
+- scripts/install.sh, install.ps1, setup-arachne.sh: already clean from prior stories — only NousResearch/hermes-agent upstream URLs remain (correct)
+- setup.py files (arachne_cli/setup.py, skills/.../setup.py): already clean, no hermes references
+- README.md: replaced entirely with verbatim content from arachne-README.md
+- arachne-README.md: deleted after copy
+- Files changed: pyproject.toml, package.json, scripts/install.cmd, README.md, arachne-README.md (deleted)
+- **Learnings for future iterations:**
+  - Most install script paths were already renamed by US-001 through US-004 — US-005 only needed metadata description updates and the install.cmd banner text
+  - The README replacement is a full file overwrite — no incremental edits needed
+  - hermes references in README documentation text (describing the rename, upstream sync) are intentional and correct
+  - NousResearch/hermes-agent URLs in install scripts are upstream attribution and must be preserved
+---
+
+## 2026-03-07 - US-006
+- What was implemented: Final sweep, cleanup manifest, and commit
+- Ran case-insensitive grep for \bhermes\b across all in-scope file types, excluding .git/, submodules
+- All remaining references verified as legitimate: NousResearch/hermes-agent URLs (upstream attribution), NousResearch/Hermes-* model name strings, NousResearch dataset strings, lock files (excluded), meta files (prd.json, progress.txt, .ralph/)
+- No additional replacements needed — sweep was clean
+- Deleted _rename_manifest.txt
+- Files changed: _rename_manifest.txt (deleted), prd.json (US-006 passes: true), progress.txt (this entry)
+- **Learnings for future iterations:**
+  - The final sweep found ~100+ matches, all falling into preserved categories (external URLs, model names, dataset names, lock files, meta files)
+  - For rebrand tasks, a final sweep is essential to confirm completeness but typically finds zero actionable items if prior stories were thorough
+  - Lock files (package-lock.json) will always retain old names — this is correct since they should not be manually edited
+---

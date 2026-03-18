@@ -14,7 +14,7 @@ from tools.environments.base import BaseEnvironment
 
 # Unique marker to isolate real command output from shell init/exit noise.
 # printf (no trailing newline) keeps the boundaries clean for splitting.
-_OUTPUT_FENCE = "__HERMES_FENCE_a9f7b3__"
+_OUTPUT_FENCE = "__ARACHNE_FENCE_a9f7b3__"
 
 
 def _find_shell() -> str:
@@ -29,7 +29,7 @@ def _find_shell() -> str:
 
     # Windows: look for Git Bash (installed with Git for Windows).
     # Allow override via env var (same pattern as Claude Code).
-    custom = os.environ.get("HERMES_GIT_BASH_PATH")
+    custom = os.environ.get("ARACHNE_GIT_BASH_PATH")
     if custom and os.path.isfile(custom):
         return custom
 
@@ -48,9 +48,9 @@ def _find_shell() -> str:
             return candidate
 
     raise RuntimeError(
-        "Git Bash not found. Hermes Agent requires Git for Windows on Windows.\n"
+        "Git Bash not found. Arachne Agent requires Git for Windows on Windows.\n"
         "Install it from: https://git-scm.com/download/win\n"
-        "Or set HERMES_GIT_BASH_PATH to your bash.exe location."
+        "Or set ARACHNE_GIT_BASH_PATH to your bash.exe location."
     )
 
 # Noise lines emitted by interactive shells when stdin is not a terminal.
@@ -165,9 +165,9 @@ class LocalEnvironment(BaseEnvironment):
             fenced_cmd = (
                 f"printf '{_OUTPUT_FENCE}';"
                 f" {exec_command};"
-                f" __hermes_rc=$?;"
+                f" __arachne_rc=$?;"
                 f" printf '{_OUTPUT_FENCE}';"
-                f" exit $__hermes_rc"
+                f" exit $__arachne_rc"
             )
             proc = subprocess.Popen(
                 [user_shell, "-lic", fenced_cmd],

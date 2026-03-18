@@ -36,7 +36,7 @@ SKILL.md Format (YAML Frontmatter, agentskills.io compatible):
                                   #   Omit to load on all platforms (default)
     compatibility: Requires X     # Optional (agentskills.io)
     metadata:                     # Optional, arbitrary key-value (agentskills.io)
-      hermes:
+      arachne:
         tags: [fine-tuning, llm]
         related_skills: [peft, lora]
     ---
@@ -72,11 +72,11 @@ from typing import Dict, Any, List, Optional, Tuple
 import yaml
 
 
-# All skills live in ~/.hermes/skills/ (seeded from bundled skills/ on install).
+# All skills live in ~/.arachne/skills/ (seeded from bundled skills/ on install).
 # This is the single source of truth -- agent edits, hub installs, and bundled
 # skills all coexist here without polluting the git repo.
-HERMES_HOME = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
-SKILLS_DIR = HERMES_HOME / "skills"
+ARACHNE_HOME = Path(os.getenv("ARACHNE_HOME", Path.home() / ".arachne"))
+SKILLS_DIR = ARACHNE_HOME / "skills"
 
 # Anthropic-recommended limits for progressive disclosure efficiency
 MAX_NAME_LENGTH = 64
@@ -164,7 +164,7 @@ def _get_category_from_path(skill_path: Path) -> Optional[str]:
     """
     Extract category from skill path based on directory structure.
     
-    For paths like: ~/.hermes/skills/mlops/axolotl/SKILL.md -> "mlops"
+    For paths like: ~/.arachne/skills/mlops/axolotl/SKILL.md -> "mlops"
     """
     try:
         rel_path = skill_path.relative_to(SKILLS_DIR)
@@ -221,7 +221,7 @@ def _parse_tags(tags_value) -> List[str]:
 
 def _find_all_skills() -> List[Dict[str, Any]]:
     """
-    Recursively find all skills in ~/.hermes/skills/.
+    Recursively find all skills in ~/.arachne/skills/.
     
     Returns metadata for progressive disclosure (tier 1):
     - name, description, category
@@ -388,7 +388,7 @@ def skills_list(category: str = None, task_id: str = None) -> str:
                 "success": True,
                 "skills": [],
                 "categories": [],
-                "message": "No skills found. Skills directory created at ~/.hermes/skills/"
+                "message": "No skills found. Skills directory created at ~/.arachne/skills/"
             }, ensure_ascii=False)
         
         # Find all skills
@@ -601,14 +601,14 @@ def skill_view(name: str, file_path: str = None, task_id: str = None) -> str:
                     script_files.extend([str(f.relative_to(skill_dir)) for f in scripts_dir.glob(ext)])
         
         # Read tags/related_skills with backward compat:
-        # Check metadata.hermes.* first (agentskills.io convention), fall back to top-level
-        hermes_meta = {}
+        # Check metadata.arachne.* first (agentskills.io convention), fall back to top-level
+        arachne_meta = {}
         metadata = frontmatter.get('metadata')
         if isinstance(metadata, dict):
-            hermes_meta = metadata.get('hermes', {}) or {}
+            arachne_meta = metadata.get('arachne', {}) or {}
         
-        tags = _parse_tags(hermes_meta.get('tags') or frontmatter.get('tags', ''))
-        related_skills = _parse_tags(hermes_meta.get('related_skills') or frontmatter.get('related_skills', ''))
+        tags = _parse_tags(arachne_meta.get('tags') or frontmatter.get('tags', ''))
+        related_skills = _parse_tags(arachne_meta.get('related_skills') or frontmatter.get('related_skills', ''))
         
         # Build linked files structure for clear discovery
         linked_files = {}

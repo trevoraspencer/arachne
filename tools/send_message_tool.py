@@ -115,7 +115,7 @@ def _handle_send(args):
 
     pconfig = config.platforms.get(platform)
     if not pconfig or not pconfig.enabled:
-        return json.dumps({"error": f"Platform '{platform_name}' is not configured. Set up credentials in ~/.hermes/gateway.json or environment variables."})
+        return json.dumps({"error": f"Platform '{platform_name}' is not configured. Set up credentials in ~/.arachne/gateway.json or environment variables."})
 
     used_home_channel = False
     if not chat_id:
@@ -127,7 +127,7 @@ def _handle_send(args):
             return json.dumps({
                 "error": f"No home channel set for {platform_name} to determine where to send the message. "
                 f"Either specify a channel directly with '{platform_name}:CHANNEL_NAME', "
-                f"or set a home channel via: hermes config set {platform_name.upper()}_HOME_CHANNEL <channel_id>"
+                f"or set a home channel via: arachne config set {platform_name.upper()}_HOME_CHANNEL <channel_id>"
             })
 
     try:
@@ -140,7 +140,7 @@ def _handle_send(args):
         if isinstance(result, dict) and result.get("success"):
             try:
                 from gateway.mirror import mirror_to_session
-                source_label = os.getenv("HERMES_SESSION_PLATFORM", "cli")
+                source_label = os.getenv("ARACHNE_SESSION_PLATFORM", "cli")
                 if mirror_to_session(platform_name, chat_id, message, source_label=source_label):
                     result["mirrored"] = True
             except Exception:
@@ -221,7 +221,7 @@ async def _send_slack(token, chat_id, message):
 
 def _check_send_message():
     """Gate send_message on gateway running (always available on messaging platforms)."""
-    platform = os.getenv("HERMES_SESSION_PLATFORM", "")
+    platform = os.getenv("ARACHNE_SESSION_PLATFORM", "")
     if platform and platform != "local":
         return True
     try:

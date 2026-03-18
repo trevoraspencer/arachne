@@ -1,4 +1,4 @@
-# send_file Integration Map — Hermes Agent Codebase Deep Dive
+# send_file Integration Map — Arachne Agent Codebase Deep Dive
 
 ## 1. environments/tool_context.py — Base64 File Transfer Implementation
 
@@ -7,7 +7,7 @@
 - Creates parent dirs in sandbox via `self.terminal(f"mkdir -p {parent}")`
 - **Chunk size:** 60,000 chars (~60KB per shell command)
 - **Small files (<=60KB b64):** Single `printf '%s' '{b64}' | base64 -d > {remote_path}`
-- **Large files:** Writes chunks to `/tmp/_hermes_upload.b64` via `printf >> append`, then `base64 -d` to target
+- **Large files:** Writes chunks to `/tmp/_arachne_upload.b64` via `printf >> append`, then `base64 -d` to target
 - **Error handling:** Checks local file exists; returns `{exit_code, output}`
 - **Size limits:** No explicit limit, but shell arg limit ~2MB means chunking is necessary for files >~45KB raw
 - **No theoretical max** — but very large files would be slow (many terminal round trips)
@@ -54,19 +54,19 @@
 - Container ID is directly accessible via `env._container_id` or `env._inner.container_id`
 
 ### Volumes mounted:
-- **Persistent mode:** Bind mounts at `~/.hermes/sandboxes/docker/{task_id}/workspace` → `/workspace` and `.../home` → `/root`
+- **Persistent mode:** Bind mounts at `~/.arachne/sandboxes/docker/{task_id}/workspace` → `/workspace` and `.../home` → `/root`
 - **Ephemeral mode:** tmpfs at `/workspace` (10GB), `/home` (1GB), `/root` (1GB)
 - **User volumes:** From `config.yaml docker_volumes` (arbitrary `-v` mounts)
 - **Security tmpfs:** `/tmp` (512MB), `/var/tmp` (256MB), `/run` (64MB)
 
 ### Direct host access for persistent mode:
-- If persistent, files at `/workspace/foo.txt` are just `~/.hermes/sandboxes/docker/{task_id}/workspace/foo.txt` on host — no transfer needed!
+- If persistent, files at `/workspace/foo.txt` are just `~/.arachne/sandboxes/docker/{task_id}/workspace/foo.txt` on host — no transfer needed!
 
 ## 4. tools/environments/ssh.py — SSH Connection Management
 
 ### Connection management:
 - Uses SSH ControlMaster for persistent connection
-- Control socket at `/tmp/hermes-ssh/{user}@{host}:{port}.sock`
+- Control socket at `/tmp/arachne-ssh/{user}@{host}:{port}.sock`
 - ControlPersist=300 (5 min keepalive)
 - BatchMode=yes (non-interactive)
 - Stores: `self.host`, `self.user`, `self.port`, `self.key_path`
@@ -182,7 +182,7 @@
 ## 11. tools/tts_tool.py — Working Example of File Delivery
 
 ### Flow:
-1. Generate audio file to `~/.hermes/audio_cache/tts_TIMESTAMP.{ogg,mp3}`
+1. Generate audio file to `~/.arachne/audio_cache/tts_TIMESTAMP.{ogg,mp3}`
 2. Return JSON with `media_tag: "MEDIA:/path/to/file"`
 3. For Telegram voice: prepend `[[audio_as_voice]]` directive
 4. The LLM includes the MEDIA tag in its response text
@@ -215,7 +215,7 @@ The MEDIA: tag protocol is already the established pattern for file delivery. Tw
 ### Option A: Pure MEDIA: Tag (Minimal Change)
 - No new tool needed
 - Agent downloads file from sandbox to host using terminal (base64)
-- Saves to known location (e.g., `~/.hermes/file_cache/`)
+- Saves to known location (e.g., `~/.arachne/file_cache/`)
 - Includes `MEDIA:/path` in response text
 - Existing routing in `_process_message_background()` handles delivery
 - **Problem:** Agent has to manually do base64 dance + know about MEDIA: convention
@@ -238,7 +238,7 @@ The MEDIA: tag protocol is already the established pattern for file delivery. Tw
      - **docker:** `docker cp {container_id}:{path} {local_cache}/` 
      - **ssh:** `scp -o ControlPath=... {user}@{host}:{path} {local_cache}/`
      - **modal:** base64-over-terminal via `env.execute("base64 {path}")`
-   - Saves to `~/.hermes/file_cache/{uuid}_{filename}`
+   - Saves to `~/.arachne/file_cache/{uuid}_{filename}`
    - Returns: `MEDIA:/cached/path` in response for gateway to pick up
    - Register with `registry.register(name="send_file", toolset="file", ...)`
 
@@ -280,7 +280,7 @@ The MEDIA: tag protocol is already the established pattern for file delivery. Tw
        # Same pattern, discord renders video attachments inline
    ```
 
-4. **`toolsets.py`** — Add `"send_file"` to `_HERMES_CORE_TOOLS` list
+4. **`toolsets.py`** — Add `"send_file"` to `_ARACHNE_CORE_TOOLS` list
 
 5. **`agent/prompt_builder.py`** — Update platform hints to mention send_file tool
 
@@ -325,8 +325,8 @@ Agent calls send_file(file_path="/workspace/output.pdf", caption="Here's the rep
 send_file_tool.py:
     1. Get environment from _active_environments[task_id]
     2. Detect backend type (docker/ssh/modal/local)
-    3. Extract file to ~/.hermes/file_cache/{uuid}_{filename}
-    4. Return: '{"success": true, "media_tag": "MEDIA:/home/user/.hermes/file_cache/abc123_output.pdf"}'
+    3. Extract file to ~/.arachne/file_cache/{uuid}_{filename}
+    4. Return: '{"success": true, "media_tag": "MEDIA:/home/user/.arachne/file_cache/abc123_output.pdf"}'
     │
     ▼
 LLM includes MEDIA: tag in its response text
